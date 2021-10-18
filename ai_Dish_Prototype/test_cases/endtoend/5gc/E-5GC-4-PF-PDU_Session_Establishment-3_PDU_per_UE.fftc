@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
-<testCase version="8.6.0.202108181042">
+<testCase version="8.6.0.202108170724">
     <general>
         <documentation>E-5GC-4-PF: PDU Session Creation 3PDU per UE (low user plane traffic stateless) - Performance Testing</documentation>
         <notes masked="true">/b0yBLds2Xe/rF7HdHQjlKz9id7XuUmmcsarAUfJjzH/61QGLxriW3lIgPNiTq/1nNz3XjgvXYG2vKoJEqebpmMscQkQfJmMPnPQMQcN2KYf8yeMy5It19AEW0c8MPzZdq31h15vm3O25V8aikGilGv3nBWJpc6pb9rjk6+cVlpSqSPXT2rENxIEx3PpU+NXWhLaw3YBGXSJNuRo1hyhdPdLjLopxTaEYVdbhxroAHW9+UPbo2998MUvB6WyF7dzxZoYq+uj0a5FXe4o9DeNr5Z5BvAkLb1VwL9t8Vd7taM6yfRzaYKj/1ThmV3QJRvy2XM24TjX7ts0Z6IEe+Trodezf45S+5GIkFecuB+0xTogSciz7PD9xNhfDs/YCm3yD16owcW7CCPfSlUWhVA+r5NpKUosSFW1NoD8CPQbw0UWrzIB8yCaYl1XVVhtI42R0vGo1RDvhopw914Jv5vbxwRaW0IQtsv1OXk4/Nvh4FTxw4o3aVg5zb2AnBh3egNhmFJ2Df2A+0todUdKqRWgkqZ6OaVqT3gF96Gelu3XXKSDrFpXoXOAaoeZKpc0htkoju8tCR9XiALJjXNGCgSn8n1TFPBdP8GLW2eUyUHj9wH+9w91cJSAJXsJ4grGf/nF1b5BO2XlREHpUpzuL3jnGhmk5gImOG+4DvdQKVM3PJAfYt36NfUvERdGlZfzdyJBi4A29ZR3+LEZyNjHrbVipl10JJANKUczAbOX8rsIECr26wAyX0C5jZF0FDpVwk8f8MxjDtnBCmAkSlkFW3cjyyyuhjr+Tq8plLESyluPaWPZWVbOI4mL/QVcC/bMwJ+KpSM32jFE+d/gSm8yyhnfQBTA+811GJ4bLazuIvc/HPIkTsZC/wgzltlZVs4jiYv9GIZ0ONVQLEU4fF6bWaFezPXrvwBuxaPDB/GdcJRLrHKOiYxwKVismrwfe2d9MDQo46Fof/ZWRn/NJWAIQGFc23IBGZ7Ub2QbraB/q0GFUDj4KR85wV3GK1qGuo+2MPHKUuj9pI0B4dqNCSRl4Y1mRf4GXC5zzYld</notes>
         <owner>Spirent</owner>
         <language>Python</language>
     </general>
+    <testbed>project://ai_Dish_Prototype/topologies/DallasTopo-TS2.tbml</testbed>
     <procedures>
         <item name="main">
             <steps>
@@ -6743,6 +6744,55 @@
                         </analysisRules>
                     </postProcessing>
                     <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="Custom" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" rawResponse="true" rawResponse.inherit="false" url="runningTests/[running_id]" url.inherit="false"/>
+                </item>
+                <item guid="5456b6b8-b345-43bf-966f-1fb047d7a75e" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>#### Local workaround ####</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="792b6112-14a6-451e-913f-a2d4f9f16a09" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>print(file_url)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="f638ec62-7d0f-4a78-92ad-616f3fc73eb3" action="call" useFieldsInCommand="false">
+                    <command>
+                        <body>project://ai_Dish_Prototype/utilities/utility_library.fftc#remap_ls_csv_report_url -current_csv_url $file_url</body>
+                    </command>
+                    <postProcessing>
+                        <analysisRules>
+                            <item>
+                                <extractorInfo extractorType="query">
+                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                        <query>responseLine()</query>
+                                    </extractorProperties>
+                                </extractorInfo>
+                                <processorInfo ruleType="store">
+                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                        <storageLocation>file_url</storageLocation>
+                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                    </ruleProperties>
+                                </processorInfo>
+                            </item>
+                        </analysisRules>
+                    </postProcessing>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="533c1305-2dd4-43ae-b409-acaa5908e23e" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>print(file_url)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="c8cc9b73-55b0-4020-baec-2200465bb9a4" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>#### End Local workaround ####</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="ec3a0e23-c231-4f51-b489-2cfe6a91cd3f" action="json" useFieldsInCommand="false">
                     <command>
