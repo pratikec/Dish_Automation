@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<testCase version="8.5.1.202105060827">
+<testCase version="8.6.0.202108170724">
     <general>
         <language>Python</language>
     </general>
     <execution>
-        <parameters version="8.5.1.202105060827">
+        <parameters version="8.6.0.202108170724">
             <parameters escape="true">
                 <parameters xmlns:pt="http://www.fnfr.com/schemas/parameterTree">
-                    <reservationId>099f7fb8-96db-404a-adfe-08b16acae5c3</reservationId>
+                    <reservationId>92cb2d05-bb93-496f-8aa3-e16744889b63</reservationId>
                 </parameters>
             </parameters>
         </parameters>
@@ -111,22 +111,13 @@
                                 <message inherit="false">  Reservation ID = [res_id]</message>
                             </applicationProperties>
                         </item>
-                        <item guid="6e85c9d2-5b11-4c43-877a-e575cc09aabc" action="open" session="vel" useFieldsInCommand="false">
+                        <item guid="7103198d-b365-4ac7-b62e-6742ae70ffe4" action="open" session="vel">
                             <command>
-                                <body>application:com.fnfr.itest.applications.webservices.restful</body>
+                                <body>project://di_Velocity/session_profiles/velocity.ffsp</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
                                 <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                <sessionProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulSessionProperties" url="[url]" url.inherit="false" acceptAllCookies="true" acceptAllCookies.inherit="false">
-                                    <authentication transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.AuthenticationProperties" acceptAllCertificates="true" acceptAllCertificates.inherit="false"/>
-                                    <httpHeader inherit="false" transferableToolId="com.fnfr.itest.applications.webservices.restful">
-                                        <memberClasses>
-                                            <item>com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry</item>
-                                        </memberClasses>
-                                        <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="X-Auth-Token" header.inherit="false" header.sub="false" value="[token]" value.inherit="false"/>
-                                        <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="Content-Type" header.inherit="false" value="application/json" value.inherit="false"/>
-                                    </httpHeader>
-                                </sessionProperties>
+                                <sessionProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulSessionProperties" version="2" version.inherit="false"/>
                                 <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                             </applicationProperties>
@@ -356,10 +347,10 @@
                                 </item>
                                 <item guid="7969cde0-4b08-4e90-835a-b986d0d7727e" action="message" useFieldsInCommand="false">
                                     <command>
-                                        <body>Information: Fill html file and sent to S3</body>
+                                        <body>Information: Read html to find error</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                        <message inherit="false"> Fill html file and sent to S3</message>
+                                        <message inherit="false"> Read html to find error</message>
                                     </applicationProperties>
                                 </item>
                                 <item guid="453f1aaf-da46-4efc-a7f1-5d24c6ae945b" action="comment" useFieldsInCommand="false">
@@ -367,7 +358,7 @@
                                         <body>fill up .html file --- Error out and reboot TSs if &quot;Reason: Test session error. Test Running&quot; found in report</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="da97db66-a6f1-4579-a604-ff5d1877f035" action="GET" session="vel" skippReporting="false">
+                                        <item guid="da97db66-a6f1-4579-a604-ff5d1877f035" action="GET" session="vel">
                                             <command>
                                                 <body>/ito/reporting/v1/reports/[report_id]/print</body>
                                             </command>
@@ -376,7 +367,7 @@
                                                     <item>
                                                         <extractorInfo extractorType="contains">
                                                             <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
-                                                                <searchString>Reason: Test session error. Test Running</searchString>
+                                                                <searchString>Capture Initialization Failure</searchString>
                                                             </extractorProperties>
                                                         </extractorInfo>
                                                         <processorInfo ruleType="assert">
@@ -398,6 +389,11 @@
                                                                     </item>
                                                                 </actionsWhenTrue>
                                                                 <actionsWhenFalse>
+                                                                    <item actionId="Eval">
+                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
+                                                                            <statement>do_reboot = True</statement>
+                                                                        </actionProperties>
+                                                                    </item>
                                                                     <item actionId="DeclareExecutionIssue">
                                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
                                                                             <message>Test Session COMPLETE_ERROR: rebooting affected test servers, do not sent reports to S3</message>
@@ -406,18 +402,11 @@
                                                                     <item actionId="FailTest">
                                                                         <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                                     </item>
-                                                                    <item actionId="Eval">
-                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
-                                                                            <statement>do_reboot = True</statement>
-                                                                        </actionProperties>
-                                                                    </item>
                                                                 </actionsWhenFalse>
                                                             </ruleProperties>
                                                         </processorInfo>
                                                     </item>
                                                 </analysisRules>
-                                                <storeResponseAt>html_text</storeResponseAt>
-                                                <storeResponseText>true</storeResponseText>
                                             </postProcessing>
                                             <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="/ito/reporting/v1/reports/[report_id]/print" action.inherit="false">
                                                 <authentication transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.AuthenticationProperties" acceptAllCertificates="true" acceptAllCertificates.inherit="false"/>
@@ -430,11 +419,23 @@
                                                 </httpHeader>
                                             </applicationProperties>
                                         </item>
+                                        <item guid="db9f7c93-ae31-47a7-a091-10dd72c41e3e" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>print(&apos;hello&apos;)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
                                         <item guid="e7601747-e018-43f3-84e2-b5b1c90403c8" action="if" useFieldsInCommand="false">
                                             <command>
                                                 <body>do_reboot == True:</body>
                                             </command>
                                             <nestedSteps>
+                                                <item guid="adf3b1e2-5d94-4062-bbaa-48cc4a02a291" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>print(&apos;hello&apos;)</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
                                                 <item guid="0880e96e-e93d-4908-9896-0947b57b14e3" action="GET" session="vel">
                                                     <command>
                                                         <body>/velocity/api/reservation/v17/reservation/[res_id]/topology</body>
@@ -541,12 +542,6 @@
                                                         <item guid="9da86789-b1d9-4a8c-8a57-8cd0edb4ad10" action="eval" useFieldsInCommand="false">
                                                             <command>
                                                                 <body>tas_ipaddress = &apos;localhost&apos;</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                        <item guid="a07cfd6d-5577-4c1e-b9a8-f5c634540242" action="eval" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>ts_names = [&apos;TS3&apos;]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
@@ -828,7 +823,15 @@
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="5d50f5ff-2c53-4bb6-8270-c5064200b3a7" action="command" session="cli">
+                                        <item guid="f77f6442-4628-4af1-a7fc-4318a29b8f7c" action="message" useFieldsInCommand="false">
+                                            <command>
+                                                <body>Information:NOT sending html to S3</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                <message inherit="false">NOT sending html to S3</message>
+                                            </applicationProperties>
+                                        </item>
+                                        <item guid="5d50f5ff-2c53-4bb6-8270-c5064200b3a7" action="command" session="cli" skip="true">
                                             <command>
                                                 <body>run aws s3api put-object --bucket taas-test-artifacts --key [&apos;velocity/&apos;+report_id+&apos;/&apos;+html_file_name] --body [dir.name+&apos;/&apos;+html_file_name]</body>
                                             </command>
