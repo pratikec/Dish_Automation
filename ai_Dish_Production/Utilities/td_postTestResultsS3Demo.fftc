@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<testCase version="8.6.0.202108170724">
+<testCase version="8.6.1.202109290400">
     <general>
         <language>Python</language>
     </general>
     <execution>
-        <parameters version="8.6.0.202108170724">
+        <parameters version="8.6.1.202109290400">
             <parameters escape="true">
                 <parameters xmlns:pt="http://www.fnfr.com/schemas/parameterTree">
-                    <reservationId>92cb2d05-bb93-496f-8aa3-e16744889b63</reservationId>
+                    <reservationId>418088b4-49b9-4ccf-a7d6-8a006c879808</reservationId>
                 </parameters>
             </parameters>
         </parameters>
@@ -105,19 +105,28 @@
                         </item>
                         <item guid="a189e3e7-d272-4d0d-896d-d8d86f37ae86" action="message" useFieldsInCommand="false">
                             <command>
-                                <body>Information:  Reservation ID = [res_id]</body>
+                                <body>Information:Reservation ID = [res_id]</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                <message inherit="false">  Reservation ID = [res_id]</message>
+                                <message inherit="false">Reservation ID = [res_id]</message>
                             </applicationProperties>
                         </item>
-                        <item guid="7103198d-b365-4ac7-b62e-6742ae70ffe4" action="open" session="vel">
+                        <item guid="6e85c9d2-5b11-4c43-877a-e575cc09aabc" action="open" session="vel" useFieldsInCommand="false">
                             <command>
                                 <body>project://di_Velocity/session_profiles/velocity.ffsp</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
                                 <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                <sessionProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulSessionProperties" version="2" version.inherit="false"/>
+                                <sessionProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulSessionProperties" url="[url]" url.inherit="false" acceptAllCookies="true" acceptAllCookies.inherit="false">
+                                    <authentication transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.AuthenticationProperties" acceptAllCertificates="true" acceptAllCertificates.inherit="false"/>
+                                    <httpHeader inherit="false" transferableToolId="com.fnfr.itest.applications.webservices.restful">
+                                        <memberClasses>
+                                            <item>com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry</item>
+                                        </memberClasses>
+                                        <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="X-Auth-Token" header.inherit="false" header.sub="false" value="[token]" value.inherit="false"/>
+                                        <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="Content-Type" header.inherit="false" value="application/json" value.inherit="false"/>
+                                    </httpHeader>
+                                </sessionProperties>
                                 <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                             </applicationProperties>
@@ -150,17 +159,25 @@
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
+                        <item guid="bdf556df-af1d-4665-9e25-be3bd04da5fa" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>import pathlib</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="b5aa6aa5-3e6f-477c-9050-2772a44e57b7" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>dir = tempfile.TemporaryDirectory()</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="e7bc2dc9-a4ea-4519-b0e8-699cb695bad8" action="eval" useFieldsInCommand="false">
+                        <item guid="e7bc2dc9-a4ea-4519-b0e8-699cb695bad8" action="message" useFieldsInCommand="false">
                             <command>
-                                <body>dir</body>
+                                <body>Information:Temp Dir = [dir.name]</body>
                             </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Temp Dir = [dir.name]</message>
+                            </applicationProperties>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
@@ -178,6 +195,18 @@
                         <body>Get list of report ids associated with this reservation</body>
                     </command>
                     <nestedSteps>
+                        <item guid="a66941b7-7a3f-45bb-bd1b-af3f9d04e5e0" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>report_ids = []</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="aafc3bbd-bcd2-4715-9c65-fcaf429a10b1" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>import pprint</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="5c054815-eb3b-44d8-b19b-f52db26f14c9" action="GET" session="vel">
                             <command>
                                 <body>/ito/executions/v1/executions?filter=topologyReservationId::[res_id]</body>
@@ -186,13 +215,29 @@
                                 <analysisRules>
                                     <item>
                                         <extractorInfo extractorType="query">
-                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup" declareNoMatchIssue="false">
                                                 <query>mapped/Json/content/item/reportID</query>
                                             </extractorProperties>
                                         </extractorInfo>
                                         <processorInfo ruleType="store">
                                             <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
                                                 <storageLocation>report_ids</storageLocation>
+                                                <storeInAList>true</storeInAList>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup" declareNoMatchIssue="false">
+                                                <query>mapped/Json/content/item/executionID</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>execution_ids</storageLocation>
                                                 <storeInAList>true</storeInAList>
                                                 <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
                                                 <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
@@ -228,6 +273,47 @@
                                     <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="X-Auth-Token" header.inherit="false" value="[token]" value.inherit="false"/>
                                 </httpHeader>
                             </applicationProperties>
+                        </item>
+                        <item guid="1fa9c229-0021-4aa3-b2a9-a93d5c938c6e" action="GET" session="vel">
+                            <command>
+                                <body>/ito/reporting/v1/templates</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/content/item[./name = &apos;Report Template No Steps&apos;]/id</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>templateId</storageLocation>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="/ito/reporting/v1/templates" action.inherit="false"/>
+                        </item>
+                        <item guid="a7dd2bf5-7ac0-44a5-b5ca-16508c7b4a78" action="GET" session="vel">
+                            <command>
+                                <body>/velocity/api/reservation/v17/reservation/[res_id]/resources</body>
+                            </command>
+                            <postProcessing>
+                                <storeResponseAt>res_resources</storeResponseAt>
+                                <storeResponseText>true</storeResponseText>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="/velocity/api/reservation/v17/reservation/[res_id]/resources" action.inherit="false"/>
+                        </item>
+                        <item guid="b18542a0-8a7d-4467-a01e-77f0bf0450c4" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>templateId</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="351f375f-5ffb-4f25-9e57-a5500a1d2a3f" action="eval" useFieldsInCommand="false">
                             <command>
@@ -300,19 +386,25 @@
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
+                                        <item guid="097adef9-220a-4d7b-b486-45bb6252ee94" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>execution_id = execution_ids[i]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
                                         <item guid="cf7717ef-4b15-4e48-88d9-57fa831d5d53" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>json_file_name = report_id+&apos;.json&apos;</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="7a76ebba-74db-4bc6-a92f-053adf3d5f2f" action="eval" useFieldsInCommand="false">
+                                        <item guid="7a76ebba-74db-4bc6-a92f-053adf3d5f2f" action="eval" skip="true" useFieldsInCommand="false">
                                             <command>
                                                 <body>html_file_name = report_id+&apos;.html&apos;</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="1f353cf8-2962-4efe-a939-5665cc35f136" action="eval" useFieldsInCommand="false">
+                                        <item guid="1f353cf8-2962-4efe-a939-5665cc35f136" action="eval" skip="true" useFieldsInCommand="false">
                                             <command>
                                                 <body>yaml_file_name = report_id+&apos;.yaml&apos;</body>
                                             </command>
@@ -324,13 +416,13 @@
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="09068836-518b-4227-aa4e-8a2e9a0797e5" action="eval" useFieldsInCommand="false">
+                                        <item guid="09068836-518b-4227-aa4e-8a2e9a0797e5" action="eval" skip="true" useFieldsInCommand="false">
                                             <command>
                                                 <body>html_file = open(dir.name+&apos;/&apos;+html_file_name, &apos;w&apos;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="150a655d-8568-43d7-81aa-0c826fd0f163" action="eval" useFieldsInCommand="false">
+                                        <item guid="150a655d-8568-43d7-81aa-0c826fd0f163" action="eval" skip="true" useFieldsInCommand="false">
                                             <command>
                                                 <body>yaml_file = open(dir.name+&apos;/&apos;+yaml_file_name, &apos;w&apos;)</body>
                                             </command>
@@ -347,27 +439,27 @@
                                 </item>
                                 <item guid="7969cde0-4b08-4e90-835a-b986d0d7727e" action="message" useFieldsInCommand="false">
                                     <command>
-                                        <body>Information: Read html to find error</body>
+                                        <body>Information: Read html to get test report id from Landslide</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                        <message inherit="false"> Read html to find error</message>
+                                        <message inherit="false"> Read html to get test report id from Landslide</message>
                                     </applicationProperties>
                                 </item>
                                 <item guid="453f1aaf-da46-4efc-a7f1-5d24c6ae945b" action="comment" useFieldsInCommand="false">
                                     <command>
-                                        <body>fill up .html file --- Error out and reboot TSs if &quot;Reason: Test session error. Test Running&quot; found in report</body>
+                                        <body>Read html to get test report id from Landslide</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="da97db66-a6f1-4579-a604-ff5d1877f035" action="GET" session="vel">
+                                        <item guid="da97db66-a6f1-4579-a604-ff5d1877f035" action="GET" session="vel" useAutoMap="false">
                                             <command>
-                                                <body>/ito/reporting/v1/reports/[report_id]/print</body>
+                                                <body>/ito/reporting/v1/reports/[report_id]/print?templateId=[templateId]</body>
                                             </command>
                                             <postProcessing>
                                                 <analysisRules>
                                                     <item>
                                                         <extractorInfo extractorType="contains">
                                                             <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
-                                                                <searchString>Capture Initialization Failure</searchString>
+                                                                <searchString>Reason: Test session error. Test Running</searchString>
                                                             </extractorProperties>
                                                         </extractorInfo>
                                                         <processorInfo ruleType="assert">
@@ -376,7 +468,7 @@
                                                                 <actionsWhenTrue>
                                                                     <item actionId="DeclareExecutionIssue">
                                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                                            <message>Test session OK</message>
+                                                                            <message> Test session OK</message>
                                                                         </actionProperties>
                                                                     </item>
                                                                     <item actionId="Eval">
@@ -389,26 +481,29 @@
                                                                     </item>
                                                                 </actionsWhenTrue>
                                                                 <actionsWhenFalse>
-                                                                    <item actionId="Eval">
-                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
-                                                                            <statement>do_reboot = True</statement>
-                                                                        </actionProperties>
-                                                                    </item>
                                                                     <item actionId="DeclareExecutionIssue">
                                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                                            <message>Test Session COMPLETE_ERROR: rebooting affected test servers, do not sent reports to S3</message>
+                                                                            <message> Test Session COMPLETE_ERROR: rebooting affected test servers, do not sent reports to S3</message>
                                                                         </actionProperties>
                                                                     </item>
                                                                     <item actionId="FailTest">
                                                                         <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                    </item>
+                                                                    <item actionId="Eval">
+                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
+                                                                            <statement>do_reboot = True</statement>
+                                                                        </actionProperties>
                                                                     </item>
                                                                 </actionsWhenFalse>
                                                             </ruleProperties>
                                                         </processorInfo>
                                                     </item>
                                                 </analysisRules>
+                                                <storeResponseAt sub="false">html_text</storeResponseAt>
+                                                <storeResponseText>true</storeResponseText>
+                                                <appendRespToFile inherit="false" defaultValue=""/>
                                             </postProcessing>
-                                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="/ito/reporting/v1/reports/[report_id]/print" action.inherit="false">
+                                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="/ito/reporting/v1/reports/[report_id]/print?templateId=[templateId]" action.inherit="false">
                                                 <authentication transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.AuthenticationProperties" acceptAllCertificates="true" acceptAllCertificates.inherit="false"/>
                                                 <httpHeader inherit="false" transferableToolId="com.fnfr.itest.applications.webservices.restful">
                                                     <memberClasses>
@@ -418,459 +513,460 @@
                                                     <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="Content-Type" header.inherit="false" value="text/html" value.inherit="false"/>
                                                 </httpHeader>
                                             </applicationProperties>
+                                            <performResponseMapping>false</performResponseMapping>
                                         </item>
-                                        <item guid="db9f7c93-ae31-47a7-a091-10dd72c41e3e" action="eval" useFieldsInCommand="false">
+                                        <item guid="86973253-a236-42a0-882a-cd15bb33de42" action="comment" useFieldsInCommand="false">
                                             <command>
-                                                <body>print(&apos;hello&apos;)</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="e7601747-e018-43f3-84e2-b5b1c90403c8" action="if" useFieldsInCommand="false">
-                                            <command>
-                                                <body>do_reboot == True:</body>
+                                                <body>Old code pushing html keeping for now</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="adf3b1e2-5d94-4062-bbaa-48cc4a02a291" action="eval" useFieldsInCommand="false">
+                                                <item guid="e7601747-e018-43f3-84e2-b5b1c90403c8" action="if" skip="true" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>print(&apos;hello&apos;)</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="0880e96e-e93d-4908-9896-0947b57b14e3" action="GET" session="vel">
-                                                    <command>
-                                                        <body>/velocity/api/reservation/v17/reservation/[res_id]/topology</body>
-                                                    </command>
-                                                    <postProcessing>
-                                                        <analysisRules>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>mapped/Xml/tbml/body/resources/resource/resource[./property=&apos;TAS&apos;]/propertyCollection[@name=&apos;System Identification&apos;]/property[@name=&apos;ipAddress&apos;]</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="store">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <storageLocation>tas_ipaddress</storageLocation>
-                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>mapped/Xml/tbml/body/resources/resource/resource[./property=&apos;TAS&apos;]/propertyCollection[@name=&apos;System Identification&apos;]/property[@name=&apos;Hostname&apos;]</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="store">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <storageLocation>tas_hostname</storageLocation>
-                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>mapped/Xml/tbml/body/resources/resource/resource[./property=&apos;TAS&apos;]/propertyCollection[@name=&apos;Credentials&apos;]/property[@name=&apos;username&apos;]</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="store">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <storageLocation>tas_username</storageLocation>
-                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>mapped/Xml/tbml/body/resources/resource/resource[./property=&apos;TAS&apos;]/propertyCollection[@name=&apos;Credentials&apos;]/property[@name=&apos;password&apos;]</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="store">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <storageLocation>tas_password</storageLocation>
-                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>mapped/Xml/tbml/body/resources/resource/resource[./property[@name=&apos;name&apos;]=&apos;TS 1&apos; or ./property[@name=&apos;name&apos;]=&apos;TS 2&apos;or ./property[@name=&apos;name&apos;]=&apos;TS 3&apos;]/propertyCollection[1]/property[2]</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="store">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <storageLocation>ts_names</storageLocation>
-                                                                        <storeInAList>true</storeInAList>
-                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                        </analysisRules>
-                                                        <storeResponseAt>yaml_text</storeResponseAt>
-                                                        <storeResponseText>true</storeResponseText>
-                                                    </postProcessing>
-                                                    <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="/velocity/api/reservation/v17/reservation/[res_id]/topology" action.inherit="false">
-                                                        <authentication transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.AuthenticationProperties" acceptAllCertificates="true" acceptAllCertificates.inherit="false"/>
-                                                        <httpHeader inherit="false" transferableToolId="com.fnfr.itest.applications.webservices.restful">
-                                                            <memberClasses>
-                                                                <item>com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry</item>
-                                                            </memberClasses>
-                                                            <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="X-Auth-Token" header.inherit="false" value="[token]" value.inherit="false"/>
-                                                            <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="Content-Type" header.inherit="false" value="text/html" value.inherit="false"/>
-                                                            <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="Accept" header.inherit="false" value="application/tbml" value.inherit="false"/>
-                                                        </httpHeader>
-                                                    </applicationProperties>
-                                                </item>
-                                                <item guid="b6636cac-e227-402c-bbaa-8f5bf1e24eeb" action="comment" skip="true" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>TEMP LOCALHOST and TS3 setting for testing on my machine!!</body>
+                                                        <body>do_reboot == True:</body>
                                                     </command>
                                                     <nestedSteps>
-                                                        <item guid="9da86789-b1d9-4a8c-8a57-8cd0edb4ad10" action="eval" useFieldsInCommand="false">
+                                                        <item guid="0880e96e-e93d-4908-9896-0947b57b14e3" action="GET" session="vel">
                                                             <command>
-                                                                <body>tas_ipaddress = &apos;localhost&apos;</body>
+                                                                <body>/velocity/api/reservation/v17/reservation/[res_id]/topology</body>
                                                             </command>
+                                                            <postProcessing>
+                                                                <analysisRules>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>mapped/Xml/tbml/body/resources/resource/resource[./property=&apos;TAS&apos;]/propertyCollection[@name=&apos;System Identification&apos;]/property[@name=&apos;ipAddress&apos;]</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="store">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                                <storageLocation>tas_ipaddress</storageLocation>
+                                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>mapped/Xml/tbml/body/resources/resource/resource[./property=&apos;TAS&apos;]/propertyCollection[@name=&apos;System Identification&apos;]/property[@name=&apos;Hostname&apos;]</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="store">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                                <storageLocation>tas_hostname</storageLocation>
+                                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>mapped/Xml/tbml/body/resources/resource/resource[./property=&apos;TAS&apos;]/propertyCollection[@name=&apos;Credentials&apos;]/property[@name=&apos;username&apos;]</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="store">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                                <storageLocation>tas_username</storageLocation>
+                                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>mapped/Xml/tbml/body/resources/resource/resource[./property=&apos;TAS&apos;]/propertyCollection[@name=&apos;Credentials&apos;]/property[@name=&apos;password&apos;]</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="store">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                                <storageLocation>tas_password</storageLocation>
+                                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>mapped/Xml/tbml/body/resources/resource/resource[./property[@name=&apos;name&apos;]=&apos;TS 1&apos; or ./property[@name=&apos;name&apos;]=&apos;TS 2&apos;or ./property[@name=&apos;name&apos;]=&apos;TS 3&apos;]/propertyCollection[1]/property[2]</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="store">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                                <storageLocation>ts_names</storageLocation>
+                                                                                <storeInAList>true</storeInAList>
+                                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                </analysisRules>
+                                                                <storeResponseAt>yaml_text</storeResponseAt>
+                                                                <storeResponseText>true</storeResponseText>
+                                                            </postProcessing>
+                                                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="/velocity/api/reservation/v17/reservation/[res_id]/topology" action.inherit="false">
+                                                                <authentication transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.AuthenticationProperties" acceptAllCertificates="true" acceptAllCertificates.inherit="false"/>
+                                                                <httpHeader inherit="false" transferableToolId="com.fnfr.itest.applications.webservices.restful">
+                                                                    <memberClasses>
+                                                                        <item>com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry</item>
+                                                                    </memberClasses>
+                                                                    <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="X-Auth-Token" header.inherit="false" value="[token]" value.inherit="false"/>
+                                                                    <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="Content-Type" header.inherit="false" value="text/html" value.inherit="false"/>
+                                                                    <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="Accept" header.inherit="false" value="application/tbml" value.inherit="false"/>
+                                                                </httpHeader>
+                                                            </applicationProperties>
+                                                        </item>
+                                                        <item guid="b6636cac-e227-402c-bbaa-8f5bf1e24eeb" action="comment" skip="true" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>TEMP LOCALHOST and TS3 setting for testing on my machine!!</body>
+                                                            </command>
+                                                            <nestedSteps>
+                                                                <item guid="9da86789-b1d9-4a8c-8a57-8cd0edb4ad10" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>tas_ipaddress = &apos;localhost&apos;</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                                <item guid="a07cfd6d-5577-4c1e-b9a8-f5c634540242" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>ts_names = [&apos;TS3&apos;]</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                            </nestedSteps>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="7f0243b5-ab4a-479f-b973-56557a003949" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>tas_api_url = &quot;{0}:8080/api&quot;.format(tas_hostname if tas_hostname else tas_ipaddress)</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="f8031242-18c8-4af0-b6ec-61084af61392" action="if" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>not tas_api_url.startswith(&quot;http&quot;):</body>
+                                                            </command>
+                                                            <nestedSteps>
+                                                                <item guid="4d42bee6-786e-43e1-971c-a8225cf1e326" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>tas_api_url = &quot;http://{0}&quot;.format(tas_api_url)</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                            </nestedSteps>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="23b7c1e5-b5eb-4ade-855a-bdff6adf3734" action="open" session="s1">
+                                                            <command>
+                                                                <body>project://di_Landslide/session_profiles/landslide_rest.ffsp</body>
+                                                            </command>
+                                                            <postProcessing>
+                                                                <analysisRules>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="contains">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
+                                                                                <searchString>Error</searchString>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="assert">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                                                <expression>value == 1</expression>
+                                                                                <actionsWhenTrue>
+                                                                                    <item actionId="FailTest">
+                                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                                    </item>
+                                                                                    <item actionId="DeclareExecutionIssue">
+                                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                                                            <message>Cannot start Landslide Session at: [tas_api_url]</message>
+                                                                                        </actionProperties>
+                                                                                    </item>
+                                                                                    <item actionId="AbortExecution">
+                                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                                    </item>
+                                                                                    <item actionId="SkipRemainingRules">
+                                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                                    </item>
+                                                                                </actionsWhenTrue>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>success()</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="message">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.MessageProcessorPropertyGroup" severity="Information">
+                                                                                <message>Start Landslide Session at: [tas_api_url]</message>
+                                                                                <tag sub="false" defaultValue=""/>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                </analysisRules>
+                                                            </postProcessing>
+                                                            <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                                                <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                <sessionProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.spirent.itest.applications.landsliderest" transferableType="com.spirent.itest.applications.landsliderest.properties.LandslideRestSessionProperties"/>
+                                                                <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                            </applicationProperties>
+                                                        </item>
+                                                        <item guid="6a5bde1f-67af-4298-b773-17c3346af1dd" action="ShowTestServers" session="s1">
+                                                            <postProcessing>
+                                                                <analysisRules>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>Result/testServers//id</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="store">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                                <storageLocation>ids</storageLocation>
+                                                                                <storeInAList>true</storeInAList>
+                                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>Result/testServers//name</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="store">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                                <storageLocation>names</storageLocation>
+                                                                                <storeInAList>true</storeInAList>
+                                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                </analysisRules>
+                                                            </postProcessing>
+                                                            <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="ShowTestServers" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main"/>
+                                                        </item>
+                                                        <item guid="60ff75bd-5f76-41b1-852e-c13a867dacb3" action="for" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>ts_name in ts_names:</body>
+                                                            </command>
+                                                            <nestedSteps>
+                                                                <item guid="0e805124-5c5b-4d87-92ee-7b1ab4f095ee" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>idx = names.index(ts_name)</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                                <item guid="540b1aa9-9bdc-417d-8331-e9f304b46c9a" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>ts_id = ids[idx]</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                                <item guid="9ccec869-9fc6-4ff1-b52e-e81b849fd70f" action="message" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>Information:Rebooting TS [ts_name]</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                                        <message inherit="false">Rebooting TS [ts_name]</message>
+                                                                    </applicationProperties>
+                                                                </item>
+                                                                <item guid="4fdb9bc4-2df5-43b3-9ffb-4ada8316e849" action="RecycleTestServer" session="s1">
+                                                                    <command>
+                                                                        <body>-id [ts_id]</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="RecycleTestServer" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" id="[ts_id]" id.inherit="false"/>
+                                                                </item>
+                                                                <item guid="e7d4542c-80ca-46af-9dbd-e63a455e353e" action="sleep">
+                                                                    <command>
+                                                                        <body>10</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                            </nestedSteps>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="14c10127-8b1b-4550-a47b-b6876fcb874e" action="message" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Information: Test Servers rebooted, waiting for each to become ready</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                                <message inherit="false"> Test Servers rebooted, waiting for each to become ready</message>
+                                                            </applicationProperties>
+                                                        </item>
+                                                        <item guid="f0f1ec64-960a-4d8d-95f1-384bd632178a" action="comment" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Wait for each rebooted TS to be &quot;READY&quot;</body>
+                                                            </command>
+                                                            <nestedSteps>
+                                                                <item guid="e3cf3363-371d-4b82-96ff-2871464bce0a" action="for" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>ts_name in ts_names:</body>
+                                                                    </command>
+                                                                    <nestedSteps>
+                                                                        <item guid="66eb8e34-0bfd-422d-85ec-b05d2be21e5c" action="ShowTestServers" session="s1">
+                                                                            <postProcessing>
+                                                                                <analysisRules>
+                                                                                    <item>
+                                                                                        <extractorInfo extractorType="query">
+                                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                                <query>Result/testServers//state</query>
+                                                                                            </extractorProperties>
+                                                                                        </extractorInfo>
+                                                                                        <processorInfo ruleType="store">
+                                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                                                <storageLocation>states</storageLocation>
+                                                                                                <storeInAList>true</storeInAList>
+                                                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                                            </ruleProperties>
+                                                                                        </processorInfo>
+                                                                                    </item>
+                                                                                    <item>
+                                                                                        <extractorInfo extractorType="query">
+                                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                                <query>Result/testServers//name</query>
+                                                                                            </extractorProperties>
+                                                                                        </extractorInfo>
+                                                                                        <processorInfo ruleType="store">
+                                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                                                <storageLocation sub="false">names</storageLocation>
+                                                                                                <storeInAList>true</storeInAList>
+                                                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                                            </ruleProperties>
+                                                                                        </processorInfo>
+                                                                                    </item>
+                                                                                    <item>
+                                                                                        <extractorInfo extractorType="none">
+                                                                                            <extractorProperties type="com.fnfr.svt.documents.EmptyExtractorPropertyGroup"/>
+                                                                                        </extractorInfo>
+                                                                                        <processorInfo ruleType="assert">
+                                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                                                                <expression>states[names.index(ts_name)] == &apos;READY&apos;</expression>
+                                                                                                <actionsWhenTrue>
+                                                                                                    <item actionId="DeclareExecutionIssue">
+                                                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                                                                            <message>TS [ts_name] is ready</message>
+                                                                                                        </actionProperties>
+                                                                                                    </item>
+                                                                                                    <item actionId="Continue">
+                                                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                                                    </item>
+                                                                                                </actionsWhenTrue>
+                                                                                                <actionsWhenFalse>
+                                                                                                    <item actionId="DeclareExecutionIssue">
+                                                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                                                                            <message>TS [ts_name] still rebooting current state is [states[names.index(ts_name)]]</message>
+                                                                                                        </actionProperties>
+                                                                                                    </item>
+                                                                                                    <item actionId="RepeatStep">
+                                                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" delayBetweenRepeats="20.0"/>
+                                                                                                    </item>
+                                                                                                </actionsWhenFalse>
+                                                                                            </ruleProperties>
+                                                                                        </processorInfo>
+                                                                                    </item>
+                                                                                </analysisRules>
+                                                                            </postProcessing>
+                                                                            <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="ShowTestServers" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main"/>
+                                                                        </item>
+                                                                    </nestedSteps>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                            </nestedSteps>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="c5df3acb-7ef1-4fc6-a36b-8ddf11d83e9f" action="message" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Error:Test Case failed because Landslide needed a reboot, Reboot Complete.</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                                <severity inherit="false">Error</severity>
+                                                                <message inherit="false">Test Case failed because Landslide needed a reboot, Reboot Complete.</message>
+                                                            </applicationProperties>
+                                                        </item>
+                                                        <item guid="900fcf0d-881d-43ad-80c0-6475be7fe361" action="exit" useFieldsInCommand="false">
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                     </nestedSteps>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="7f0243b5-ab4a-479f-b973-56557a003949" action="eval" useFieldsInCommand="false">
+                                                <item guid="4af74b5b-e7cc-4dc7-8ceb-f7193093533d" action="eval" skip="true" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>tas_api_url = &quot;{0}:8080/api&quot;.format(tas_hostname if tas_hostname else tas_ipaddress)</body>
+                                                        <body>html_file.write(html_text)</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="f8031242-18c8-4af0-b6ec-61084af61392" action="if" useFieldsInCommand="false">
+                                                <item guid="467b1a98-3520-4dc6-ad04-d02d4080719b" action="eval" skip="true" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>not tas_api_url.startswith(&quot;http&quot;):</body>
+                                                        <body>html_file.close()</body>
                                                     </command>
-                                                    <nestedSteps>
-                                                        <item guid="4d42bee6-786e-43e1-971c-a8225cf1e326" action="eval" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>tas_api_url = &quot;http://{0}&quot;.format(tas_api_url)</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                    </nestedSteps>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="23b7c1e5-b5eb-4ade-855a-bdff6adf3734" action="open" session="s1">
+                                                <item guid="5d50f5ff-2c53-4bb6-8270-c5064200b3a7" action="command" session="cli" skip="true">
                                                     <command>
-                                                        <body>project://di_Landslide/session_profiles/landslide_rest.ffsp</body>
+                                                        <body>run aws s3api put-object --bucket taas-test-artifacts --key [&apos;velocity/&apos;+report_id+&apos;/&apos;+html_file_name] --body [dir.name+&apos;/&apos;+html_file_name]</body>
                                                     </command>
                                                     <postProcessing>
                                                         <analysisRules>
                                                             <item>
                                                                 <extractorInfo extractorType="contains">
                                                                     <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
-                                                                        <searchString>Error</searchString>
+                                                                        <searchString>error</searchString>
                                                                     </extractorProperties>
                                                                 </extractorInfo>
                                                                 <processorInfo ruleType="assert">
                                                                     <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                                        <expression>value == 1</expression>
+                                                                        <expression>value == 0</expression>
                                                                         <actionsWhenTrue>
+                                                                            <item actionId="PassTestIfNotAlreadyFailed">
+                                                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                            </item>
+                                                                            <item actionId="DeclareExecutionIssue">
+                                                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                                                    <message>Uploaded HTML file to S3</message>
+                                                                                </actionProperties>
+                                                                            </item>
+                                                                        </actionsWhenTrue>
+                                                                        <actionsWhenFalse>
                                                                             <item actionId="FailTest">
                                                                                 <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                                             </item>
                                                                             <item actionId="DeclareExecutionIssue">
                                                                                 <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                                                    <message>Cannot start Landslide Session at: [tas_api_url]</message>
+                                                                                    <message>Failed to upload HTML file to S3</message>
                                                                                 </actionProperties>
                                                                             </item>
-                                                                            <item actionId="AbortExecution">
-                                                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                            </item>
-                                                                            <item actionId="SkipRemainingRules">
-                                                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                            </item>
-                                                                        </actionsWhenTrue>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>success()</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="message">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.MessageProcessorPropertyGroup" severity="Information">
-                                                                        <message>Start Landslide Session at: [tas_api_url]</message>
-                                                                        <tag sub="false" defaultValue=""/>
+                                                                        </actionsWhenFalse>
                                                                     </ruleProperties>
                                                                 </processorInfo>
                                                             </item>
                                                         </analysisRules>
                                                     </postProcessing>
-                                                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
-                                                        <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        <sessionProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.spirent.itest.applications.landsliderest" transferableType="com.spirent.itest.applications.landsliderest.properties.LandslideRestSessionProperties"/>
-                                                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </applicationProperties>
-                                                </item>
-                                                <item guid="6a5bde1f-67af-4298-b773-17c3346af1dd" action="ShowTestServers" session="s1">
-                                                    <postProcessing>
-                                                        <analysisRules>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>Result/testServers//id</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="store">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <storageLocation>ids</storageLocation>
-                                                                        <storeInAList>true</storeInAList>
-                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>Result/testServers//name</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="store">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <storageLocation>names</storageLocation>
-                                                                        <storeInAList>true</storeInAList>
-                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                        </analysisRules>
-                                                    </postProcessing>
-                                                    <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="ShowTestServers" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main"/>
-                                                </item>
-                                                <item guid="60ff75bd-5f76-41b1-852e-c13a867dacb3" action="for" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>ts_name in ts_names:</body>
-                                                    </command>
-                                                    <nestedSteps>
-                                                        <item guid="0e805124-5c5b-4d87-92ee-7b1ab4f095ee" action="eval" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>idx = names.index(ts_name)</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                        <item guid="540b1aa9-9bdc-417d-8331-e9f304b46c9a" action="eval" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>ts_id = ids[idx]</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                        <item guid="9ccec869-9fc6-4ff1-b52e-e81b849fd70f" action="message" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>Information:Rebooting TS [ts_name]</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">Rebooting TS [ts_name]</message>
-                                                            </applicationProperties>
-                                                        </item>
-                                                        <item guid="4fdb9bc4-2df5-43b3-9ffb-4ada8316e849" action="RecycleTestServer" session="s1">
-                                                            <command>
-                                                                <body>-id [ts_id]</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="RecycleTestServer" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" id="[ts_id]" id.inherit="false"/>
-                                                        </item>
-                                                        <item guid="e7d4542c-80ca-46af-9dbd-e63a455e353e" action="sleep">
-                                                            <command>
-                                                                <body>10</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                    </nestedSteps>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="14c10127-8b1b-4550-a47b-b6876fcb874e" action="message" useFieldsInCommand="false">
+                                                <item guid="1c5c4615-3adc-4507-b3b2-1458f944feb1" action="eval" skip="true" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>Information: Test Servers rebooted, waiting for each to become ready</body>
+                                                        <body>small_html = html_text[0:1000000]</body>
                                                     </command>
-                                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                        <message inherit="false"> Test Servers rebooted, waiting for each to become ready</message>
-                                                    </applicationProperties>
-                                                </item>
-                                                <item guid="f0f1ec64-960a-4d8d-95f1-384bd632178a" action="comment" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>Wait for each rebooted TS to be &quot;READY&quot;</body>
-                                                    </command>
-                                                    <nestedSteps>
-                                                        <item guid="e3cf3363-371d-4b82-96ff-2871464bce0a" action="for" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>ts_name in ts_names:</body>
-                                                            </command>
-                                                            <nestedSteps>
-                                                                <item guid="66eb8e34-0bfd-422d-85ec-b05d2be21e5c" action="ShowTestServers" session="s1">
-                                                                    <postProcessing>
-                                                                        <analysisRules>
-                                                                            <item>
-                                                                                <extractorInfo extractorType="query">
-                                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                                        <query>Result/testServers//state</query>
-                                                                                    </extractorProperties>
-                                                                                </extractorInfo>
-                                                                                <processorInfo ruleType="store">
-                                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                                        <storageLocation>states</storageLocation>
-                                                                                        <storeInAList>true</storeInAList>
-                                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                                    </ruleProperties>
-                                                                                </processorInfo>
-                                                                            </item>
-                                                                            <item>
-                                                                                <extractorInfo extractorType="query">
-                                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                                        <query>Result/testServers//name</query>
-                                                                                    </extractorProperties>
-                                                                                </extractorInfo>
-                                                                                <processorInfo ruleType="store">
-                                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                                        <storageLocation sub="false">names</storageLocation>
-                                                                                        <storeInAList>true</storeInAList>
-                                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                                    </ruleProperties>
-                                                                                </processorInfo>
-                                                                            </item>
-                                                                            <item>
-                                                                                <extractorInfo extractorType="none">
-                                                                                    <extractorProperties type="com.fnfr.svt.documents.EmptyExtractorPropertyGroup"/>
-                                                                                </extractorInfo>
-                                                                                <processorInfo ruleType="assert">
-                                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                                                        <expression>states[names.index(ts_name)] == &apos;READY&apos;</expression>
-                                                                                        <actionsWhenTrue>
-                                                                                            <item actionId="DeclareExecutionIssue">
-                                                                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                                                                    <message>TS [ts_name] is ready</message>
-                                                                                                </actionProperties>
-                                                                                            </item>
-                                                                                            <item actionId="Continue">
-                                                                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                                            </item>
-                                                                                        </actionsWhenTrue>
-                                                                                        <actionsWhenFalse>
-                                                                                            <item actionId="DeclareExecutionIssue">
-                                                                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                                                                                    <message>TS [ts_name] still rebooting current state is [states[names.index(ts_name)]]</message>
-                                                                                                </actionProperties>
-                                                                                            </item>
-                                                                                            <item actionId="RepeatStep">
-                                                                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" delayBetweenRepeats="20.0"/>
-                                                                                            </item>
-                                                                                        </actionsWhenFalse>
-                                                                                    </ruleProperties>
-                                                                                </processorInfo>
-                                                                            </item>
-                                                                        </analysisRules>
-                                                                    </postProcessing>
-                                                                    <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="ShowTestServers" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main"/>
-                                                                </item>
-                                                            </nestedSteps>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                    </nestedSteps>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="c5df3acb-7ef1-4fc6-a36b-8ddf11d83e9f" action="message" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>Error:Test Case failed because Landslide needed a reboot, Reboot Complete.</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                        <severity inherit="false">Error</severity>
-                                                        <message inherit="false">Test Case failed because Landslide needed a reboot, Reboot Complete.</message>
-                                                    </applicationProperties>
-                                                </item>
-                                                <item guid="900fcf0d-881d-43ad-80c0-6475be7fe361" action="exit" useFieldsInCommand="false">
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
                                             </nestedSteps>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="4af74b5b-e7cc-4dc7-8ceb-f7193093533d" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>html_file.write(html_text)</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="467b1a98-3520-4dc6-ad04-d02d4080719b" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>html_file.close()</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="f77f6442-4628-4af1-a7fc-4318a29b8f7c" action="message" useFieldsInCommand="false">
-                                            <command>
-                                                <body>Information:NOT sending html to S3</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                <message inherit="false">NOT sending html to S3</message>
-                                            </applicationProperties>
-                                        </item>
-                                        <item guid="5d50f5ff-2c53-4bb6-8270-c5064200b3a7" action="command" session="cli" skip="true">
-                                            <command>
-                                                <body>run aws s3api put-object --bucket taas-test-artifacts --key [&apos;velocity/&apos;+report_id+&apos;/&apos;+html_file_name] --body [dir.name+&apos;/&apos;+html_file_name]</body>
-                                            </command>
-                                            <postProcessing>
-                                                <analysisRules>
-                                                    <item>
-                                                        <extractorInfo extractorType="contains">
-                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
-                                                                <searchString>error</searchString>
-                                                            </extractorProperties>
-                                                        </extractorInfo>
-                                                        <processorInfo ruleType="assert">
-                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                                <expression>value == 0</expression>
-                                                                <actionsWhenTrue>
-                                                                    <item actionId="PassTestIfNotAlreadyFailed">
-                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                    </item>
-                                                                    <item actionId="DeclareExecutionIssue">
-                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                                            <message>Uploaded HTML file to S3</message>
-                                                                        </actionProperties>
-                                                                    </item>
-                                                                </actionsWhenTrue>
-                                                                <actionsWhenFalse>
-                                                                    <item actionId="FailTest">
-                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                    </item>
-                                                                    <item actionId="DeclareExecutionIssue">
-                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                                            <message>Failed to upload HTML file to S3</message>
-                                                                        </actionProperties>
-                                                                    </item>
-                                                                </actionsWhenFalse>
-                                                            </ruleProperties>
-                                                        </processorInfo>
-                                                    </item>
-                                                </analysisRules>
-                                            </postProcessing>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
                                         <item guid="0ec4114f-620f-424b-a7e8-41bb3bbeb1dc" action="eval" useFieldsInCommand="false">
@@ -892,10 +988,10 @@
                                                 </item>
                                                 <item guid="1601cd7f-5d11-47a7-a353-f7f81563f654" action="message" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>Information:Capture file string not found in results file, no pcaps likely created.</body>
+                                                        <body>Information: Capture file string not found in results file, no pcaps likely created.</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                        <message inherit="false">Capture file string not found in results file, no pcaps likely created.</message>
+                                                        <message inherit="false"> Capture file string not found in results file, no pcaps likely created.</message>
                                                     </applicationProperties>
                                                 </item>
                                             </nestedSteps>
@@ -905,10 +1001,10 @@
                                             <nestedSteps>
                                                 <item guid="620077ac-a29d-431d-8aa4-1cec10b3be13" action="message" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>Information:Capture file string found, updating in results file, no pcaps likely created.</body>
+                                                        <body>Information: Capture file string found, updating in results file.</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                        <message inherit="false">Capture file string found, updating in results file, no pcaps likely created.</message>
+                                                        <message inherit="false"> Capture file string found, updating in results file.</message>
                                                     </applicationProperties>
                                                 </item>
                                                 <item guid="37bc0d73-b021-4c7d-b380-df13e310a60f" action="eval" useFieldsInCommand="false">
@@ -956,10 +1052,26 @@
                                 </item>
                                 <item guid="e3499b38-9ede-45a0-9715-3ffe8d12e77e" action="message" useFieldsInCommand="false">
                                     <command>
-                                        <body>Information: Fill json file and sent to S3</body>
+                                        <body>Information: Fill json file and sent to S3 report</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                        <message inherit="false"> Fill json file and sent to S3</message>
+                                        <message inherit="false"> Fill json file and sent to S3 report</message>
+                                    </applicationProperties>
+                                </item>
+                                <item guid="746b4ae7-b6ad-42e8-a36e-54cb6f7e20e5" action="message" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Information: Execution ID: [execution_id]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                        <message inherit="false"> Execution ID: [execution_id]</message>
+                                    </applicationProperties>
+                                </item>
+                                <item guid="a9209ba1-7c05-4863-bf85-f82d81b82807" action="message" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Information: Report ID: [report_id]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                        <message inherit="false"> Report ID: [report_id]</message>
                                     </applicationProperties>
                                 </item>
                                 <item guid="3d5dcdeb-4115-4aab-a99c-bd725ccc0f72" action="comment" useFieldsInCommand="false">
@@ -975,7 +1087,19 @@
                                         </item>
                                         <item guid="7567c2fc-0593-4886-9cd2-c2e7cd7fe9f3" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>json_file.write(json.dumps(execution_basic_list[i])+&apos;\\n&apos;)</body>
+                                                <body>temp = json.dumps(execution_basic_list[i], indent=4)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="e1d29e56-7bba-4f33-a2ce-2b6a6cd26fe5" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>json_file.write(json.dumps(execution_basic_list[i], indent=4))</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="c5b4f43b-559d-4f68-b4a5-f38ff85a0bf2" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>json_file.write(&apos;\\n&apos;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
@@ -999,7 +1123,19 @@
                                         </item>
                                         <item guid="081d3672-890f-47e2-9bd2-d2624e1802f6" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>json_file.write(extdata)</body>
+                                                <body>json_file.write(json.dumps(json.loads(extdata), indent=4))</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="6d5b3c97-3564-4cde-83ec-6e3af155e8e4" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>json_file.write(&apos;\\n&apos;)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="65a09568-9760-4a1f-8f3b-263ee9d118a0" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>json_file.write(json.dumps(json.loads(res_resources), indent=4))</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
@@ -1009,21 +1145,21 @@
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="5ca49169-c320-4e78-b6a5-92492173e269" action="command" session="cli">
+                                        <item guid="5ca49169-c320-4e78-b6a5-92492173e269" action="command" session="cli" skip="true">
                                             <command>
-                                                <body>run aws s3api put-object --bucket taas-test-artifacts --key [&apos;velocity/&apos;+report_id+&apos;/&apos;+json_file_name]  --body [dir.name+&apos;/&apos;+json_file_name]</body>
+                                                <body>run aws s3api put-object --bucket taas-test-artifacts --key [&apos;Velocity_2/&apos;+json_file_name]  --body [dir.name+&apos;/&apos;+json_file_name]</body>
                                             </command>
                                             <postProcessing>
                                                 <analysisRules>
                                                     <item>
                                                         <extractorInfo extractorType="contains">
                                                             <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
-                                                                <searchString>error</searchString>
+                                                                <searchString>exit code: 0</searchString>
                                                             </extractorProperties>
                                                         </extractorInfo>
                                                         <processorInfo ruleType="assert">
                                                             <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                                <expression>value == 0</expression>
+                                                                <expression>value == 1</expression>
                                                                 <actionsWhenTrue>
                                                                     <item actionId="PassTestIfNotAlreadyFailed">
                                                                         <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
@@ -1048,13 +1184,23 @@
                                                         </processorInfo>
                                                     </item>
                                                 </analysisRules>
+                                                <storeResponseAt>response</storeResponseAt>
+                                                <storeResponseText>true</storeResponseText>
                                             </postProcessing>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="c486f778-b641-4a7c-aabf-f95695e40118" action="message" useFieldsInCommand="false">
+                                            <command>
+                                                <body>Information:[response.replace(&apos;\\r&apos;, &apos; | &apos;).replace(&apos;\\n&apos;, &apos; | &apos;)]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                <message inherit="false">[response.replace(&apos;\\r&apos;, &apos; | &apos;).replace(&apos;\\n&apos;, &apos; | &apos;)]</message>
+                                            </applicationProperties>
                                         </item>
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="d02a02d3-2c15-47e1-8a6d-c0f5df6fc858" action="message" useFieldsInCommand="false">
+                                <item guid="d02a02d3-2c15-47e1-8a6d-c0f5df6fc858" action="message" skip="true" useFieldsInCommand="false">
                                     <command>
                                         <body>Information: Fill yaml file and sent to S3</body>
                                     </command>
@@ -1062,7 +1208,7 @@
                                         <message inherit="false"> Fill yaml file and sent to S3</message>
                                     </applicationProperties>
                                 </item>
-                                <item guid="f82a1ecd-c8d6-4748-a23f-6b15267982c4" action="comment" useFieldsInCommand="false">
+                                <item guid="f82a1ecd-c8d6-4748-a23f-6b15267982c4" action="comment" skip="true" useFieldsInCommand="false">
                                     <command>
                                         <body>fill up .yaml file</body>
                                     </command>
@@ -1148,6 +1294,12 @@
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="87ac8d95-152e-4c1c-9ccf-fdb11a369e0c" action="sleep">
+                    <command>
+                        <body>300</body>
+                    </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
             </steps>
