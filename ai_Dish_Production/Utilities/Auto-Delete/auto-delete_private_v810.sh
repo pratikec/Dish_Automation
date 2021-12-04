@@ -1,0 +1,15 @@
+#!/bin/bash
+TARGETDATE=$1
+HOSTNAME=$2
+USERNAME=$3
+PASSWORD=$4
+DATE=`date  --date="$TARGETDATE days ago" +%s%N | cut -b1-13`
+
+#TOKEN=`curl -u "$USERNAME:$PASSWORD" https://$HOSTNAME/velocity/api/auth/v2/token | jq '.token'`
+TOKEN=`curl -s -u "$USERNAME:$PASSWORD" https://$HOSTNAME/velocity/api/auth/v2/token | grep -o '"token":"[^"]*' | cut -d'"' -f4`
+
+echo "curl -X PUT -H \"X-Auth-Token:$TOKEN\" \"https://$HOSTNAME/ito/reporting/v1/autodelete?olderThan=$DATE\""
+curl -s -X PUT -H "X-Auth-Token:$TOKEN" "https://$HOSTNAME/ito/reporting/v1/autodelete?olderThan=$DATE"
+
+
+
