@@ -10,6 +10,7 @@
                     <GnbName pt:description="gnb.spirent.com">gnb.spirent.com</GnbName>
                     <StartGnbRate pt:description="1000.0">1000.0</StartGnbRate>
                     <GnbId pt:description="1">1</GnbId>
+                    <data_root>C:/temp/running_results/</data_root>
                 </parameters>
             </parameters>
         </parameters>
@@ -2150,6 +2151,449 @@
                 <item name="tc_instance">
                     <description>This is the name of the main fftc being executed</description>
                 </item>
+            </arguments>
+        </item>
+        <item name="get_rid_data_inventory" isPublic="true">
+            <steps>
+                <item guid="3e1aad7f-81c4-4514-ac0b-84a213e51322" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Build the data_path using the &apos;data_root&apos; (param for now) and the arguement &apos;target_rid&apos;</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="903baa58-3315-476b-95e8-2a22801bcd78" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>This NEEDS to be smart or leave it as a parameter ... MIKE</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="d255154b-b8ab-45b7-b3e7-f56abb6dc8fe" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>data_root = param(&apos;data_root&apos;)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="d58ab78e-aefc-4fdc-9c95-c07607f8e31a" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>data_path = data_root+target_rid</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="e133eec0-24b0-48bc-a2eb-da5f5a3f9a3a" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>print(data_path)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="19b907ba-29b7-40b4-b71c-3578e728d7f0" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Inspected the defined data path and determine if something is there.</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="8d11becd-f5ac-466b-b194-807e55ab3f1a" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>os.listdir(data_path)</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>isEmpty()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>value == &quot;false&quot;</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="Eval">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
+                                                            <statement>error_exit = False</statement>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>[data_path] is EMPTY! No files found</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="FailTest">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="SkipRemainingRules">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="Eval">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
+                                                            <statement>error_exit = True</statement>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>count(mapped/Json/item)</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>file_cnt</storageLocation>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>responseLine()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>result_files</storageLocation>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="4428be9b-1942-44f4-9703-a95ca45a4fe2" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Error Exit</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="802fd19c-2f3b-4e58-97b7-2e33e8bb445e" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>error_exit == True:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="540e3f8b-1659-465b-8a68-96909bfdac74" action="comment" useFieldsInCommand="false">
+                                    <command>
+                                        <body>We&apos;ve already messaged the Error; Now it&apos;s just time to get out</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="829d788d-646f-4b3b-8caa-c1855c25c70a" action="return">
+                                    <command>
+                                        <body>ERROR: No files found in [data_path]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="92111d95-9464-4a10-b15b-376893fdfede" action="comment" useFieldsInCommand="false">
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="550edea0-9e94-4296-9104-26a8a1f58a89" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>print(file_cnt)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="6238772c-bfcd-4cdc-84e3-31f9568e6aab" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>print(result_files)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="0f888b50-d511-43b7-b68b-c2a0b8ca9147" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Seed all the known type data returns</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="089097fc-3a58-419b-8247-3da7b67c2083" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>csv_files = []</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="6ec0e91b-4183-419a-b0fd-69a8c0f74cb5" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>iev_files = []</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="421f109f-a475-44f7-a4de-575bdebaa189" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>pcap_files = []</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="e7254aa3-2cd8-4da0-adbb-d41e19e08d52" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Loop and store what we find in the types lists</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="f27c47f3-50ba-4c8f-874e-282ecc580976" action="for" useFieldsInCommand="false">
+                            <command>
+                                <body>cnt in range(0, int(file_cnt)):</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="431685e9-b84d-4f6a-b725-ed7b85ed2a86" action="comment" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="696d8f86-b238-4ee2-ad37-d7f9becbb9cc" action="json" useFieldsInCommand="false">
+                                    <command>
+                                        <body>action=&apos;getJsonNode&apos;, editResponseStructure=&apos;false&apos;, documentName=&apos;result_files&apos;, pathValue=&apos;{&quot;\\\\[[cnt]]&quot;}&apos;</body>
+                                    </command>
+                                    <postProcessing>
+                                        <analysisRules>
+                                            <item>
+                                                <extractorInfo extractorType="query">
+                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                        <query>group1()</query>
+                                                    </extractorProperties>
+                                                </extractorInfo>
+                                                <processorInfo ruleType="store">
+                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                        <storageLocation>file_url</storageLocation>
+                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                    </ruleProperties>
+                                                </processorInfo>
+                                            </item>
+                                        </analysisRules>
+                                    </postProcessing>
+                                    <applicationProperties type="com.fnfr.svt.execution.builtin.json.JsonPropertiesGroup">
+                                        <action inherit="false">getJsonNode</action>
+                                        <pathValue inherit="false" sub="true">{&quot;\\[[cnt]]&quot;}</pathValue>
+                                        <documentName inherit="false">result_files</documentName>
+                                    </applicationProperties>
+                                </item>
+                                <item guid="7414efbe-0732-4eed-b5ad-79738f5b604d" action="comment" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="0cd5b829-ee15-4453-ae67-ae1e7c28450f" action="if" useFieldsInCommand="false">
+                                    <command>
+                                        <body>file_url.endswith(&quot;csv&quot;):</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="7bf1a894-e295-4b49-8436-bb6b95acecb0" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>csv_files.append(file_url)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="b0413c26-16a9-4f8d-aa9d-593713acd085" action="if" useFieldsInCommand="false">
+                                    <command>
+                                        <body>file_url.endswith(&quot;iev.log&quot;):</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="45259ebc-246d-487f-9140-e14d77fe1cc5" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>iev_files.append(file_url)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="61e2ffeb-555a-4b66-b6e3-3a90e1982e62" action="if" useFieldsInCommand="false">
+                                    <command>
+                                        <body>file_url.endswith(&quot;pcap&quot;):</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="456097cb-c0d8-4809-b372-8fdddd85da3f" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>pcap_files.append(file_url)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="92b97913-dd55-4038-b0b8-3db64c98ac79" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Return the requested data OR Return we don&apos;t have requested data</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="ad2fb1de-1625-439b-a37f-753220e19ee6" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>data_return_type == &apos;csv&apos;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="8c0a857b-4cde-4c67-91ae-e3d46382dd79" action="comment" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="d65b85e9-7b3d-41fb-9f66-cb30802e27d8" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>files_found = len(csv_files)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="0699fba1-a1b4-4ef2-8f6c-83506b56b708" action="if" useFieldsInCommand="false">
+                                    <command>
+                                        <body>files_found &gt; 0:</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="af0702d3-c9fe-467c-9fc6-7e7ab20ff219" action="return">
+                                            <command>
+                                                <body>[csv_files]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="2b613d67-0386-4076-9ddb-379686f7d9cb" action="else" useFieldsInCommand="false">
+                                    <nestedSteps>
+                                        <item guid="e244a025-8aae-4144-8e68-c8350879a90b" action="return">
+                                            <command>
+                                                <body>ERROR: No files found for data_return_type:  [data_return_type]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="bf4ab65f-4b95-46eb-b610-7f6732e92a08" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>data_return_type == &apos;iev&apos;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="5c54024d-6033-47ad-8f40-ca9fb6ed781a" action="comment" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="287c9c31-165c-4170-8c72-8003f898d2c3" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>files_found = len(iev_files)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="9894b935-e878-4ab6-9143-37b3b4bd63c9" action="if" useFieldsInCommand="false">
+                                    <command>
+                                        <body>files_found &gt; 0:</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="c10d3908-9b6b-4809-ae2a-4e320f881754" action="return">
+                                            <command>
+                                                <body>[iev_files]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="efc8e0ef-b5b2-4056-ba62-a67b71c72daf" action="else" useFieldsInCommand="false">
+                                    <nestedSteps>
+                                        <item guid="2932801d-28a8-4113-afca-e581ccd64d92" action="return">
+                                            <command>
+                                                <body>ERROR: No files found for data_return_type:  [data_return_type]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="1fdec340-d41a-49f7-90fa-1914d00c7fa7" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>data_return_type == &apos;pcap&apos;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="a6870bc0-fb6d-4981-8d04-65e462683695" action="comment" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="05eec19e-5bcb-44ca-8024-ca27216d6e6c" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>files_found = len(pcap_files)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="b94e8775-647e-460b-b9b9-55ba3bb671b6" action="if" useFieldsInCommand="false">
+                                    <command>
+                                        <body>files_found &gt; 0:</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="43db4f54-c7d9-44ff-99d0-84743b3a1705" action="return">
+                                            <command>
+                                                <body>[pcap_files]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="b8ca8a55-a067-4ef5-948c-c7fc88b9ecd2" action="else" useFieldsInCommand="false">
+                                    <nestedSteps>
+                                        <item guid="5ebadc9f-ddc8-444d-b7e2-6ddb913eb3a3" action="return">
+                                            <command>
+                                                <body>ERROR: No files found for data_return_type:  [data_return_type]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="8bf04240-2435-4ac1-80b4-1b238060e46a" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>If we got here; it&apos;s an unknown data return type</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="126221fc-e8fb-49d8-a42e-3162847d476d" action="return">
+                            <command>
+                                <body>ERROR: Unknown data return type:  [data_return_type]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="3b034754-4553-4582-8fc6-b044eb892426" action="comment" useFieldsInCommand="false">
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+            <arguments>
+                <item name="data_return_type">
+                    <description>Type of file targeted for retrieval.
+Valid Types: csv or iev or pcap</description>
+                </item>
+                <item name="target_rid"/>
             </arguments>
         </item>
         <item name="NF_interaction_mgr" isPublic="true">
