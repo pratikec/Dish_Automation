@@ -4365,6 +4365,12 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
+                        <item guid="86525b78-d6d1-4344-87e3-d62324bbd23e" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>tshark_filter</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="7d73cb2a-9699-440c-bb4e-b33b1797f811" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>optional_message</body>
@@ -4391,12 +4397,6 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                         <body>Open wireshark; apply the tshark display filter as defined</body>
                     </command>
                     <nestedSteps>
-                        <item guid="f8bf50d3-ae56-424f-9612-501f80468f11" action="call" skip="true" useFieldsInCommand="false">
-                            <command>
-                                <body>pcap_utils.fftc#wireshark_open -tshark_display_filter $tshark_filter</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
                         <item guid="a9d1d7f9-6542-40d2-abb8-08f86d3b3472" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>open_session:</body>
@@ -4404,7 +4404,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                             <nestedSteps>
                                 <item guid="1a866159-cc7d-4ad3-b7e5-f331397d7617" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>wireshark_open -tshark_display_filter $tshark_filter</body>
+                                        <body>wireshark_open -tshark_display_filter [tshark_filter]</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
@@ -4561,74 +4561,6 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="c782387f-8ec3-40e7-b94a-7c30e5ac9cf9" action="comment" useFieldsInCommand="false">
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="c8911240-fc19-429e-a0d2-758d6720e2e0" action="command" session="wireshark" skip="true">
-                    <command>
-                        <body>query packets</body>
-                    </command>
-                    <postProcessing>
-                        <analysisRules>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>messages/item[1]/id</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="store">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                        <storageLocation>firstIdx</storageLocation>
-                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>success()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>value == &quot;true&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>Target Capture Packet found as expected. Wireshark display filter: [display_filter]</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>Target Capture Packet NOT found. Wireshark display filter: [display_filter]</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="FailTest">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                        </analysisRules>
-                        <storeResponseAt>response</storeResponseAt>
-                        <storeResponseText>true</storeResponseText>
-                    </postProcessing>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="6ede9fcc-75b8-46f6-a434-220eac47b867" action="comment" useFieldsInCommand="false">
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="6e06fa97-7f0e-444b-ac41-b585e0223b79" action="comment" useFieldsInCommand="false">
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="85bc6146-bfd1-4592-8a36-6be8e0ec0ab0" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
             </steps>
