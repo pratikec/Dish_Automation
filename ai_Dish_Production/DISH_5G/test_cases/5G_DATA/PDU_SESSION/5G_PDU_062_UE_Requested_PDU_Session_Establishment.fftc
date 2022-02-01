@@ -1,29 +1,40 @@
 <?xml version="1.0"?>
 <testCase version="8.6.1.202109290400">
     <general>
-        <documentation>5G_PDU_076 Dynamic UE IP allocation</documentation>
-        <tags>5G_PDU_076</tags>
-        <notes>Test Purpose: The purpose of this test is to verify Dynamic UE IP allocation.
+        <documentation>5G_PDU_062 UE Requested PDU Session Establishment (Single SMF IPv4).</documentation>
+        <tags>5G_PDU_062</tags>
+        <notes>Test Purpose: The purpose of this test is to verify the successful PDU session establishment.
 Pre-requisites/Test Environment:
-  • UE with DISH SIM.
-  • UE with IP assignment field leave blank.
+•\tUE with Dish 5G SIM.
+•\tThe trace/log collection is started.
 Test Dependencies: 
-  • UE registered to VoNR Network. 
+•\tUE set to use PDU IPv4.
+•\tAccess to UPF to set type of PDU session (IPv4).
 Test parameter and Tools:
-  • Internal log and Wireshark.
+•\tInternal log and Wireshark.
 Test Procedure:
-  • UE attaches and registers with network.
-  • Verify the UE status in AMF, by using command: cmm subscriber show --imsi | grep mState.
-  • SMF assigns an IP to UE.
-Remarks: 
-  • 3GPP TS References - 3GPP TS 23.501 version 15.2.0 Release 155.8.2.2, 3GPP TS 23.501 version 16.7.0 
-Release 16 5.8.2.2 
+•\tStart the trace / log collection.
+•\tUE attaches and registers with 5G network.
+•\tCheck the UE status on the AMF: cmm subscriber show --imsi &lt;imsi&gt; | grep mState.
+•\tUE establishes a data session.
+•\tEnsure there is an existing PDU session associated to UE on SMF by using command “show mobile-gateway pdn pdu-session”.
+•\tStop the trace/ log collection.
+Remarks:  
+•\t3GPP TS References - 3GPP TS 23.502 version 16.5.0 Release 16 4.3.2.2.1
+•\tCall Flow References - E2E Call Flow Document Appendix Section 3.1.
 Expected Result/Post Condition: 
-  • Verify the SMF allocates the IP address dynamically to the UE.
-  • Verify that the counter M176C021 (amf_pdu_sess_rel_succ) in AMF has increased by 1.</notes>
+•\tVerify AMF receives PDU Session establishment Request from UE.
+•\tVerify AMF sends “Nsmf_PDU Session_CreateSMContext Request” to SMF.
+•\tVerify SMF sends “Nsmf_PDU Session_CreateSMContext Response” to AMF.
+•\tVerify SMF sends “N4 Session Establishment Request” to UPF.\t
+•\tVerify AMF sends PDU Session establishment Accept to UE
+•\tVerify UPF allocates IPv4 address for the PDU Session for “internet” DNN.
+Performance Counters:
+•\tVerify that the counter M176C056 (UE_PDU_EST_INIT_EMERG_REQ_ATT) in AMF has increased by 1.
+•\tVerify that the counter M176C057 (UE_PDU_EST_INIT_EMERG_REQ_SUCC) in AMF has increased by 1.
+</notes>
         <language>Python</language>
     </general>
-    <testbed>project://ai_Dish_Prototype/topologies/Dish%20Custom/D-E1-IN-001_TS2.tbml</testbed>
     <procedures>
         <item name="main">
             <steps>
