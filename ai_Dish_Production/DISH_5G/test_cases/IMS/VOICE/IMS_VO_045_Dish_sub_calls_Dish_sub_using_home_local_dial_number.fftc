@@ -1,6 +1,16 @@
 <?xml version="1.0"?>
 <testCase version="8.6.2.202112190518">
     <general>
+        <documentation>IMS_VO_045 Dish sub calls Dish sub using home local dial number.</documentation>
+        <tags>IMS_VO_045</tags>
+        <notes>Test Purpose: The purpose of this test is to verify Dish sub. Successfully using home local dial number. 
+
+Expected Result/Post Condition: 
+•\tVerify UE_1 Sends INVITE request with local dial number.
+•\tInvite header must have below format.
+•\tINVITE sip:(local-number-digits); phonecontext=(domainname)@(domainname); user=phone SIP/2.0.
+•\tVerify UE_2 respond back with 200 Ok.
+•\tVerify that the PDU session is created with QCI (fiveQI) value set to 1</notes>
         <language>Python</language>
     </general>
     <procedures>
@@ -619,12 +629,12 @@
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="10b54653-7693-42a0-8130-d7441dcd470b" action="comment" useFieldsInCommand="false">
+                <item guid="ac531c6e-36bd-4b5d-8191-9c77936e9627" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Pre-verify Test Servers are &quot;Ready&quot;</body>
                     </command>
                     <nestedSteps>
-                        <item guid="277c3031-fbe2-413a-ad96-48ab1ac0fa44" action="call" useFieldsInCommand="false">
+                        <item guid="7d7fa3d6-0f98-4df1-9913-f5571ae986db" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#wait_for_test_servers_ready -session s1 -ts_groups_json [ts_groups]</body>
                             </command>
@@ -840,107 +850,131 @@
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="44d5e2c5-b44b-40fb-9eac-3eb81c0afc72" action="comment" useFieldsInCommand="false">
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="44d5e2c5-b44b-40fb-9eac-3eb81c0afc72" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>##### Modify JSON in string format before passing to Landslide #####</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="c90ef331-8d75-4060-a5c2-e92c71b79d6c" action="comment" useFieldsInCommand="false">
                             <command>
-                                <body>Modify JSON in string format before passing to Landslide</body>
+                                <body>Convert json list to dict</body>
                             </command>
                             <nestedSteps>
-                                <item guid="c90ef331-8d75-4060-a5c2-e92c71b79d6c" action="comment" useFieldsInCommand="false">
+                                <item guid="19bd86d8-2afa-4859-a299-e973494ec47b" action="eval" useFieldsInCommand="false">
                                     <command>
-                                        <body>Convert json list to dict</body>
+                                        <body>import json</body>
                                     </command>
-                                    <nestedSteps>
-                                        <item guid="19bd86d8-2afa-4859-a299-e973494ec47b" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>import json</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="02c3c27b-e06a-4d02-ac83-89f128d35cd3" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>import re</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="06dfa186-036f-4406-b6f2-a16d29419b13" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>temp_dict = json.loads(run_data_list[0])</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                    </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="cc58b5a5-62bb-4bc6-80d7-ef37fc17a62d" action="comment" useFieldsInCommand="false">
+                                <item guid="02c3c27b-e06a-4d02-ac83-89f128d35cd3" action="eval" useFieldsInCommand="false">
                                     <command>
-                                        <body>Increment N# in phone string and remove +1&lt;area code&gt;</body>
+                                        <body>import re</body>
                                     </command>
-                                    <nestedSteps>
-                                        <item guid="0127eb58-9866-48ad-bb03-62fdf4ab6059" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>start_phone_num = temp_dict[&apos;tsGroups&apos;][0][&apos;testCases&apos;][0][&apos;parameters&apos;][&apos;ImsSipSubsPrivateUserName&apos;]</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="43d1ea0d-a3a1-4ebd-988e-980e50b86da5" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>tmp = re.split(&apos;N|:&apos;,start_phone_num)</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="793e984b-9a38-487d-b240-9e57e3b2b26a" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>num = str(int(tmp[1])+1)</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="14264cd7-211e-4d91-ba3a-d1cdfffc545b" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>new = tmp[0]+&quot;N&quot;+num+&quot;:&quot;+tmp[2]</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="2c43c95a-1611-4425-b669-9407aa75e9ca" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>new[5:]</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                    </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="c78f10c4-b460-450e-8af7-cdf517c7d5fa" action="comment" useFieldsInCommand="false">
+                                <item guid="06dfa186-036f-4406-b6f2-a16d29419b13" action="eval" useFieldsInCommand="false">
                                     <command>
-                                        <body>Place new string into ImsSipEndptsPublicUserName in dict</body>
+                                        <body>temp_dict = json.loads(run_data_list[0])</body>
                                     </command>
-                                    <nestedSteps>
-                                        <item guid="4a61c20f-71cc-4b1d-a1ed-290c27f1d15a" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>temp_dict[&apos;tsGroups&apos;][0][&apos;testCases&apos;][0][&apos;parameters&apos;][&apos;ImsSipEndptsPublicUserName&apos;] = new[5:]</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                    </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="aea7a5b9-a81d-4217-a29d-5487a258d470" action="comment" useFieldsInCommand="false">
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="cc58b5a5-62bb-4bc6-80d7-ef37fc17a62d" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>Increment N# in phone string and remove +1&lt;area code&gt;</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="a8985e9d-893a-43d1-95e0-f802c34eb7c5" action="eval" useFieldsInCommand="false">
                                     <command>
-                                        <body>Convert dict to string and put in list</body>
+                                        <body>start_phone_num = param(&apos;LS_Nodal_favorite_params/ts0/tc0/ImsSipSubsPublicUserName&apos;)</body>
                                     </command>
-                                    <nestedSteps>
-                                        <item guid="88ad8c40-ef2c-479d-a0bd-13b9537ed53c" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>run_data_list = [json.dumps(temp_dict)]</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="f9475222-aa86-46f8-81c0-36f0ad646699" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>run_data_list</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="43d1ea0d-a3a1-4ebd-988e-980e50b86da5" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>tmp = re.split(&apos;N|:&apos;,start_phone_num)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="9ec9eaa9-8f0c-47dc-bd94-90ce0b03155b" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>tmp</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="793e984b-9a38-487d-b240-9e57e3b2b26a" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>num = str(int(tmp[1])+1)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="1b4f87f8-01b4-4f17-91ac-0a6fa90b45cd" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>num</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="14264cd7-211e-4d91-ba3a-d1cdfffc545b" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>new = tmp[0]+&quot;N&quot;+num+&quot;:&quot;+tmp[2]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="72d2c1a8-c0b3-4fc4-87f9-b68eb7ebfba4" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>new</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="2c43c95a-1611-4425-b669-9407aa75e9ca" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>new[5:]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="c78f10c4-b460-450e-8af7-cdf517c7d5fa" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>Place new string into ImsSipEndptsPublicUserName in dict</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="4a61c20f-71cc-4b1d-a1ed-290c27f1d15a" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>temp_dict[&apos;tsGroups&apos;][0][&apos;testCases&apos;][0][&apos;parameters&apos;][&apos;ImsSipEndptsPublicUserName&apos;] = new[5:]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="497100b2-9c82-4d3e-b7b0-7a6a25ef343d" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>temp_dict</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="aea7a5b9-a81d-4217-a29d-5487a258d470" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>Convert dict to string and put in list</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="88ad8c40-ef2c-479d-a0bd-13b9537ed53c" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>run_data_list = [json.dumps(temp_dict)]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="f9475222-aa86-46f8-81c0-36f0ad646699" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>run_data_list</body>
+                                    </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
