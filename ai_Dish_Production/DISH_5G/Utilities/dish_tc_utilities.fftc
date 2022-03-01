@@ -7162,7 +7162,7 @@ Valid Types: csv or iev or pcap</description>
                         </item>
                         <item guid="e3a42edb-bf53-4815-ae26-c59e8d9d5e06" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>temp_dict[&apos;tsGroups&apos;][int(ts_group_index)][&apos;testCases&apos;][int(test_case_index)][&apos;parameters&apos;] = {**param_dict, **add_dict}</body>
+                                <body>temp_dict[&apos;tsGroups&apos;][int(ts_group_index)][&apos;testCases&apos;][int(test_case_index)][&apos;parameters&apos;] = param_dict | add_dict</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -7437,6 +7437,113 @@ and this will return the number between the N and the : incremented</multilineDe
                 </item>
             </arguments>
             <response>{}</response>
+        </item>
+        <item name="get_raw_phone_number" isPublic="true">
+            <description>Strip the phone number to it&apos;s raw areaCode 7 digit format</description>
+            <steps>
+                <item guid="a19807df-5924-4986-a978-96d9489245ea" action="comment" useFieldsInCommand="false">
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="b2dcaef1-84cf-489d-96ee-638918aa277f" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ims_sip_public_user</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="8ce9aef1-d264-4721-9f7b-901b220f3b82" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Import the Python Library</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="4c4c4ed0-1b7f-4667-b7ca-39f891da62f1" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>import re</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="899cc7e5-3e1d-46c7-b8a3-cca2dc69a995" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Get the Head of the phone number, Starting with the AREA CODE</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="d7fcad2d-89e4-4ffd-962f-1ad63c15b1b8" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>p_list = re.split(&apos;#&apos;,ims_sip_public_user)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="dc0464de-ca29-4c87-aa18-c64a72da27f5" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>p_list</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="ecdeace6-7e46-4b78-b294-7fcc28360771" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>phone_base = p_list[0]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="9255448a-1cf2-4e76-986e-27e6ba5a7163" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>phone_base = phone_base[2:]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="1a87ab15-2774-4e75-98dd-e268d026e2dd" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>phone_base</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="f10d893a-34f0-4214-a92f-e4b62de4c4f2" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Get the tail of the number</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="b8990b5a-1a7d-46a9-b3d9-022ed2827a65" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>phone_tail = (re.split(&apos;N|:&apos;,p_list[1]))[1]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="5e5102a9-35a4-47fd-8bfe-12d796de4fdb" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>phone_tail</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="c077571d-ecfb-471f-935e-ccc645f6d5b1" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Glue the two together and we&apos;re out</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="af9eae4a-1418-4dfb-bf90-773a85aab3d7" action="return">
+                    <command>
+                        <body>[str(phone_base)+str(phone_tail)]</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="9ed8214a-9d0d-4d6b-87be-27408bf89b75" action="comment" useFieldsInCommand="false">
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+            <arguments>
+                <item name="ims_sip_public_user">
+                    <description>Parameter Example: LS_Nodal_favorite_params/ts0/tc0/ImsSipSubsPublicUserName</description>
+                    <isMandatory>true</isMandatory>
+                </item>
+            </arguments>
         </item>
     </procedures>
 </testCase>
