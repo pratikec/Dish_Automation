@@ -7,7 +7,8 @@
         <parameters version="8.6.2.202112190518">
             <parameters escape="true">
                 <parameters xmlns:pt="http://www.fnfr.com/schemas/parameterTree">
-                    <reservationId>68f1cc99-8c3f-4bb7-b074-e12178e5c18d</reservationId>
+                    <reservationId pt:description="68f1cc99-8c3f-4bb7-b074-e12178e5c18d">3f21f57e-d21b-4b74-94a6-089b4b93cc34</reservationId>
+                    <param1>3f21f57e-d21b-4b74-94a6-089b4b93cc34</param1>
                 </parameters>
             </parameters>
         </parameters>
@@ -207,6 +208,30 @@
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
+                        <item guid="8922f170-d55b-44f3-a3cf-75514e214bdb" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>zip = zipfile</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="6c37fb44-b6eb-41fa-9dbd-b44de6d880dc" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>f = open(&apos;c:/temp/something.zip&apos;,&apos;w&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="38028959-d706-4c7d-ba55-789a2102bdd6" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>f.write(zip)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="ed0f88d7-2312-496c-9dfc-0cebe6889ede" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>f.close()</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="5c054815-eb3b-44d8-b19b-f52db26f14c9" action="GET" session="vel">
                             <command>
                                 <body>/ito/executions/v1/executions?limit=200&amp;filter=topologyReservationId::[res_id]</body>
@@ -247,6 +272,22 @@
                                     </item>
                                     <item>
                                         <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup" declareNoMatchIssue="false">
+                                                <query>mapped/Json/content/item/result</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>results</storageLocation>
+                                                <storeInAList>true</storeInAList>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
                                             <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
                                                 <query>count()</query>
                                             </extractorProperties>
@@ -272,6 +313,47 @@
                                     </memberClasses>
                                     <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="X-Auth-Token" header.inherit="false" value="[token]" value.inherit="false"/>
                                 </httpHeader>
+                            </applicationProperties>
+                        </item>
+                        <item guid="f87e10e2-8c4d-4648-b38e-484ee9e1d24b" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>&quot;FAIL&quot; not in results:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="7076fd09-39da-4d92-b7ef-2321ddb793fd" action="comment" useFieldsInCommand="false">
+                                    <command>
+                                        <body>All tests have passed, continue</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="9209eb19-6998-4c59-ba7f-5f2e574bbc9c" action="message" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Information:All previously run tests have passed, continuing with remaining tests in runlist</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                        <message inherit="false">All previously run tests have passed, continuing with remaining tests in runlist</message>
+                                    </applicationProperties>
+                                </item>
+                                <item guid="087a295b-fc5a-433d-ab1e-e41f915c5a64" action="exit" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="1de1a9cf-50f5-466e-bec3-fcd40f7a3717" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:One or more tests in the runlist have failed up to this point, reporting results and exiting.</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">One or more tests in the runlist have failed up to this point, reporting results and exiting.</message>
+                            </applicationProperties>
+                        </item>
+                        <item guid="71dde297-e788-4400-876f-02f995671795" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:Reporting on [test_exec_count] tests</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Reporting on [test_exec_count] tests</message>
                             </applicationProperties>
                         </item>
                         <item guid="1fa9c229-0021-4aa3-b2a9-a93d5c938c6e" action="GET" session="vel">
@@ -1291,6 +1373,31 @@
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="e2ed8ad6-39ab-483a-9565-f36d4da170d3" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Cancel reservation to trigger an abort of the runlist</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="c114d060-0b21-45c9-8cb9-4d0e89b8e681" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:Canceling reservation to abort remaining runlist</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Canceling reservation to abort remaining runlist</message>
+                            </applicationProperties>
+                        </item>
+                        <item guid="8980a591-1102-4edb-a143-f0af76a2c171" action="POST" session="vel">
+                            <command>
+                                <body>/velocity/api/reservation/v18/reservation/[res_id]/action?type=cancel</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="/velocity/api/reservation/v18/reservation/[res_id]/action?type=cancel" action.inherit="false"/>
+                        </item>
+                        <item guid="975e52b2-0df5-45ca-88bb-61ae7a5db18b" action="close" session="vel" useFieldsInCommand="false">
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
