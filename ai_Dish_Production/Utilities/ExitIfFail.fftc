@@ -265,12 +265,13 @@
                                     <item>
                                         <extractorInfo extractorType="query">
                                             <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup" declareNoMatchIssue="false">
-                                                <query>mapped/Json/content/item[1]/runlistGuid</query>
+                                                <query>mapped/Json/content/item/testPath</query>
                                             </extractorProperties>
                                         </extractorInfo>
                                         <processorInfo ruleType="store">
                                             <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                <storageLocation>runlistGuid</storageLocation>
+                                                <storageLocation>test_paths</storageLocation>
+                                                <storeInAList>true</storeInAList>
                                                 <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
                                                 <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
                                                 <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
@@ -279,13 +280,13 @@
                                     </item>
                                     <item>
                                         <extractorInfo extractorType="query">
-                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                <query>mapped/Json/content/item[2]/reportFormat</query>
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup" declareNoMatchIssue="false">
+                                                <query>mapped/Json/content/item[1]/runlistGuid</query>
                                             </extractorProperties>
                                         </extractorInfo>
                                         <processorInfo ruleType="store">
                                             <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                <storageLocation>var1</storageLocation>
+                                                <storageLocation>runlistGuid</storageLocation>
                                                 <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
                                                 <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
                                                 <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
@@ -448,6 +449,25 @@
                                 <body>i in range(0, int(test_exec_count)):</body>
                             </command>
                             <nestedSteps>
+                                <item guid="77d96640-a842-4ad0-a0f2-cc021e4ad1b6" action="comment" useFieldsInCommand="false">
+                                    <command>
+                                        <body>make sure the report isn&apos;t THIS report</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="c28c01cb-7a62-4d4f-89ce-3d23a85b1ae0" action="if" useFieldsInCommand="false">
+                                            <command>
+                                                <body>&apos;ExitIfFail.fftc&apos; in test_paths[i]:</body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="3c24a35d-cec5-47e1-abb6-47853653d512" action="continue" useFieldsInCommand="false">
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
                                 <item guid="3ff4c870-6ffb-49ae-bc3b-d428287e0c2a" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>create files</body>
