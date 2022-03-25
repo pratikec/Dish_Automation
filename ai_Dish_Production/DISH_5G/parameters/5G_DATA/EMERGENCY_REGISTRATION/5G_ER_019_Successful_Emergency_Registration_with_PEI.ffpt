@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<ParameterTree version="8.6.1.202109290400">
+<ParameterTree version="8.6.2.202112190518">
     <parameters escape="true">
         <parameters xmlns:pt="http://www.fnfr.com/schemas/parameterTree">
             <TC_parameters>
-                <tmd_key pt:description="Key for Test Process data; Utilized Dish test plan identifier. example: IMS_VO_014">FiveG_ER_019</tmd_key>
+                <tmd_key pt:description="Key for Test Process data; Utilized Dish test plan identifier. example: IMS_VO_014">process_manager</tmd_key>
             </TC_parameters>
             <LS_Nodal_favorite_params>
                 <ts0>
@@ -34,6 +34,43 @@
                     </tc0>
                 </ts0>
             </LS_Nodal_favorite_params>
+            <TMD_Name>
+                <process_manager>
+                    <additional_validation pt:datatype="BOOLEAN" pt:description="Enable: If additional validation not included LS criteria P/F">false</additional_validation>
+                    <Enable_TAC_Report pt:datatype="BOOLEAN">true</Enable_TAC_Report>
+                    <Enable_Port_Capture pt:datatype="BOOLEAN">true</Enable_Port_Capture>
+                    <next_gen_topology_process pt:datatype="BOOLEAN">false</next_gen_topology_process>
+                    <nf_interaction pt:datatype="BOOLEAN" pt:description="Enable: if NF inter-action is required">false</nf_interaction>
+                    <pcap_analysis pt:datatype="BOOLEAN">true</pcap_analysis>
+                    <pcap_analysis_drivers pt:description="The data below is treated as a group of List Pairs">
+                        <tshark_display_filter pt:description="This filter will be applied when he session is opened"/>
+                        <target_pcap_keys pt:description="Example: [&quot;ts0_eth1&quot;, &quot;ts0_eth3&quot;]">[&quot;LS_Nodal_favorite_params/ts0/tc0/GnbControlAddr/phy&quot;]</target_pcap_keys>
+                        <validation_instances_groups>
+                            <instance_1 pt:description="VALIDATION GROUP">
+                                <item pt:description="VERIFICATION INSTANCE">
+                                    <item pt:description="display filter - any valid wireshark filter">(ngap.procedureCode == 15) &amp;&amp; (nas_5gs.mm.5gs_reg_type == 4) &amp;&amp; (nas_5gs.mm.type_id == 5)</item>
+                                    <item pt:description="get method - Valid values: typeCapture or typeQuery">typeQuery</item>
+                                    <item pt:description="process definition">not_utilized</item>
+                                    <item pt:description="value key - packet data element value">g1_v1_item_4</item>
+                                    <item pt:description="optional message">Verify Initial UE Emergancy Registration with IMEISV</item>
+                                </item>
+                                <item pt:description="VERIFICATION INSTANCE">
+                                    <item pt:description="display filter - any valid wireshark filter">(ngap.procedureCode == 46) &amp;&amp; (nas_5gs.mm.5gs_reg_type == 4) &amp;&amp; (nas_5gs.mm.type_id == 5)</item>
+                                    <item pt:description="get method - Valid values: typeCapture or typeQuery">typeQuery</item>
+                                    <item pt:description="process definition">not_utilized</item>
+                                    <item pt:description="value key - packet data element value">g1_v1_item_4</item>
+                                    <item pt:description="optional message">Verify UE UpLinkNASTransport Emergancy Registration with IMEISV</item>
+                                </item>
+                            </instance_1>
+                        </validation_instances_groups>
+                    </pcap_analysis_drivers>
+                    <show_charts pt:datatype="BOOLEAN">false</show_charts>
+                    <test_severity pt:description="Dish defined: &quot;severity&quot;: &quot;Sev 1 - Critical&quot; or &quot;Sev 2 - Major&quot; or &quot;Sev 3 - Minor&quot;">Sev 1 - Critical</test_severity>
+                    <test_waiting_timeout pt:datatype="INTEGER" pt:description="Bailout timer.... if things get sideways">180</test_waiting_timeout>
+                    <ts_clean_up_required pt:datatype="BOOLEAN" pt:description="Enable: if LS doesn&apos;t contain &apos;cleanup&apos; step">false</ts_clean_up_required>
+                    <ts_groups_required pt:datatype="INTEGER">1</ts_groups_required>
+                </process_manager>
+            </TMD_Name>
         </parameters>
     </parameters>
     <headline>Base parameters for Dish Automation Process</headline>
@@ -58,6 +95,5 @@ If additions are required/desired please contact Spirent Automation Engineer for
     <includeParameters>
         <item>project://ai_Dish_Production/DISH_5G/parameters/tc_param_blocks/topology_params/single_testserver_1.ffpt</item>
         <item>project://ai_Dish_Production/DISH_5G/parameters/tc_param_blocks/sut_params/1-AMF_SUTs.ffpt</item>
-        <item>project://ai_Dish_Production/DISH_5G/parameters/tc_param_blocks/process_manager/test_process_mgr_data.ffpt</item>
     </includeParameters>
 </ParameterTree>
