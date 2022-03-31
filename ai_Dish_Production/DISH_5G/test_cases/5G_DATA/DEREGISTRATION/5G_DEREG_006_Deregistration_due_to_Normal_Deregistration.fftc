@@ -16,6 +16,7 @@ Performance Counters:
 • Verify that the counter M173C141 (ue_dereg_ue_init_succ) in AMF has increased by 1.</notes>
         <language>Python</language>
     </general>
+    <testbed>project://ai_Dish_Prototype/topologies/Dish%20Custom/D-E1-IN-001_TS2.tbml</testbed>
     <procedures>
         <item name="main">
             <steps>
@@ -3090,12 +3091,6 @@ Performance Counters:
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="908e3a6f-3585-461b-9637-2817d24fed7e" action="call" skip="true" useFieldsInCommand="false">
-                    <command>
-                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#query_load_defined_pcap -pcapAbsolutePath [temp_file] -display_filter [display_filter] -optional_message [optional_message] -open_session True -tshark_filter [tshark_display_filter]</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
                 <item guid="be9322b2-a648-4b6b-ac7d-20de5d0e33b4" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Init Validation Variables</body>
@@ -3308,18 +3303,18 @@ Performance Counters:
                                     </postProcessing>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="e00dfaac-fe2f-4747-a8e9-279c0e1bd6ad" action="comment" useFieldsInCommand="false">
+                                <item guid="3af57384-a940-4342-b787-c2a54dcfa8c8" action="comment" useFieldsInCommand="false">
                                     <command>
-                                        <body>Add the amf_ip to the filter</body>
+                                        <body>Add the amf_ip to the filter AND the (GnbC | MobGnbC) IP address. THIS alllows for Shared utilization of a given TS resource</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="da01f83f-b34f-447f-a98a-0a2424d8facf" action="eval" useFieldsInCommand="false">
+                                        <item guid="e9bd5f8f-c964-42c6-b3b2-da53bff7a1c6" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>display_filter = display_filter+&quot; &amp;&amp; (ip.src == &quot;+amf_ip+&quot;)&quot;</body>
+                                                <body>display_filter = display_filter+&quot; &amp;&amp; (ip.src == &quot;+amf_ip+&quot;)&quot;+&quot; &amp;&amp; (ip.dst == &quot;+gnbC_ip+&quot;)&quot;</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="ce86a0de-fda6-436f-933a-13023f99e4a2" action="eval" useFieldsInCommand="false">
+                                        <item guid="cc9c6da8-9330-4925-a47d-8b472cc39bf9" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>display_filter</body>
                                             </command>
