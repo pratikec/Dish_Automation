@@ -162,6 +162,26 @@ Expected Result/Post Condition:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
+                                <item guid="11918edf-2bce-4b9c-9980-a099c9ec160b" action="comment" useFieldsInCommand="false">
+                                    <command>
+                                        <body>#### Determine our mode of operation via parameter &apos;ts_node_mode&apos; ####</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="da0a2e9a-8ebe-428a-ba06-0890bda5c57b" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>ts_node_mode = param(&apos;Env_global_override/ts_node_mode&apos;, &quot;locked&quot;)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="ea4f4e02-878f-4c45-bb03-d7cc79c22a56" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>ts_node_mode</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -834,36 +854,76 @@ Expected Result/Post Condition:
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="92b4a086-cd85-4612-85e2-14a4a7f1e014" action="comment" useFieldsInCommand="false">
+                        <item guid="a835e106-3d49-4df9-8e55-95d03ed93006" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Get run data for each test instance - Response stored: &apos;run_data_list&apos;; Analysis stored: &apos;instance_number&apos;</body>
                             </command>
                             <nestedSteps>
-                                <item guid="28510efc-5226-44b3-84b2-68b51c985a6a" action="get_run_data_for_multi_test_instance" session="s1" useFieldsInCommand="false">
+                                <item guid="d2e85d29-ef15-4e5a-82dd-96eb39372714" action="if" useFieldsInCommand="false">
                                     <command>
-                                        <body>-run_data [testsession_data] -ts_groups [ts_groups] -param_group_names LS_Nodal_favorite_params</body>
+                                        <body>(ts_node_mode != &quot;shared&quot;):</body>
                                     </command>
-                                    <postProcessing>
-                                        <analysisRules>
-                                            <item>
-                                                <extractorInfo extractorType="query">
-                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                        <query>count(mapped/Json/item)</query>
-                                                    </extractorProperties>
-                                                </extractorInfo>
-                                                <processorInfo ruleType="store">
-                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                        <storageLocation>instance_number</storageLocation>
-                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                    </ruleProperties>
-                                                </processorInfo>
-                                            </item>
-                                        </analysisRules>
-                                        <storeResponseAt>run_data_list</storeResponseAt>
-                                        <storeResponseText>true</storeResponseText>
-                                    </postProcessing>
+                                    <nestedSteps>
+                                        <item guid="55226d20-6166-4de0-9308-ccab24054d47" action="get_run_data_for_multi_test_instance" session="s1" useFieldsInCommand="false">
+                                            <command>
+                                                <body>-run_data [testsession_data] -ts_groups [ts_groups] -param_group_names LS_Nodal_favorite_params</body>
+                                            </command>
+                                            <postProcessing>
+                                                <analysisRules>
+                                                    <item>
+                                                        <extractorInfo extractorType="query">
+                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                <query>count(mapped/Json/item)</query>
+                                                            </extractorProperties>
+                                                        </extractorInfo>
+                                                        <processorInfo ruleType="store">
+                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                <storageLocation>instance_number</storageLocation>
+                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                            </ruleProperties>
+                                                        </processorInfo>
+                                                    </item>
+                                                </analysisRules>
+                                                <storeResponseAt>run_data_list</storeResponseAt>
+                                                <storeResponseText>true</storeResponseText>
+                                            </postProcessing>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="df3b899a-ef3e-4d48-b39c-e09382ee085e" action="else" useFieldsInCommand="false">
+                                    <nestedSteps>
+                                        <item guid="9d3e980a-c137-4a6d-9581-ecc76195446f" action="get_run_data_for_multi_test_instance" session="s1" useFieldsInCommand="false">
+                                            <command>
+                                                <body>-run_data [testsession_data] -ts_groups [ts_groups] -param_group_names LS_Nodal_favorite_params -reservePorts false -reserveProcesses false</body>
+                                            </command>
+                                            <postProcessing>
+                                                <analysisRules>
+                                                    <item>
+                                                        <extractorInfo extractorType="query">
+                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                <query>count(mapped/Json/item)</query>
+                                                            </extractorProperties>
+                                                        </extractorInfo>
+                                                        <processorInfo ruleType="store">
+                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                <storageLocation>instance_number</storageLocation>
+                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                            </ruleProperties>
+                                                        </processorInfo>
+                                                    </item>
+                                                </analysisRules>
+                                                <storeResponseAt>run_data_list</storeResponseAt>
+                                                <storeResponseText>true</storeResponseText>
+                                            </postProcessing>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -945,7 +1005,7 @@ Expected Result/Post Condition:
                                             <nestedSteps>
                                                 <item guid="7dcea064-6ac3-4885-86c4-053af11eb5f5" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>raw_phone_number_tc1 = str(int(raw_phone_number_tc0) + 2)</body>
+                                                        <body>raw_phone_number_tc1 = str(int(raw_phone_number_tc0) + 1)</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
@@ -961,7 +1021,7 @@ Expected Result/Post Condition:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="cde05cdb-7d1c-409d-a7d5-aca9bb748af0" action="comment" useFieldsInCommand="false">
+                                <item guid="cde05cdb-7d1c-409d-a7d5-aca9bb748af0" action="comment" skip="true" useFieldsInCommand="false">
                                     <command>
                                         <body>Add &apos;0/2&apos; to tcX ImsSipSubsPublicUserName</body>
                                     </command>
@@ -992,7 +1052,7 @@ Expected Result/Post Condition:
                                         <body>Update the data for tc0</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="bc10dcde-2834-4a59-9d79-053bec180620" action="comment" useFieldsInCommand="false">
+                                        <item guid="bc10dcde-2834-4a59-9d79-053bec180620" action="comment" skip="true" useFieldsInCommand="false">
                                             <command>
                                                 <body>Update phonebook</body>
                                             </command>
@@ -1098,7 +1158,7 @@ Expected Result/Post Condition:
                                     <nestedSteps>
                                         <item guid="a460eece-8dcd-490e-a9e5-abfaaca0a511" action="call" useFieldsInCommand="false">
                                             <command>
-                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#incr_ls_n_number_in_string -string [param(&apos;LS_Nodal_favorite_params/ts0/tc1/ImsSipSubsPublicUserName&apos;)] -incr 2</body>
+                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#incr_ls_n_number_in_string -string [param(&apos;LS_Nodal_favorite_params/ts0/tc1/ImsSipSubsPublicUserName&apos;)] -incr 1</body>
                                             </command>
                                             <postProcessing>
                                                 <storeResponseAt>new_phone_number_tc1</storeResponseAt>
@@ -1106,13 +1166,13 @@ Expected Result/Post Condition:
                                             </postProcessing>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="13d88adc-815d-41f3-8563-988e1977b42a" action="eval" useFieldsInCommand="false">
+                                        <item guid="13d88adc-815d-41f3-8563-988e1977b42a" action="eval" skip="true" useFieldsInCommand="false">
                                             <command>
                                                 <body>new_phone_number_tc1 = str(new_phone_number_tc1)[0:-1]+&apos; 0/2&apos;+&apos;)&apos;</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="83e711bc-8382-42f9-9ebe-64c366c23036" action="eval" useFieldsInCommand="false">
+                                        <item guid="83e711bc-8382-42f9-9ebe-64c366c23036" action="eval" skip="true" useFieldsInCommand="false">
                                             <command>
                                                 <body>new_phone_number_tc1</body>
                                             </command>
@@ -1132,7 +1192,7 @@ Expected Result/Post Condition:
                                         </item>
                                         <item guid="eccaaa6b-3d5a-4580-9195-f7cd4bed0a57" action="call" useFieldsInCommand="false">
                                             <command>
-                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#incr_ls_n_number_in_string -string [param(&apos;LS_Nodal_favorite_params/ts0/tc1/ImsSipSubsImsi&apos;)] -incr 2</body>
+                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#incr_ls_n_number_in_string -string [param(&apos;LS_Nodal_favorite_params/ts0/tc1/ImsSipSubsImsi&apos;)] -incr 1</body>
                                             </command>
                                             <postProcessing>
                                                 <storeResponseAt>new_imsi</storeResponseAt>
@@ -1140,7 +1200,7 @@ Expected Result/Post Condition:
                                             </postProcessing>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="8c9d8979-bfd9-4f2e-bc32-49c84085c271" action="eval" useFieldsInCommand="false">
+                                        <item guid="8c9d8979-bfd9-4f2e-bc32-49c84085c271" action="eval" skip="true" useFieldsInCommand="false">
                                             <command>
                                                 <body>new_imsi = str(new_imsi)[0:-1]+&apos; 0/2&apos;+&apos;)&apos;</body>
                                             </command>
@@ -1176,7 +1236,13 @@ Expected Result/Post Condition:
                                     <nestedSteps>
                                         <item guid="fd742eda-8d24-47c1-9340-d5472bb38115" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>tc1_dict[&apos;UeNas5gMmSupi&apos;]=str(int(param(&apos;LS_Nodal_favorite_params/ts0/tc1/UeNas5gMmSupi&apos;))+2)</body>
+                                                <body>tc1_dict[&apos;UeNas5gMmSupi&apos;]=str(int(param(&apos;LS_Nodal_favorite_params/ts0/tc1/UeNas5gMmSupi&apos;))+1)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="88a2dec9-0d8e-447e-a89c-cfa931638dd9" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>tc1_dict[&apos;UeNas5gMmImei&apos;]=str(int(param(&apos;LS_Nodal_favorite_params/ts0/tc1/UeNas5gMmImei&apos;))+1)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
