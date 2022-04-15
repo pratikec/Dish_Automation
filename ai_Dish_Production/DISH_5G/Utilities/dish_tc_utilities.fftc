@@ -22,7 +22,16 @@
     <procedures>
         <item name="main" isPublic="true">
             <steps>
-                <item guid="ea2fb2c7-ed0b-4756-8bce-7c5447c53f3f" action="comment" useFieldsInCommand="false">
+                <item guid="ea2fb2c7-ed0b-4756-8bce-7c5447c53f3f" action="call" skip="true" useFieldsInCommand="false">
+                    <command>
+                        <body>get_raw_phone_number -ims_sip_public_user &apos;+130740210#(N5:2)&apos;</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="3d06b4d7-781a-47e1-be56-9704f864765b" action="call" skip="true" useFieldsInCommand="false">
+                    <command>
+                        <body>get_raw_phone_number -ims_sip_public_user &apos;+130740210#(N33:2)&apos;</body>
+                    </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="cc1d4195-22da-4183-a964-01fc9c087025" action="comment" useFieldsInCommand="false">
@@ -2474,14 +2483,34 @@ This and isv_key, defect_id and if provided and opt_defect_msg: Will be used to 
                     <nestedSteps>
                         <item guid="b8990b5a-1a7d-46a9-b3d9-022ed2827a65" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>phone_tail = (re.split(&apos;N|:&apos;,p_list[1]))[1]</body>
+                                <body>nums = (re.split(&apos;N|:|\\)&apos;,p_list[1]))[1:3]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="f9d53d27-b3c3-4f7e-ada5-6c3bbcf2bd8c" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>phone_tail = nums[0]</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="5e5102a9-35a4-47fd-8bfe-12d796de4fdb" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>phone_tail</body>
+                                <body>phone_len = nums[1]</body>
                             </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="81ae9ba5-7402-40e2-ac9d-3c89685f752f" action="for" useFieldsInCommand="false">
+                            <command>
+                                <body>i in range(len(phone_tail), int(phone_len)):</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="d961dc8c-8a4d-4a43-950c-d87dbece48ce" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>phone_tail = &apos;0&apos;+phone_tail</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
