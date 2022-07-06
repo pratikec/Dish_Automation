@@ -3744,15 +3744,21 @@
                         <body>End of instance data processing</body>
                     </command>
                     <nestedSteps>
-                        <item guid="7b30040f-13ee-4290-9840-ca9e8dedf923" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>result_list = []</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
                         <item guid="95ddb296-01d1-41b3-a21c-96acf1d3a149" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>criteria_item_cnt = 0</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="695957d0-d134-4f59-9214-41db4f369800" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>failure_originators_list = []</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="2ae647a9-4bca-4a20-974f-393ed2e80b7d" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>write_cause_code_data = &quot;False&quot;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -4039,20 +4045,78 @@
                                             </command>
                                             <nestedSteps>
                                                 <item guid="0dea3c1b-7bfa-4426-8d5b-6aa953a4a5df" action="comment" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>Message Validation Start</body>
+                                                    </command>
+                                                    <nestedSteps>
+                                                        <item guid="944d9d42-b8fd-4e84-ae63-13012e59b2d7" action="message" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Information: Starting Landslide Criteria Validation</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                                <message inherit="false"> Starting Landslide Criteria Validation</message>
+                                                            </applicationProperties>
+                                                        </item>
+                                                    </nestedSteps>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="944d9d42-b8fd-4e84-ae63-13012e59b2d7" action="message" useFieldsInCommand="false">
+                                                <item guid="3f88279f-c06e-4da3-afe5-1e77211ac517" action="comment" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>Information: Starting Landslide Criteria Validation</body>
+                                                        <body>Call process_landslide_criteria_data and do the work; based upon the return, report cause codes if failure logged</body>
                                                     </command>
-                                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                        <message inherit="false"> Starting Landslide Criteria Validation</message>
-                                                    </applicationProperties>
-                                                </item>
-                                                <item guid="eaad8563-3a00-46bd-b4d6-45b06c25cd6c" action="call" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#process_landslide_criteria_data -favorites_measurements [favorites_measurements]</body>
-                                                    </command>
+                                                    <nestedSteps>
+                                                        <item guid="eaad8563-3a00-46bd-b4d6-45b06c25cd6c" action="call" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#process_landslide_criteria_data -favorites_measurements [favorites_measurements]</body>
+                                                            </command>
+                                                            <postProcessing>
+                                                                <analysisRules>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>responseLine()</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="store">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                                <storageLocation>criteria_return_status</storageLocation>
+                                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                </analysisRules>
+                                                            </postProcessing>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="cfcb0b62-7114-41e5-a31a-957dac79d79e" action="if" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>str(criteria_return_status) != &quot;PASSED&quot;:</body>
+                                                            </command>
+                                                            <nestedSteps>
+                                                                <item guid="80e84758-30a1-4b62-af26-f487416008bd" action="comment" useFieldsInCommand="false">
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                                <item guid="5dcbacac-be7d-4be6-9abe-a345ce7c0597" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>write_cause_code_data = &quot;True&quot;</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                                <item guid="6a283622-9a58-47a5-94a5-0b051131549c" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>failure_originators_list.append(&apos;criteria&apos;)</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                                <item guid="6c0ceb43-4a23-4440-964c-9be54528b8a2" action="comment" useFieldsInCommand="false">
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                            </nestedSteps>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                    </nestedSteps>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
                                                 <item guid="9d88987f-dcec-4267-a677-68c4850fc775" action="comment" useFieldsInCommand="false">
@@ -4075,6 +4139,20 @@
                         <body>Append the &apos;results_payload_uri_list&apos; to &apos;running_id_list&apos;</body>
                     </command>
                     <nestedSteps>
+                        <item guid="da7d7f11-bc3f-4e5a-b00b-469aa9c2a8a6" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>str(write_cause_code_data) == &quot;True&quot;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="5f42daca-b855-401b-96e0-959adbc96fcf" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>running_id_list.append(failure_originators_list)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="7f017d88-9a6b-4120-8dd1-efd47657492c" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>running_id_list.append(results_payload_uri_list)</body>
