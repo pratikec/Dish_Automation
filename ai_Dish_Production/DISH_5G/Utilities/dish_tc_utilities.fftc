@@ -13,7 +13,7 @@
                         <ts_node_mode pt:description="shared or locked">locked</ts_node_mode>
                         <use_ls_criteria_pass_through pt:datatype="BOOLEAN" pt:description="Write Landslide Criteria to extracted data">true</use_ls_criteria_pass_through>
                         <report_landslide_cause_codes pt:datatype="BOOLEAN">false</report_landslide_cause_codes>
-                        <write_cause_code_extracted_data pt:datatype="BOOLEAN">false</write_cause_code_extracted_data>
+                        <write_cause_code_extracted_data pt:datatype="BOOLEAN">true</write_cause_code_extracted_data>
                     </Env_global_override>
                 </parameters>
             </parameters>
@@ -3084,8 +3084,45 @@ and this will return the number between the N and the : incremented</multilineDe
             <steps>
                 <item guid="2ebc776a-ad70-4f62-9338-2d74e9651155" action="comment" useFieldsInCommand="false">
                     <command>
-                        <body>Just a Stub; Future home all thing post test execution....</body>
+                        <body>Arguement Inspection</body>
                     </command>
+                    <nestedSteps>
+                        <item guid="ca195d74-4c45-4017-a8a0-a320b59d3b74" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>instance_id</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="1c062943-a001-4fb8-8939-b2aa1e0f4729" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>project_id</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="17f5ccd0-746c-447c-9930-d9197bcba154" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>running_id</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="5ddc987d-cee1-4e3e-a491-7a7e428eaeea" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Call and Delete Current Landslide RID</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="3562e6df-8d45-4bbb-aa16-faf4a357a0b8" action="call" useFieldsInCommand="false">
+                            <command>
+                                <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_landslide_cleanup -running_id [running_id]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="d6d690a0-83a0-49b1-b794-b44fad133cd4" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="da7bd284-4df5-46ed-812a-df98a1620cb6" action="return">
@@ -3103,6 +3140,9 @@ and this will return the number between the N and the : incremented</multilineDe
                 <item name="project_id">
                     <description>Where&apos;s your home</description>
                     <isMandatory>true</isMandatory>
+                </item>
+                <item name="running_id">
+                    <description>Landslide Running Id</description>
                 </item>
             </arguments>
         </item>
@@ -6576,9 +6616,9 @@ and this will return the number between the N and the : incremented</multilineDe
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="db0553ea-7f64-4d49-b1bb-784c9fab0bff" action="eval" useFieldsInCommand="false">
+                        <item guid="0afddcae-2e47-414d-a69a-20621ccd63a3" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>validation_grp_cnt = int(validation_grp_cnt + 1)</body>
+                                <body>validation_grp_cnt+= 1</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -6731,9 +6771,59 @@ and this will return the number between the N and the : incremented</multilineDe
                                 <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#get_pcap_result_urls -results_url_list [results_url_list]</body>
                             </command>
                             <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="contains">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
+                                                <searchString>ERROR</searchString>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>value == 1</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>No PCAP URLs found</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="FailTest">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="Eval">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
+                                                            <statement>pcap_error = &quot;True&quot;</statement>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="Eval">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
+                                                            <statement>pcap_error = &quot;False&quot;</statement>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
                                 <storeResponseAt>pcap_files</storeResponseAt>
                                 <storeResponseText>true</storeResponseText>
                             </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="86f09aa3-6e7e-47d6-8550-70e6d9a0ca90" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>str(pcap_error) == &quot;True&quot;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="64767473-88ba-4c49-95df-1f270f77ec90" action="return">
+                                    <command>
+                                        <body>FAILED</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="cf186885-2b49-4de5-8c3f-525614e4f67b" action="eval" useFieldsInCommand="false">
@@ -6799,7 +6889,7 @@ and this will return the number between the N and the : incremented</multilineDe
                         </item>
                         <item guid="80fe8fa1-92a5-47ce-8716-75580d1cd47a" action="if" useFieldsInCommand="false">
                             <command>
-                                <body>target_pcap_cnt:</body>
+                                <body>int(target_pcap_cnt) &gt;= 1:</body>
                             </command>
                             <nestedSteps>
                                 <item guid="ab891727-f1d7-49a0-a66b-a1054499b044" action="comment" useFieldsInCommand="false">
@@ -6989,6 +7079,9 @@ and this will return the number between the N and the : incremented</multilineDe
                                     </applicationProperties>
                                 </item>
                                 <item guid="2a933138-5805-48c4-bc5f-367fc0a870b8" action="return">
+                                    <command>
+                                        <body>FAILED</body>
+                                    </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -7008,6 +7101,21 @@ and this will return the number between the N and the : incremented</multilineDe
                                             <item>
                                                 <extractorInfo extractorType="query">
                                                     <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                        <query>count(mapped/Json/item)</query>
+                                                    </extractorProperties>
+                                                </extractorInfo>
+                                                <processorInfo ruleType="store">
+                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                        <storageLocation>stored_cnt</storageLocation>
+                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                    </ruleProperties>
+                                                </processorInfo>
+                                            </item>
+                                            <item>
+                                                <extractorInfo extractorType="query">
+                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup" declareNoMatchIssue="false">
                                                         <query>mapped/Json/item[1]</query>
                                                     </extractorProperties>
                                                 </extractorInfo>
@@ -7154,13 +7262,25 @@ and this will return the number between the N and the : incremented</multilineDe
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
+                                        <item guid="79ab8b89-36a6-4891-8e8c-ad79f20a2f2a" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>type(validation_cnt)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
                                         <item guid="fa8c1be8-4c5c-4051-91cd-8d2052844fea" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>validation_cnt = int(validation_cnt) + 1</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="4d83ef2b-edb9-489b-a479-9680ddafbb9f" action="eval" useFieldsInCommand="false">
+                                        <item guid="418f43d4-86a9-4630-9d94-5a2449640759" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>type(validation_cnt)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="94c692ee-cd07-4a24-97e8-970e25b76178" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>validation_cnt</body>
                                             </command>
@@ -7718,6 +7838,12 @@ and this will return the number between the N and the : incremented</multilineDe
                                                         <body>Query and Store the response: query_packets_response</body>
                                                     </command>
                                                     <nestedSteps>
+                                                        <item guid="7369a203-2ff8-4fe7-8ad1-f1f121570532" action="comment" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>#### OnWiresharkCommandFailed Event ha been disabled ####</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
                                                         <item guid="18185210-001a-4832-a798-a362d3ba5585" action="command" session="wireshark">
                                                             <command>
                                                                 <body>query packets</body>
@@ -7726,6 +7852,9 @@ and this will return the number between the N and the : incremented</multilineDe
                                                                 <storeResponseAt>query_packets_response</storeResponseAt>
                                                                 <storeResponseText>true</storeResponseText>
                                                             </postProcessing>
+                                                            <eventHandlers>
+                                                                <item name="OnWiresharkCommandFailed"/>
+                                                            </eventHandlers>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                     </nestedSteps>
@@ -9039,6 +9168,12 @@ and this will return the number between the N and the : incremented</multilineDe
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
+                        <item guid="8c3ed3a1-9481-448f-867f-1c79a35dc6ee" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>query_packets_response</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
@@ -9768,8 +9903,246 @@ and this will return the number between the N and the : incremented</multilineDe
                                                             </ruleProperties>
                                                         </processorInfo>
                                                     </item>
+                                                    <item>
+                                                        <extractorInfo extractorType="query">
+                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                <query>count(mapped/Json/item)</query>
+                                                            </extractorProperties>
+                                                        </extractorInfo>
+                                                        <processorInfo ruleType="store">
+                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                <storageLocation>return_cnt</storageLocation>
+                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                            </ruleProperties>
+                                                        </processorInfo>
+                                                    </item>
                                                 </analysisRules>
                                             </postProcessing>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="395960e5-210b-4462-bc6b-56645b9497d8" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>File Load Return Error Trapping</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="f8e5fa2d-d1d2-4080-be3d-a0977a35b616" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>return_cnt</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="67c1f8f7-70f7-4ae5-924d-bc3f5e4fa26d" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>type(return_cnt)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="a08d78e0-2140-4669-ab02-f77dde0ed3c2" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>Nothing to process - Message failure_originator, set Landslide_csv_file_error: FileNotFound and return</body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="d3553dcc-4c95-496e-98d8-ac6fe4c1481b" action="if" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>int(return_cnt) == 0:</body>
+                                                    </command>
+                                                    <nestedSteps>
+                                                        <item guid="6a9045b3-1632-43eb-ba97-9e9aef17b1cc" action="comment" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Process failure_originator and write extracted data</body>
+                                                            </command>
+                                                            <nestedSteps>
+                                                                <item guid="99a9dc7e-0b08-4e90-8e51-72279192a27e" action="for" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>failure_loc in range(1, int(failure_originator_cnt)):</body>
+                                                                    </command>
+                                                                    <nestedSteps>
+                                                                        <item guid="2b58012e-856e-4329-8396-bb7d37e980e3" action="eval" useFieldsInCommand="false">
+                                                                            <command>
+                                                                                <body>failure_originator</body>
+                                                                            </command>
+                                                                            <postProcessing>
+                                                                                <analysisRules>
+                                                                                    <item>
+                                                                                        <extractorInfo extractorType="query">
+                                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                                <query sub="true">mapped/Json/item[[failure_loc]]</query>
+                                                                                            </extractorProperties>
+                                                                                        </extractorInfo>
+                                                                                        <processorInfo ruleType="store">
+                                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                                                <storageLocation>key</storageLocation>
+                                                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                                            </ruleProperties>
+                                                                                        </processorInfo>
+                                                                                    </item>
+                                                                                </analysisRules>
+                                                                            </postProcessing>
+                                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                        </item>
+                                                                        <item guid="13b6152c-4089-47d0-90eb-1f74e5748439" action="eval" useFieldsInCommand="false">
+                                                                            <command>
+                                                                                <body>key</body>
+                                                                            </command>
+                                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                        </item>
+                                                                        <item guid="48606a92-c95d-4787-87bb-da909871c110" action="eval" useFieldsInCommand="false">
+                                                                            <command>
+                                                                                <body>key_string = key_string + str(key)</body>
+                                                                            </command>
+                                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                        </item>
+                                                                        <item guid="0d16beaf-b822-4403-9858-af967150eda3" action="eval" useFieldsInCommand="false">
+                                                                            <command>
+                                                                                <body>key_string</body>
+                                                                            </command>
+                                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                        </item>
+                                                                        <item guid="b1255982-c638-43e9-b80f-67e2c6fada46" action="if" useFieldsInCommand="false">
+                                                                            <command>
+                                                                                <body>int(failure_originator_cnt) &gt;= 3:</body>
+                                                                            </command>
+                                                                            <nestedSteps>
+                                                                                <item guid="71313cc0-66a7-432e-a633-7e02263f2bea" action="if" useFieldsInCommand="false">
+                                                                                    <command>
+                                                                                        <body>int(failure_originator_cnt - 1) &gt; int(failure_loc):</body>
+                                                                                    </command>
+                                                                                    <nestedSteps>
+                                                                                        <item guid="f64cd175-aa93-4bf1-8751-4c723b7a6171" action="comment" useFieldsInCommand="false">
+                                                                                            <command>
+                                                                                                <body>And a seperator; We have more the one source</body>
+                                                                                            </command>
+                                                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                                        </item>
+                                                                                        <item guid="8de8bd46-49b5-4777-bb27-4d8ced27fec7" action="eval" useFieldsInCommand="false">
+                                                                                            <command>
+                                                                                                <body>key_string = key_string +&quot; and &quot; </body>
+                                                                                            </command>
+                                                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                                        </item>
+                                                                                    </nestedSteps>
+                                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                                </item>
+                                                                            </nestedSteps>
+                                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                        </item>
+                                                                        <item guid="f261fc61-b508-41cc-9d11-5dd4ef00d345" action="comment" useFieldsInCommand="false">
+                                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                        </item>
+                                                                    </nestedSteps>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                                <item guid="fd00c9e8-0648-4061-a203-7d15879bac81" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>print(key_string)</body>
+                                                                    </command>
+                                                                    <postProcessing>
+                                                                        <analysisRules>
+                                                                            <item>
+                                                                                <extractorInfo extractorType="query">
+                                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                        <query>responseLine()</query>
+                                                                                    </extractorProperties>
+                                                                                </extractorInfo>
+                                                                                <processorInfo ruleType="message">
+                                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.MessageProcessorPropertyGroup" severity="Information">
+                                                                                        <message>Landslide_failure_originator_source: {value}</message>
+                                                                                        <extractData>true</extractData>
+                                                                                        <tag>Landslide_failure_originator_source: {value}</tag>
+                                                                                    </ruleProperties>
+                                                                                </processorInfo>
+                                                                            </item>
+                                                                        </analysisRules>
+                                                                    </postProcessing>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                            </nestedSteps>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="f3e18744-2ced-43d1-a646-d2b4dd4fa8a6" action="comment" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Construct Extracted data message - Reporting no csv file to process</body>
+                                                            </command>
+                                                            <nestedSteps>
+                                                                <item guid="487ee0b1-8712-4919-9a1b-669994a1ea36" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>print(&apos;No csv file found to process&apos;)</body>
+                                                                    </command>
+                                                                    <postProcessing>
+                                                                        <analysisRules>
+                                                                            <item>
+                                                                                <extractorInfo extractorType="query">
+                                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                        <query>responseLine()</query>
+                                                                                    </extractorProperties>
+                                                                                </extractorInfo>
+                                                                                <processorInfo ruleType="message">
+                                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.MessageProcessorPropertyGroup" severity="Information">
+                                                                                        <message>{value}</message>
+                                                                                        <extractData>true</extractData>
+                                                                                        <tag sub="false">Landslide_csv_file_error: FileNotFound</tag>
+                                                                                    </ruleProperties>
+                                                                                </processorInfo>
+                                                                            </item>
+                                                                        </analysisRules>
+                                                                    </postProcessing>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                            </nestedSteps>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="e47d3c01-ff92-453b-b556-4275c5fe79ca" action="return">
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                    </nestedSteps>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="a2866090-a92b-4891-a714-739ef44138a8" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>If there is more than one; Grap the first one in the Return and use it.</body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="755beb6a-af2a-45a9-a6c1-776bf8c2bb0a" action="if" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>int(return_cnt) &gt;= 2:</body>
+                                                    </command>
+                                                    <nestedSteps>
+                                                        <item guid="a85ffa52-941f-4926-bdae-30c2cb78ea86" action="comment" useFieldsInCommand="false">
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="9cee05a9-ab26-4985-8c61-b40890126a99" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>stored_results_list</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="a982ac78-7696-473a-9550-464e80e59937" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>stored_results_list = stored_results_list[0]</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="9a493a61-5377-4957-867f-e4c77cbdbcde" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>stored_results_list</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="d85cbc86-bb2f-4862-87c5-100e25c7d03e" action="comment" useFieldsInCommand="false">
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                    </nestedSteps>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
                                     </nestedSteps>
@@ -10146,9 +10519,9 @@ and this will return the number between the N and the : incremented</multilineDe
                                                                                         </extractorInfo>
                                                                                         <processorInfo ruleType="message">
                                                                                             <ruleProperties type="com.fnfr.svt.execution.builtin.processors.MessageProcessorPropertyGroup" severity="Information">
-                                                                                                <message>Landslide Cause Code Originator [[msg_loc]]: {value}</message>
+                                                                                                <message>Landslide Cause Code Originator [msg_loc]: {value}</message>
                                                                                                 <extractData>true</extractData>
-                                                                                                <tag>Landslide_cause_code_key_[[msg_loc]]: {value}</tag>
+                                                                                                <tag>Landslide_cause_code_key_[msg_loc]: {value}</tag>
                                                                                             </ruleProperties>
                                                                                         </processorInfo>
                                                                                     </item>
@@ -10170,9 +10543,9 @@ and this will return the number between the N and the : incremented</multilineDe
                                                                                         </extractorInfo>
                                                                                         <processorInfo ruleType="message">
                                                                                             <ruleProperties type="com.fnfr.svt.execution.builtin.processors.MessageProcessorPropertyGroup" severity="Information">
-                                                                                                <message>Landslide Cause Code Count [[msg_loc]]: {value}</message>
+                                                                                                <message>Landslide Cause Code Count [msg_loc]: {value}</message>
                                                                                                 <extractData>true</extractData>
-                                                                                                <tag>Landslide_cause_code_count_[[msg_loc]]: {value}</tag>
+                                                                                                <tag>Landslide_cause_code_count_[msg_loc]: {value}</tag>
                                                                                             </ruleProperties>
                                                                                         </processorInfo>
                                                                                     </item>
