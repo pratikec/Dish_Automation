@@ -39,29 +39,54 @@
             </LS_Nodal_favorite_params>
             <TMD_Name>
                 <process_manager>
-                    <additional_validation pt:datatype="BOOLEAN" pt:description="Enable: If additional validation not included LS criteria P/F">false</additional_validation>
+                    <additional_validation pt:datatype="BOOLEAN">false</additional_validation>
+                    <additional_validation_data>
+                        <target_data_source/>
+                        <validate_process_type pt:description="Valid Values: preTest, postTest or whileTest"/>
+                        <validation_type_id pt:description="What are we doing: probe_trace, pdml_query, nf_validation......"/>
+                    </additional_validation_data>
+                    <csv_analysis pt:datatype="BOOLEAN">false</csv_analysis>
+                    <defect_active pt:datatype="BOOLEAN">false</defect_active>
+                    <active_defect_data>
+                        <isv_key pt:description="Spirent, Nokia, AWS, Dish">Nokia</isv_key>
+                        <defect_id pt:description="valid defect name - any system">DEF-999000</defect_id>
+                        <opt_defect_msg pt:description="If you want to tell them something extra">Multiple Back-to-Back Automation Failures Cause: Network Issue</opt_defect_msg>
+                        <validation_defect_type pt:description="criteria, pcap or test">test</validation_defect_type>
+                        <validation_defect_idx pt:description="Base 1 indexing - Utilized in criteria and pcap validation operation">1</validation_defect_idx>
+                    </active_defect_data>
                     <Enable_TAC_Report pt:datatype="BOOLEAN">true</Enable_TAC_Report>
                     <Enable_Port_Capture pt:datatype="BOOLEAN">true</Enable_Port_Capture>
-                    <next_gen_topology_process pt:datatype="BOOLEAN">false</next_gen_topology_process>
+                    <iev_analysis pt:datatype="BOOLEAN">false</iev_analysis>
                     <nf_interaction pt:datatype="BOOLEAN" pt:description="Enable: if NF inter-action is required">false</nf_interaction>
+                    <nf_interaction_driver_data>
+                        <instance_1>
+                            <target_id pt:description="What type of Network function: IDK.... AMF, SMF, AUSF, NTAS"/>
+                            <function_action pt:description="Valid Values: open/close, check, query, modify.... Other?!?!?"/>
+                            <function_action_cmd pt:description="some pre-defined syntax"/>
+                            <function_process_type pt:description="Valid Values: preTest, postTest or whileTest"/>
+                            <driving_data_dict/>
+                            <cleanup_required/>
+                        </instance_1>
+                    </nf_interaction_driver_data>
                     <pcap_analysis pt:datatype="BOOLEAN">true</pcap_analysis>
                     <pcap_analysis_drivers pt:description="The data below is treated as a group of List Pairs">
-                        <tshark_display_filter pt:description="This filter will be applied when he session is opened"/>
-                        <target_pcap_keys pt:description="Example: [&quot;ts0_eth1&quot;, &quot;ts0_eth3&quot;]">[&quot;LS_Nodal_favorite_params/ts0/tc0/GnbControlAddr/phy&quot;]</target_pcap_keys>
+                        <tshark_display_filter pt:description="No longer PROCESSED"/>
+                        <target_pcap_keys pt:description="Example: [&quot;LS_Nodal_favorite_params/ts0/tc0/GnbControlAddr/phy&quot;]">[&quot;LS_Nodal_favorite_params/ts0/tc0/GnbControlAddr/phy&quot;]</target_pcap_keys>
+                        <validation_instance_grp_cnt pt:datatype="INTEGER" pt:description="Allows for common pcap process... in most cases">1</validation_instance_grp_cnt>
                         <validation_instances_groups>
                             <instance_1 pt:description="VALIDATION GROUP">
-                                <item pt:description="VERIFICATION INSTANCE">
+                                <item pt:description="VERIFICATION INSTANCE, duplicate&amp;update as needed">
                                     <item pt:description="display filter - any valid wireshark filter">(ngap.procedureCode == 15) &amp;&amp; (nas_5gs.mm.5gs_reg_type == 4) &amp;&amp; (nas_5gs.mm.type_id == 5)</item>
                                     <item pt:description="get method - Valid values: typeCapture or typeQuery">typeQuery</item>
-                                    <item pt:description="process definition">not_utilized</item>
-                                    <item pt:description="value key - packet data element value">g1_v1_item_4</item>
+                                    <item pt:datatype="INTEGER" pt:description="expected response line count from PCAP query.">1</item>
+                                    <item pt:description="system IP additions to display filter: keys amf_ip, gnbC_ip, gnbU_ip or not_utilized">[&apos;ip.src&apos;, &apos;==&apos;, &apos;gnbC_ip&apos;]</item>
                                     <item pt:description="optional message">Verify Initial UE Emergancy Registration with IMEISV</item>
                                 </item>
-                                <item pt:description="VERIFICATION INSTANCE">
+                                <item pt:description="VERIFICATION INSTANCE, duplicate&amp;update as needed">
                                     <item pt:description="display filter - any valid wireshark filter">(ngap.procedureCode == 46) &amp;&amp; (nas_5gs.mm.5gs_reg_type == 4) &amp;&amp; (nas_5gs.mm.type_id == 5)</item>
                                     <item pt:description="get method - Valid values: typeCapture or typeQuery">typeQuery</item>
-                                    <item pt:description="process definition">not_utilized</item>
-                                    <item pt:description="value key - packet data element value">g1_v1_item_4</item>
+                                    <item pt:datatype="INTEGER" pt:description="expected response line count from PCAP query.">1</item>
+                                    <item pt:description="system IP additions to display filter: keys amf_ip, gnbC_ip, gnbU_ip or not_utilized">[&apos;ip.src&apos;, &apos;==&apos;, &apos;gnbC_ip&apos;]</item>
                                     <item pt:description="optional message">Verify UE UpLinkNASTransport Emergancy Registration with IMEISV</item>
                                 </item>
                             </instance_1>
@@ -69,7 +94,6 @@
                     </pcap_analysis_drivers>
                     <show_charts pt:datatype="BOOLEAN">false</show_charts>
                     <test_severity pt:description="Dish defined: &quot;severity&quot;: &quot;Sev 1 - Critical&quot; or &quot;Sev 2 - Major&quot; or &quot;Sev 3 - Minor&quot;">Sev 1 - Critical</test_severity>
-                    <test_waiting_timeout pt:datatype="INTEGER" pt:description="Bailout timer.... if things get sideways">180</test_waiting_timeout>
                     <ts_clean_up_required pt:datatype="BOOLEAN" pt:description="Enable: if LS doesn&apos;t contain &apos;cleanup&apos; step">false</ts_clean_up_required>
                     <ts_groups_required pt:datatype="INTEGER">1</ts_groups_required>
                 </process_manager>
