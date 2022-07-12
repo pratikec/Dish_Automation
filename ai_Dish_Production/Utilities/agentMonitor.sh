@@ -1,6 +1,6 @@
 #!/bin/bash  
 
-velocityUri=https://vel-demo-sb.spirenteng.com  
+velocityUri=https://10.245.0.191  
 
 agentJson=`curl -k -s -X GET $velocityUri/ito/executions/v1/agents | jq -c '.[] | {status}' | jq -s "map({Status: .status}) | group_by(.Status) | map({(.[0].Status) : length})"`
 
