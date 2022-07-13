@@ -1,51 +1,45 @@
 <?xml version="1.0"?>
 <testCase version="8.6.2.202112190518">
     <general>
-        <documentation>5G_REG_024 Initial Registration with 5G-GUTI without AMF relocation</documentation>
-        <tags>5G_REG_024, Automation_Next_Gen_Framework</tags>
-        <notes>Test Purpose: The purpose of this test is to Verify Initial Registration with 5G-GUTI without AMF relocation.
+        <documentation>5G_DEREG_012 UDM initiated de-registration - without PDU - idle mode. </documentation>
+        <tags>5G_DEREG_012, Automation_Next_Gen_Framework</tags>
+        <notes>Test Purpose: The purpose of this test is to verify the successful UDM initiate de-Registration of UE without PDU UE is in Idle mode.
 
-Expected Result/Post Condition:
-• UE must show the 5G Network on the device status on top.
-• The 5G-GUTI is presented in the Registration Request.
-• UE is registered on the AMF.
-• Verify Registration Accept shows that AMF assigned GUTI.
-• Verify UE is using assigned GUTI on next Registration.
-
-Performance Counters:
-• Verify that the counter M173C000 (ue_reg_att) in AMF has increased by 1.
-• Verify that the counter M173C001 (ue_reg_succ) in AMF has increased by 1.
-• Verify that the counter M173C005 (ue_reg_att_init_reg) in AMF has increased by 1.</notes>
+Expected Result/Post Condition:  
+•\tVerify in UDR subscriber profile, UE must be deregistered PurgeFlag= true using ldap command.
+•\tVerify UDM sends Nudm_UECM_DeregistrationNotification request to AMF.
+•\tVerify AMF responds with Nudm_UECM_DeregistrationNotificationAck request to UDM, after sending deregistration request to UE.
+</notes>
         <language>Python</language>
     </general>
     <procedures>
         <item name="main">
             <steps>
-                <item guid="423f4e32-e213-484e-a144-263b688b1521" action="comment" useFieldsInCommand="false">
+                <item guid="be844f23-5b3b-4549-b948-ddaf20a3f926" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="a19ae700-9bae-4908-8e78-b2319e5d7f49" action="comment" useFieldsInCommand="false">
+                <item guid="16027f4f-d932-42cc-b8bd-10835391083d" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Define Landslide Library Key, project_id; INIT instance_id aka tc_id, failure_originators_list and write_cause_code_data</body>
                     </command>
                     <nestedSteps>
-                        <item guid="b3624824-3a29-43cd-85ea-9d9443b38432" action="comment" useFieldsInCommand="false">
+                        <item guid="bc8aa09b-b662-4661-b34d-67a6796050e0" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Local process driver variable init. (Instence level parameters)</body>
                             </command>
                             <nestedSteps>
-                                <item guid="203f3af3-d7af-4250-9728-5c8f45c51ab9" action="comment" useFieldsInCommand="false">
+                                <item guid="84e2041c-2c09-4b22-9836-8182280aca1e" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Set the tmd_query_path</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="290d8323-b187-4aec-aa2c-89171958f6c6" action="eval" useFieldsInCommand="false">
+                                        <item guid="3fe25ce8-b810-4394-952c-4c0e96eb47c8" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>tmd_key = param(&apos;TC_parameters/tmd_key&apos;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="db607a2a-4f64-4c57-a5aa-c774571160d5" action="eval" useFieldsInCommand="false">
+                                        <item guid="7770ca07-b9e6-4b09-bb4e-ef3a5e8444ab" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>tmd_query_path = &apos;TMD_Name/{0}/&apos;.format(tmd_key)</body>
                                             </command>
@@ -54,30 +48,30 @@ Performance Counters:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="e7db0f44-f92b-4c53-a06d-721b6a591d97" action="comment" useFieldsInCommand="false">
+                                <item guid="0ae3032b-6a7d-4920-852a-591d75379b63" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Set the tmd variables</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="e6b75889-ad58-4c80-b7bf-10affb1d36e0" action="eval" useFieldsInCommand="false">
+                                        <item guid="dfedb6ce-325f-403d-83d3-cdb0c48fe095" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>additional_validation = param(tmd_query_path + &quot;/additional_validation&quot;, &apos;False&apos;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="211eb876-a2d2-477c-9149-d4e42ab4da91" action="eval" useFieldsInCommand="false">
+                                        <item guid="27eea4ef-9584-4f76-9bb8-4f2f6b61a38a" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>nf_interaction = param(tmd_query_path + &quot;/nf_interaction&quot;, &apos;False&apos;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="886e86ff-f97e-4762-b53e-2ab9c53fe65e" action="eval" useFieldsInCommand="false">
+                                        <item guid="f2c46d13-8973-4329-87fd-f620fffd6c50" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>pcap_analysis = param(tmd_query_path + &quot;/pcap_analysis&quot;, &quot;false&quot;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="a7943b9e-ab3b-491a-8c1a-d292f39f5de3" action="eval" useFieldsInCommand="false">
+                                        <item guid="47b0d666-b1fd-458f-864e-d6d59b11d09e" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>show_charts = param(tmd_query_path + &quot;/show_charts&quot;, &apos;False&apos;)</body>
                                             </command>
@@ -89,37 +83,37 @@ Performance Counters:
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="6359cb76-61ce-45b1-ada6-5dcc43f80155" action="eval" useFieldsInCommand="false">
+                        <item guid="825133d7-d091-48f9-91a3-db25873103e2" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>libraryName = &quot;{Dish 5G Velocity Automation}&quot;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="933ab994-6704-4e06-85be-544174affc78" action="eval" useFieldsInCommand="false">
+                        <item guid="3fa11404-f9f4-40d3-968b-c85d7c6e78f8" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>tc_id = info(&apos;testCaseName&apos;, &apos;main&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="d35ad4c7-d898-417d-ba94-7a77cab0ea66" action="eval" useFieldsInCommand="false">
+                        <item guid="12044ca1-6d9d-4f4a-b8b2-cedeba953dc0" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>project_id = info(&apos;testCaseProject&apos;, &apos;main&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="edf34c20-c3cf-4c42-9272-abd2bf4a5c6e" action="eval" useFieldsInCommand="false">
+                        <item guid="57a3b3fb-63fc-48ca-8700-422dd72a8518" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>failure_originators_list = []</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="2def52c1-5066-4d1e-9e98-8b863ef3b8be" action="eval" useFieldsInCommand="false">
+                        <item guid="015b6e26-35c6-4fff-871e-31eb727aa730" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>write_cause_code_data = &quot;False&quot;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="099ebdc7-9e9d-4a77-8f2f-17b3085f2da5" action="eval" useFieldsInCommand="false">
+                        <item guid="9d6cdb8b-9518-4e5d-95ff-c34557041431" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>ls_criteria_data_error = &quot;False&quot;</body>
                             </command>
@@ -128,12 +122,12 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="e1dadb39-70da-4a09-accc-966c7355f140" action="comment" useFieldsInCommand="false">
+                <item guid="bbbd1fca-e821-45aa-a238-75a3a22fbe67" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Call test_instance_init - Process will ensure the driving data is correct, Landslide configured and status checked. If you return all is well or there was an issue an we&apos;ve Aborted.</body>
                     </command>
                     <nestedSteps>
-                        <item guid="ccec63f7-45c2-4309-98db-a75f58d8cc59" action="call" useFieldsInCommand="false">
+                        <item guid="74ca1c11-a423-4235-885b-86c954e8e164" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#test_instance_init -instance_id [tc_id] -ls_library_name [libraryName] -project_id [project_id]</body>
                             </command>
@@ -163,35 +157,35 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="32734790-b64e-4a99-a640-40a32cd1d58b" action="comment" useFieldsInCommand="false">
+                <item guid="c37c99a8-6457-407b-8477-de72ba4eca2c" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>!!!! Perform Any REQUIRED Modifacation(s) to &apos;run_data_list&apos; driving data HERE!!!!   Next step Landslide execution.</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="badf8489-29b4-472e-9e89-caa2dae44f32" action="comment" useFieldsInCommand="false">
+                <item guid="05da63ec-d8c6-4ae5-9211-8475b3dcd2b0" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>#### Check for any pre-test activities and process as required. ?!?!!? Network CHECK/QUERY/MODIFY (Prior to Landslide Execution) ####</body>
                     </command>
                     <nestedSteps>
-                        <item guid="c308e8b6-6135-40ec-a0a2-22601a696baf" action="if" useFieldsInCommand="false">
+                        <item guid="93c4c86f-0cc2-4cec-9b4c-0122815fc72e" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(nf_interaction) == &quot;True&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="fbf9f477-1cc8-4b54-a32a-718288face8e" action="comment" useFieldsInCommand="false">
+                                <item guid="1f3eb47b-3c7a-410d-a061-de480fe13393" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Routine is just a stub; Awaiting requirements and process definition to continue/complete.</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="202423a4-568b-4fe4-8c86-b8a4ec61b618" action="call" useFieldsInCommand="false">
+                                <item guid="0d72a54f-17cf-4ca1-bd1b-952dd4b476e2" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#network_function_mgr -instance_id [tc_id] -project_id [project_id] -run_data [run_data_list] -nf_instance_id NOT_DEFINED_instance_1</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="6cd25a76-938d-4cd0-9743-e0d81ef681da" action="comment" useFieldsInCommand="false">
+                                <item guid="f3b2e502-1d34-4661-a36c-77c3a2e61ff5" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -200,12 +194,12 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="120c4709-c31b-47a0-8e2e-c460536e9601" action="comment" useFieldsInCommand="false">
+                <item guid="800f1108-5913-4e96-9d4a-fbf2133bd4e3" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Add a seperator; we&apos;ve completed the setup, start the Landslide process</body>
                     </command>
                     <nestedSteps>
-                        <item guid="ccb96223-9275-4314-abce-f7ef7c1bae16" action="call" useFieldsInCommand="false">
+                        <item guid="84b88490-a946-4b36-9890-8a264c36b6ca" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://ai_LS_5G/utility_library/utils.fftc#insert_devider_string -length 135</body>
                             </command>
@@ -214,12 +208,12 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="ed30a853-6a94-4915-a148-1e62dc47eb74" action="comment" useFieldsInCommand="false">
+                <item guid="b3f0d5b3-e11c-474b-aa4b-3bbf7f50b911" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>##### Perform Landslide Test Procedure #####</body>
                     </command>
                     <nestedSteps>
-                        <item guid="286f1b30-940e-4261-83ac-3dbc2b2dd39f" action="call" useFieldsInCommand="false">
+                        <item guid="637cd549-268f-4c57-bbb5-45d519e3aa3d" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_execute_landslide_procedure -run_data_list [run_data_list]</body>
                             </command>
@@ -332,17 +326,17 @@ Performance Counters:
                             </postProcessing>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="e9b2a42f-03c5-4aad-895d-ca6d8abb1415" action="comment" useFieldsInCommand="false">
+                        <item guid="d85722c1-82dd-4424-b284-013492d34f4e" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Check &apos;exec_ls_test_data&apos; for logged failure in criteria validation; Act accordingly.... 2 or 3 items we can work with all others counts are bad</body>
                             </command>
                             <nestedSteps>
-                                <item guid="3c520ba8-8d49-4d1b-adeb-77a7436a1d39" action="if" useFieldsInCommand="false">
+                                <item guid="8fc697e1-039e-4d51-963f-9a0be6fa9273" action="if" useFieldsInCommand="false">
                                     <command>
                                         <body>int(exec_ls_testdata_item_cnt) == 3:</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="e1d21e7c-8aa3-4f62-8f09-02c4ffacfb25" action="eval" useFieldsInCommand="false">
+                                        <item guid="11881e00-02a6-4074-ac58-d1fdf7f1e6bb" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>print(exec_ls_testdata)</body>
                                             </command>
@@ -397,13 +391,13 @@ Performance Counters:
                                             </postProcessing>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="d639f54f-be05-46ef-9726-54e71e7a44d6" action="eval" useFieldsInCommand="false">
+                                        <item guid="80575da0-979c-4f78-a7d7-1dd2fec0bdf6" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>failure_originators_list.append(failure_originator)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="257ea3c2-8e3b-41a8-9425-bc4cfd66a823" action="eval" useFieldsInCommand="false">
+                                        <item guid="d21820ef-d9d4-41f8-ac0b-49dae1b0f2fb" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>write_cause_code_data = &quot;True&quot;</body>
                                             </command>
@@ -412,12 +406,12 @@ Performance Counters:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="c81dc9b8-7048-4116-a4b2-30b1441b2329" action="elif" useFieldsInCommand="false">
+                                <item guid="6ff72f94-d57e-46ad-9cb3-65597d709d5a" action="elif" useFieldsInCommand="false">
                                     <command>
                                         <body>int(exec_ls_testdata_item_cnt) == 2:</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="476775d8-b6c0-4129-a3f2-54eb24bd06be" action="eval" useFieldsInCommand="false">
+                                        <item guid="42fb59a5-df6b-457f-a08b-1cb643b7e233" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>print(exec_ls_testdata)</body>
                                             </command>
@@ -460,12 +454,12 @@ Performance Counters:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="2f1e2a46-168e-4361-89b8-5e44a1176c94" action="else" useFieldsInCommand="false">
+                                <item guid="b0bd17d8-d978-4e42-b2df-8c44d5c1b007" action="else" useFieldsInCommand="false">
                                     <command>
                                         <body>ERROR in data data return shape, can&apos;t continue with PCAP validation</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="bc7c23a0-190e-408f-a77a-43b0dc1335e7" action="eval" useFieldsInCommand="false">
+                                        <item guid="11f94f8c-d744-41f9-abcc-7a11cc0f0344" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>ls_criteria_data_error = &quot;True&quot;</body>
                                             </command>
@@ -480,27 +474,27 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="9ec56aa4-72de-461e-86a9-95519ef2aa5f" action="comment" useFieldsInCommand="false">
+                <item guid="adcc0e21-694d-439f-b6d0-311d6e1b23bd" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Check for additional Validation; Landslide Criteria Validation has been completed</body>
                     </command>
                     <nestedSteps>
-                        <item guid="9aa9429b-e8aa-4749-ad22-93ecc6d8e1d1" action="if" useFieldsInCommand="false">
+                        <item guid="33093816-017c-4d60-81cd-006cca16f9de" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(pcap_analysis) == &quot;True&quot; and str(errorsAndWarnings) == &quot;False&quot; and str(ls_criteria_data_error) == &quot;False&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="cce54838-d664-4b65-b0f9-0d4dc611339a" action="comment" useFieldsInCommand="false">
+                                <item guid="aacd08c4-a62a-4b53-951a-ee0f4c4d40f5" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Check &apos;exec_ls_test_data&apos;; Act accordingly.... 2 or 3 items we can work with all others counts are bad</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="d1dd8175-9050-44d9-a60d-fc562411f4f8" action="if" useFieldsInCommand="false">
+                                        <item guid="5d07db90-a33f-48c7-af3f-f164eb5f8614" action="if" useFieldsInCommand="false">
                                             <command>
                                                 <body>int(exec_ls_testdata_item_cnt) == 3:</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="8a7933dd-40d7-4c8a-8814-eeb92ea70b15" action="eval" useFieldsInCommand="false">
+                                                <item guid="58989f31-aca8-4612-a51e-450c3fc3ef41" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>print(exec_ls_testdata)</body>
                                                     </command>
@@ -555,7 +549,7 @@ Performance Counters:
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="9cc0b754-0737-4b28-930c-2818a078c59a" action="eval" useFieldsInCommand="false">
+                                                <item guid="22f26fc5-079b-410b-9970-b89018db68f4" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>ls_pcap_data_error = &quot;False&quot;</body>
                                                     </command>
@@ -564,12 +558,12 @@ Performance Counters:
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="1112f9c5-86e8-45e5-87e7-cd48811e24e2" action="elif" useFieldsInCommand="false">
+                                        <item guid="ec610ce4-f863-4b9e-8fc4-bb9d5c928c4a" action="elif" useFieldsInCommand="false">
                                             <command>
                                                 <body>int(exec_ls_testdata_item_cnt) == 2:</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="cb2751e9-2c63-4c36-8d86-9a413a1675e4" action="eval" useFieldsInCommand="false">
+                                                <item guid="de81fb64-eafd-4d56-b049-c6db28aa7828" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>print(exec_ls_testdata)</body>
                                                     </command>
@@ -609,7 +603,7 @@ Performance Counters:
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="a296e5f4-729a-4e55-9827-e8b3f99a011f" action="eval" useFieldsInCommand="false">
+                                                <item guid="107caacf-7a3a-4151-b372-b3ad795ccbff" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>ls_pcap_data_error = &quot;False&quot;</body>
                                                     </command>
@@ -618,12 +612,12 @@ Performance Counters:
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="09b57f7d-2a8d-4152-8725-cb8c51d3c286" action="else" useFieldsInCommand="false">
+                                        <item guid="c7f82cdc-2d43-4b13-9f0b-482f3636bba3" action="else" useFieldsInCommand="false">
                                             <command>
                                                 <body>ERROR in data data return shape, can&apos;t continue with PCAP validation</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="14697002-cb0d-42e2-9c07-0452b1296edd" action="eval" useFieldsInCommand="false">
+                                                <item guid="49ba876d-5bc7-45fb-a49c-e11c15b7773d" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>ls_pcap_data_error = &quot;True&quot;</body>
                                                     </command>
@@ -635,17 +629,17 @@ Performance Counters:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="7d2b25b7-faa1-4641-a271-ba2d72df6c40" action="if" useFieldsInCommand="false">
+                                <item guid="cbcdef9c-e01d-4410-aea3-640976512a37" action="if" useFieldsInCommand="false">
                                     <command>
                                         <body>str(ls_pcap_data_error) == &quot;False&quot;:</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="81bb97c8-ab70-44b9-8759-638c1a46ca3f" action="comment" useFieldsInCommand="false">
+                                        <item guid="ae849ad6-7dce-45cf-bc73-f84e9f2b63f2" action="comment" useFieldsInCommand="false">
                                             <command>
                                                 <body>Message Validation Start</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="1b3360e2-8bb4-4f4c-be22-7de2a2909a0d" action="message" useFieldsInCommand="false">
+                                                <item guid="37b0ddbe-f784-46b3-be81-98c671218ca4" action="message" useFieldsInCommand="false">
                                                     <command>
                                                         <body>Information: Starting Landslide PCAP Validation</body>
                                                     </command>
@@ -656,12 +650,12 @@ Performance Counters:
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="015e379a-4315-4626-95a3-93b1440a68b3" action="comment" useFieldsInCommand="false">
+                                        <item guid="63798088-5cf7-4508-9b12-653bdbfc46ae" action="comment" useFieldsInCommand="false">
                                             <command>
                                                 <body>Call pcap_validation and do the work; based upon the return, report cause codes if failure logged</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="0a22aa02-18f1-44ba-b691-36893c897e90" action="call" useFieldsInCommand="false">
+                                                <item guid="ae983c0f-8215-4a81-ad44-41c5387cc010" action="call" useFieldsInCommand="false">
                                                     <command>
                                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#utility_pcap_validation -results_url_list [results_payload_uri_list] -running_id [running_id]</body>
                                                     </command>
@@ -686,27 +680,27 @@ Performance Counters:
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="d9b52381-b231-46e3-bd09-499e83f0635d" action="if" useFieldsInCommand="false">
+                                                <item guid="c3412599-ea37-4b62-bfa0-589f1d84fc25" action="if" useFieldsInCommand="false">
                                                     <command>
                                                         <body>str(pcap_return_status) != &quot;PASSED&quot;:</body>
                                                     </command>
                                                     <nestedSteps>
-                                                        <item guid="74b4eb6b-e4dc-4d81-94e8-4acdcf5def2f" action="comment" useFieldsInCommand="false">
+                                                        <item guid="a67c8f42-119a-4aa9-81c9-27b80f0c38f9" action="comment" useFieldsInCommand="false">
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="1bbda172-f4cb-41ee-a6e7-f24b115f30e4" action="eval" useFieldsInCommand="false">
+                                                        <item guid="95cd61eb-c038-4a4d-975e-d3c3e3454530" action="eval" useFieldsInCommand="false">
                                                             <command>
                                                                 <body>write_cause_code_data = &quot;True&quot;</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="6d25d024-96dc-48e1-a237-d3b2d7852662" action="eval" useFieldsInCommand="false">
+                                                        <item guid="faa17389-2aa4-48c7-9b3d-7a9e931f829a" action="eval" useFieldsInCommand="false">
                                                             <command>
                                                                 <body>failure_originators_list.append(&apos;pcap&apos;)</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="885a7823-8011-4994-84d6-687458b61fc7" action="comment" useFieldsInCommand="false">
+                                                        <item guid="8decc6c4-dcb2-449d-80e2-7967f3e0709d" action="comment" useFieldsInCommand="false">
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                     </nestedSteps>
@@ -718,41 +712,41 @@ Performance Counters:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="b3a8d34a-7b91-46ec-b47c-f5c96f3db24a" action="comment" useFieldsInCommand="false">
+                                <item guid="4dca09c1-2157-487e-a789-2916fad9f700" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="85b1ee3e-3817-4de8-90da-3803875135f4" action="if" useFieldsInCommand="false">
+                        <item guid="f4c562f3-625f-462e-825c-9dd2dd2b9683" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(additional_validation) == &quot;True&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="b972c29b-4837-47fe-af9a-c35aa22efa32" action="comment" useFieldsInCommand="false">
+                                <item guid="b70a66c6-15f9-45a9-9679-a4a57c974383" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Routine is just a stub; Awaiting requirements and process definition to continue/complete.</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="183d3533-2b3f-4cae-883c-1344a849c044" action="call" useFieldsInCommand="false">
+                                <item guid="f029283c-f857-4ea2-bfca-faf117044851" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#additional_validation_mgr -instance_id [tc_id] -project_id [project_id] -running_id [running_id] -validate_process_type NOT_DEFINED -validation_type_id NOT_DEFINED</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="bcc608e9-2cfb-4292-8789-43f8432f9c93" action="comment" useFieldsInCommand="false">
+                                <item guid="9914d338-9774-42d4-9c25-1afba83aec30" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="97087830-2b88-4df2-a556-4b340289f2c0" action="comment" useFieldsInCommand="false">
+                        <item guid="60c5f3c2-141f-4232-88f1-132d984a2ee3" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Add a seperator; we&apos;re done here</body>
                             </command>
                             <nestedSteps>
-                                <item guid="66f528b6-b182-4bc6-b43f-2562581060b3" action="call" useFieldsInCommand="false">
+                                <item guid="2540abdc-a232-4891-9b80-5d8d9a5d4b7c" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://ai_LS_5G/utility_library/utils.fftc#insert_devider_string -length 135</body>
                                     </command>
@@ -764,26 +758,26 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="c1cad4be-ba3c-4348-874d-bd1f8e7d509f" action="comment" useFieldsInCommand="false">
+                <item guid="7b93a2e1-dd88-4958-adc3-93baae54fb76" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>If a FAILURE was logged in ANY of the above validation processes.  Call &apos;write_landslide_extracted_cause_code_data&apos; and log as extracted data</body>
                     </command>
                     <nestedSteps>
-                        <item guid="10a8289d-6ba9-49ee-83c3-78d50779f468" action="if" useFieldsInCommand="false">
+                        <item guid="e8032fd5-b949-49c8-9285-4eff13484bd1" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(write_cause_code_data) == &quot;True&quot; and str(ls_criteria_data_error) == &quot;False&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="a0f48578-cb3e-43ca-8e6c-ca18905c50df" action="comment" useFieldsInCommand="false">
+                                <item guid="66cdeaac-01e1-4f10-ae43-e783bf5af3fb" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="0a2542e8-b76b-4d2d-adb0-16533ae5cc57" action="call" useFieldsInCommand="false">
+                                <item guid="86c95416-8692-450e-8556-d765212b1c5d" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#write_landslide_extracted_cause_code_data -failure_originator [failure_originators_list] -results_payload_uri_list [results_payload_uri_list]</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="822eaa3d-9344-4e5b-b6dd-5249eb1b2222" action="comment" useFieldsInCommand="false">
+                                <item guid="049c77ff-98ad-4a12-9f95-de84a88e8d1c" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -792,12 +786,12 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="ac07c43e-a01f-4487-ad1d-93cd09e8bfda" action="comment" useFieldsInCommand="false">
+                <item guid="1ef6ff16-02fa-400d-aaad-30aefd29d011" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Display end of instance info</body>
                     </command>
                     <nestedSteps>
-                        <item guid="3bcbe4ce-9a65-43f8-95f9-bb57cb09cb17" action="eval" useFieldsInCommand="false">
+                        <item guid="78ce81e7-3afb-4951-a862-2c6d466f6418" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>print(info(&apos;testCaseName&apos;, &apos;main&apos;))</body>
                             </command>
@@ -820,50 +814,50 @@ Performance Counters:
                             </postProcessing>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="77dd1332-55c1-43c7-8d60-9506136cf01d" action="comment" useFieldsInCommand="false">
+                        <item guid="a4d544c7-aeb0-47df-9a42-f4b70b4297bc" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Report the RID information Or the error that came back from &apos;execute_dish_landslide_procedure&apos;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="190033e2-33d1-4515-80ce-c94503e33184" action="if" useFieldsInCommand="false">
+                        <item guid="5d29817c-7922-4061-80a3-60be2ea9b646" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>errorsAndWarnings:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="4e936bff-b0db-436d-86ae-ab7bdc2f709e" action="comment" useFieldsInCommand="false">
+                                <item guid="e43119e7-94d2-4f15-a790-d4d44bf9c5cd" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>If we&apos;re here the exec_ls_testdata contains the errorsAndWarnings data</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="91178d48-9b72-488b-be74-c4a0c9921cfe" action="eval" useFieldsInCommand="false">
+                                <item guid="117745ae-30fe-4d98-8bd2-2edf786600b0" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>exec_ls_testdata</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="e2607c67-c122-4a05-bf2f-67f79270d65f" action="comment" useFieldsInCommand="false">
+                                <item guid="9e9ce5f0-83c0-49c0-9ebc-e08d3a577fca" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="54c0be6b-372c-4e36-923f-265bfc8b3123" action="else" useFieldsInCommand="false">
+                        <item guid="e757bf5e-1dbb-4d92-85fa-008b5060f6c4" action="else" useFieldsInCommand="false">
                             <nestedSteps>
-                                <item guid="b70d94e3-b12b-4876-9139-d187420e709f" action="comment" useFieldsInCommand="false">
+                                <item guid="d70cd72a-cda5-4730-a199-f0c7506a94d7" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Display the RIDs for this instance</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="c18ed955-a9c6-4d13-b26f-a4d27507a7d4" action="eval" useFieldsInCommand="false">
+                                <item guid="1e67940e-0f66-431b-8b1a-3bd9067af313" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>rid_msg = &quot;Landslide Running IDs: &quot; + str(running_id)</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="63e2b4a3-6b60-4164-93d4-db2b95a95963" action="eval" useFieldsInCommand="false">
+                                <item guid="f9064166-e7e1-4d84-a040-6232a88521f1" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>print(rid_msg)</body>
                                     </command>
@@ -886,7 +880,7 @@ Performance Counters:
                                     </postProcessing>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="43d9123a-63de-4a5c-94b3-8ecc85cfcfad" action="comment" useFieldsInCommand="false">
+                                <item guid="418da87a-301c-46ba-bc10-0049e3d8cb09" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -895,17 +889,17 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="100b8984-93c4-4fd1-8f19-cf8f99c1cadc" action="comment" useFieldsInCommand="false">
+                <item guid="5e2b3f1a-b872-4486-b13a-fb4124c4f203" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Show charts</body>
                     </command>
                     <nestedSteps>
-                        <item guid="e761cbae-b1a0-42d6-a1f2-b45d5321e8a9" action="if" useFieldsInCommand="false">
+                        <item guid="8b5909f1-f4c9-414a-bc21-a1e6ff609ec6" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>show_charts:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="40a64d59-246c-4e78-8730-5fc303e5cc60" action="call" useFieldsInCommand="false">
+                                <item guid="88b79235-0aa1-4e1b-96d1-2d98d994981d" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#build_charts -reportData [result_list]</body>
                                     </command>
@@ -917,17 +911,17 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="a462d7ab-b9a3-429f-bbc6-37608676a74c" action="comment" useFieldsInCommand="false">
+                <item guid="baa38753-159b-47d6-87d2-0a80d2a257ac" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Call post_instance_processor - Always called</body>
                     </command>
                     <nestedSteps>
-                        <item guid="548ec569-8064-4dd2-afc8-28726f0b5137" action="if" useFieldsInCommand="false">
+                        <item guid="ef7c39ba-8d0d-452d-b1b0-03ddfab2b6a9" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(ls_criteria_data_error) == &quot;False&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="faa871fc-9286-4f82-a18b-a36054b4f87e" action="call" useFieldsInCommand="false">
+                                <item guid="0432d634-0dd7-4028-ad0f-39b15fa075b0" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#post_instance_processing -instance_id [tc_id] -project_id [project_id] -running_id [running_id]</body>
                                     </command>
@@ -939,12 +933,12 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="6de5d274-8897-4bf0-816f-b48c2c0af5a5" action="comment" useFieldsInCommand="false">
+                <item guid="7bbd834c-073c-4c83-b50b-c3f011d7c7e4" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Close the Landslide session opened via &apos;test_instance_init&apos;</body>
                     </command>
                     <nestedSteps>
-                        <item guid="170c1464-30d4-4770-ade0-d19f594339cc" action="call" useFieldsInCommand="false">
+                        <item guid="0aa10c45-585e-4d30-9d4c-e53fd76d9216" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_close_landslide -session s1</body>
                             </command>
@@ -953,7 +947,7 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="68644909-ecab-4a61-99bc-61c13c0fee8f" action="comment" useFieldsInCommand="false">
+                <item guid="e516ce0e-a520-4e48-879d-b83779b35578" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
             </steps>
