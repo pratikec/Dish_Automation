@@ -474,9 +474,51 @@
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="d8dedeb6-cbb9-4560-8831-f33c2f69e38c" action="command" session="cli">
+                        <item guid="d8dedeb6-cbb9-4560-8831-f33c2f69e38c" action="command" session="cli" skip="true">
                             <command>
                                 <body>run aws s3api put-object --bucket taas-test-artifacts --key [dir_str+json_file_name]  --body [dir.name+&apos;/&apos;+json_file_name] --profile DISHisvPowerUserLmtNetwork-243536268345</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="contains">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
+                                                <searchString>exit code: 0</searchString>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>value == 1</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>Uploaded JSON file to S3</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="FailTest">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>Failed to upload JSON file to S3</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="4215fd91-6b26-4bf3-baa7-65fe2ff675df" action="command" session="cli">
+                            <command>
+                                <body>run aws s3api put-object --bucket taas-test-artifacts --key [dir_str+json_file_name]  --body [dir.name+&apos;/&apos;+json_file_name]</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
@@ -610,9 +652,52 @@
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="df9d35f1-0d83-47a8-aa3e-8cbebe3c52ea" action="command" session="cli">
+                                        <item guid="df9d35f1-0d83-47a8-aa3e-8cbebe3c52ea" action="command" session="cli" skip="true">
                                             <command>
                                                 <body>run aws s3api put-object --bucket taas-test-artifacts --key [dir_str+json_file_name]  --body [dir.name+&apos;/&apos;+json_file_name] --profile DISHisvPowerUserLmtNetwork-243536268345</body>
+                                            </command>
+                                            <postProcessing>
+                                                <analysisRules>
+                                                    <item>
+                                                        <extractorInfo extractorType="contains">
+                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
+                                                                <searchString>exit code: 0</searchString>
+                                                            </extractorProperties>
+                                                        </extractorInfo>
+                                                        <processorInfo ruleType="assert">
+                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                                <expression>value == 1</expression>
+                                                                <actionsWhenTrue>
+                                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                    </item>
+                                                                    <item actionId="DeclareExecutionIssue">
+                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                                            <message>Uploaded execution JSON file to S3</message>
+                                                                        </actionProperties>
+                                                                    </item>
+                                                                </actionsWhenTrue>
+                                                                <actionsWhenFalse>
+                                                                    <item actionId="FailTest">
+                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                    </item>
+                                                                    <item actionId="DeclareExecutionIssue">
+                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                                            <message>Failed to upload execution JSON file to S3</message>
+                                                                        </actionProperties>
+                                                                    </item>
+                                                                </actionsWhenFalse>
+                                                            </ruleProperties>
+                                                        </processorInfo>
+                                                    </item>
+                                                </analysisRules>
+                                                <storeResponseAt>response</storeResponseAt>
+                                            </postProcessing>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="6f51d181-d8cd-4874-b930-0dca8422dbfd" action="command" session="cli">
+                                            <command>
+                                                <body>run aws s3api put-object --bucket taas-test-artifacts --key [dir_str+json_file_name]  --body [dir.name+&apos;/&apos;+json_file_name]</body>
                                             </command>
                                             <postProcessing>
                                                 <analysisRules>
