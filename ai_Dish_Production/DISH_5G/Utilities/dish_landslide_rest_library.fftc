@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<testCase version="8.6.2.202112190518">
+<testCase version="9.0.4.202208111512">
     <general>
         <tags>Automation_Next_Gen_Framework</tags>
         <language>Python</language>
     </general>
     <execution>
-        <parameters version="8.6.2.202112190518">
+        <parameters version="9.0.4.202208111512">
             <parameters escape="true">
                 <parameters xmlns:pt="http://www.fnfr.com/schemas/parameterTree">
                     <Env_global_override>
@@ -10475,6 +10475,69 @@ Fireball - TBD</description>
         <item name="dish_wait_for_LS__expected_state" isPublic="true" defaultSessionProfile="project://di_Landslide/session_profiles/landslide_rest.ffsp">
             <steps>
                 <item guid="7f96dd8c-844d-4299-a04f-389743f7634b" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Setup for running nf_access when a particular state is reached in the Landslide</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="1a1a5ff9-a654-44e9-84a7-e681495faeff" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>states = param(&apos;TMD_Name/process_manager/nf_interaction_during/item/trigger_state&apos;, [])</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="73ae97d1-0cc2-4653-9389-e019f56ca60a" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>procs = param(&apos;TMD_Name/process_manager/nf_interaction_during/item/proc&apos;, [])</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="e20672eb-c640-4fc1-a88d-8a98d16f0a86" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>type(states) != list:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="4d8f5ff1-5f12-4c87-8f7a-45e3a2498e51" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>states = [states]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="594a9840-5d22-4a74-b8a4-a6f0bf13b080" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>procs = [procs]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="af571922-74c7-4e0f-b394-22ff9bdf9fb8" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>action_list = []</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="1f913c00-2349-4f94-a901-5eec922a861c" action="for" useFieldsInCommand="false">
+                            <command>
+                                <body>i in range(0, len(procs)):</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="4668d811-a280-42d7-bb9a-0f101015397b" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>action = {&apos;state&apos;:states[i], &apos;proc&apos;:procs[i], &apos;triggered&apos;:False}</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="1e6a30d2-4530-4615-a140-6009d7ba7477" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>action_list.append(action)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="05dbc455-084f-4a23-b1aa-9ea8b97346e5" action="if" useFieldsInCommand="false">
@@ -10673,6 +10736,134 @@ Fireball - TBD</description>
                                 <storeResponseText>true</storeResponseText>
                             </postProcessing>
                             <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="ShowRunningTest" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" runningTestId="[running_test_id]" runningTestId.inherit="false"/>
+                        </item>
+                        <item guid="53e590a9-174a-47ee-b9b3-4fdb752101d8" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>handle nf interactions for specific states</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="95fbee4d-dbcc-4b2a-aa0c-e915374caf16" action="for" useFieldsInCommand="false">
+                                    <command>
+                                        <body>i in range(0, len(action_list)):</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="9bbbfac9-07c8-4c6f-b9a6-14611b924322" action="if" useFieldsInCommand="false">
+                                            <command>
+                                                <body>str(action_list[i][&apos;state&apos;]) in test_state and action_list[i][&apos;triggered&apos;] == False:</body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="4b3cd28a-1124-46a8-92d3-d7e5863da592" action="message" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>Information: Running NF interaction proc [action_list[i][&apos;proc&apos;]] in Landslide state [str(test_state)] (expected state [str(action_list[i][&apos;state&apos;])])</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                        <message inherit="false"> Running NF interaction proc [action_list[i][&apos;proc&apos;]] in Landslide state [str(test_state)] (expected state [str(action_list[i][&apos;state&apos;])])</message>
+                                                    </applicationProperties>
+                                                </item>
+                                                <item guid="8f5d4ded-7448-46a1-a362-8b212bc7d3c6" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>proc = info(&apos;testCaseFile&apos;, &apos;main&apos;)+&apos;#&apos;+action_list[i][&apos;proc&apos;]</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="54ded690-a862-4ea1-9c3d-53cfb93c5915" action="call">
+                                                    <command>
+                                                        <body>[proc]</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="9c411ad2-b9c5-4aec-a840-4ef1ee6c37f9" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>action_list[i][&apos;triggered&apos;] = True</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="86b27c5c-840a-4977-9525-4b5f8d11e516" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>action_list</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="e8ee7e45-fdcb-4cbc-8709-38160c136537" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>len(action_list)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="673acd4f-b12f-4495-a1b7-f7969e46759e" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>action_list</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="1a17455f-6099-4fdf-9b19-51d869f0a064" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Fail test if NF action not run</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="acc88b4f-c05f-406f-a778-79a297b98d14" action="for" useFieldsInCommand="false">
+                            <command>
+                                <body>i in range(0, len(action_list)):</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="38cb7569-3ba4-41ba-9a2b-d9523ac6a064" action="if" useFieldsInCommand="false">
+                                    <command>
+                                        <body>action_list[i][&apos;triggered&apos;] == False:</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="5e66e65b-2884-4d4f-ae32-00772955031d" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>proc = action_list[i][&apos;proc&apos;]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="2ca397cb-8f03-4b00-9913-502488cf3934" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>Fail test</body>
+                                            </command>
+                                            <postProcessing>
+                                                <analysisRules>
+                                                    <item>
+                                                        <extractorInfo extractorType="none">
+                                                            <extractorProperties type="com.fnfr.svt.documents.EmptyExtractorPropertyGroup"/>
+                                                        </extractorInfo>
+                                                        <processorInfo ruleType="assert">
+                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                                <expression>1==1</expression>
+                                                                <actionsWhenTrue>
+                                                                    <item actionId="DeclareExecutionIssue">
+                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                                            <message>Failed to run NF interaction script [action_list[i][&apos;proc&apos;]], possibly system never reached state [action_list[i][&apos;state&apos;]]</message>
+                                                                        </actionProperties>
+                                                                    </item>
+                                                                    <item actionId="FailTest">
+                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                    </item>
+                                                                </actionsWhenTrue>
+                                                            </ruleProperties>
+                                                        </processorInfo>
+                                                    </item>
+                                                </analysisRules>
+                                            </postProcessing>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
