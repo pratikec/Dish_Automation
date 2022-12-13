@@ -930,137 +930,6 @@
                 </item>
             </steps>
         </item>
-        <item name="verifyUeUp" isPublic="true">
-            <steps>
-                <item guid="1588065a-bf64-4834-b9e5-f1a253c25b8c" action="if" useFieldsInCommand="false">
-                    <command>
-                        <body>param(&apos;AMF/hostname&apos;) != &quot;&quot;:</body>
-                    </command>
-                    <nestedSteps>
-                        <item guid="a0567955-9f61-4df5-9652-362903e72c56" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>ipAddr = param(&apos;AMF/hostname&apos;)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="d0342e4b-41f0-4412-a2e7-7d3fc33e07dd" action="else" useFieldsInCommand="false">
-                    <nestedSteps>
-                        <item guid="f7578ead-56c8-448b-886d-9313080d58ec" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>ipAddr = param(&apos;AMF/ip_address&apos;)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="d8d806e7-10e8-4233-82cd-8b19aa8f5afa" action="message" useFieldsInCommand="false">
-                    <command>
-                        <body>Information:Waiting for UE to enter Idle state</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                        <message inherit="false">Waiting for UE to enter Idle state</message>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="28f815dc-b7ae-41db-9ad0-13fe550c2ccd" action="open" session="AMF">
-                    <command>
-                        <body>project://di_[param(&apos;AMF/make&apos;)]/session_profiles/AMF.ffsp</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
-                        <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                        <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
-                            <ipAddress inherit="false">[ipAddr]</ipAddress>
-                            <user inherit="false">[param(&apos;AMF/username&apos;)]</user>
-                            <password inherit="false" masked="false">[param(&apos;AMF/password&apos;)]</password>
-                        </sessionProperties>
-                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="79531038-373c-450a-ac54-d874ec6d01af" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>sub = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="675520e5-f3f6-4edf-9794-234d47de72d1" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
-                    <command>
-                        <body>-supi $sub</body>
-                    </command>
-                    <postProcessing>
-                        <analysisRules>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfCmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) == &quot;IDLE&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] CM State is  IDLE</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                                    <message>UE has not reached IDLE</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="RepeatStep">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                        </analysisRules>
-                    </postProcessing>
-                    <eventHandlers>
-                        <item name="OnRepeatStepMaxCountExceeded">
-                            <item actionId="FailTest">
-                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            </item>
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                    <message>Timeout waiting for UE to reach IDLE state</message>
-                                </actionProperties>
-                            </item>
-                        </item>
-                        <item name="OnQueryExtractorInvalidQuery">
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                    <message>UE has not reached IDLE</message>
-                                </actionProperties>
-                            </item>
-                            <item actionId="RepeatStep">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
-                            </item>
-                        </item>
-                    </eventHandlers>
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="56a7548e-b464-4611-a81d-918de7d12c17" action="close" session="AMF" useFieldsInCommand="false">
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-            </steps>
-        </item>
         <item name="deleteSub" isPublic="true">
             <steps>
                 <item guid="dbfcf88b-e310-432f-be45-b8a0f9cedbe0" action="if" useFieldsInCommand="false">
@@ -1231,6 +1100,13 @@
                     <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
                         <message inherit="false">Verifying UE is down</message>
                     </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="54ebff90-885e-42a0-afb9-f339dfc2c175" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>sub = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
                 <item guid="217be87a-fac2-4f80-b050-39d1d6fa0b71" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
