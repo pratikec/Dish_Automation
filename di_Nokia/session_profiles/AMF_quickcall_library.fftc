@@ -35,18 +35,6 @@
         <item name="get_subscriber_info_by_supi" isPublic="true">
             <responseMap>project://di_Nokia/response_maps/subscriber_show_plain.ffrm</responseMap>
             <steps>
-                <item guid="c9683e4e-aa12-439e-9145-313acdcde2e0" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>supi</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="ca8b01d0-279f-4dc1-8443-72e46c36af21" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>type(supi)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
                 <item guid="12e8dc9b-ea16-4ca8-8396-f5a97f487b6c" action="command" session="[session]">
                     <command>
                         <body>cmm subscriber show --imsi [str(supi)] -f plain</body>
@@ -103,6 +91,9 @@
         </item>
         <item name="set_emergency_service_tai" isPublic="true">
             <steps>
+                <item guid="7ff8d5f2-a140-45e6-9ece-d3850b2c4834" action="set_write_mode_on" session="[session]" useFieldsInCommand="false">
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                </item>
                 <item guid="90fc6ccf-6e7b-46e9-ba86-ac43088f01a3" action="command" session="[session]">
                     <command>
                         <body>cmm amfTai modify [MCC]_[MNC]~[TAC] --emergencyServiceTai [state] -f json</body>
@@ -135,6 +126,48 @@
                     <defaultValue>true</defaultValue>
                 </item>
             </arguments>
+        </item>
+        <item name="delete_supi" isPublic="true">
+            <steps>
+                <item guid="2e0e551e-0c12-4ced-a0f0-b2fc153b180d" action="set_write_mode_on" session="[session]" useFieldsInCommand="false">
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                </item>
+                <item guid="31b12a74-f892-4382-a1da-a3472cf32d87" action="command" session="[session]">
+                    <command>
+                        <body>cmm subscriber delete --imsi [supi] -f json</body>
+                    </command>
+                    <postProcessing>
+                        <storeResponseAt>response</storeResponseAt>
+                        <storeResponseText>true</storeResponseText>
+                    </postProcessing>
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                </item>
+                <item guid="27b5b7ef-c803-438e-9e6d-4ab4a97bd421" action="return">
+                    <command>
+                        <body>[response]</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+            <arguments>
+                <item name="supi">
+                    <isMandatory>true</isMandatory>
+                </item>
+            </arguments>
+        </item>
+        <item name="set_write_mode_on" isPublic="true">
+            <steps>
+                <item guid="0e0bee2e-dbc2-48bd-9f41-d6aece31eee5" action="command" session="[session]">
+                    <command>
+                        <body>export USER=root</body>
+                    </command>
+                    <postProcessing>
+                        <storeResponseAt>response</storeResponseAt>
+                        <storeResponseText>true</storeResponseText>
+                    </postProcessing>
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                </item>
+            </steps>
         </item>
     </procedures>
 </testCase>
