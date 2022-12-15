@@ -1,7 +1,30 @@
 <?xml version="1.0"?>
 <testCase version="9.0.4.202208111512">
     <general>
-        <tags>Automation_Next_Gen_Framework_v2</tags>
+        <documentation>5G_DEREG_014 Verify Network initiated explicit de-registration (O&amp;M by AMF).</documentation>
+        <tags>Automation_Next_Gen_Framework_v2, 5G_DEREG_014</tags>
+        <notes>Pre-requisites/Test Environment:
+•\tUE with any authentication algorithm supporting VoNR Network.
+•\tA New SIM Card.
+•\tSuccessfully registered UE in 5G network and UE is in CM-connected mode.
+Test Dependencies: 
+•\tUE must do the 5G registration with PDU connected mode.
+Test parameter and Tools:
+•\tInternal log and Wireshark.
+Test Procedure:
+•\tAttach UE in 5G network, allow UE to go to CM-CONNECTED mode.
+•\tCheck UE status in AMF by using command: cmm subscriber show --imsi &lt;imsi&gt; | grep mState.
+•\tIf the UE is idle mode, delete the subscriber in AMF using, cmm subscriber delete –IMSI.
+Remarks: 
+•\t3GPP TS References - 3GPP ETSI TS 123 502 V16.5.0 Article 4.2.2.3.3
+•\tCall Flow References - E2E Call Flow Document Appendix Section 3.7.
+Expected Result/Post Condition:  
+•\tUE must deregister from 5G Network on the device status on top.
+•\tCheck in AMF UE must be deregistered state by using show –imsi | grep mState command.
+•\tVerify in UDR subscriber profile, UE must be deregistered PurgeFlag= true using ldap command.
+•\tSMF must release all user plane resources of the PDU session.
+•\tVerify that AMF sends &quot;Deregistration Request&quot; with 5GMM cause &quot;Implicitly deregistered (10)&quot;.
+</notes>
         <language>Python</language>
     </general>
     <procedures>
