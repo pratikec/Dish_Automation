@@ -1,17 +1,29 @@
 <?xml version="1.0"?>
 <testCase version="9.0.4.202208111512">
     <general>
-        <documentation>5G_DEREG_015 Network initiated implicit de-registration: mobile reachable timer.</documentation>
-        <tags>5G_DEREG_015, Automation_Next_Gen_Framework</tags>
-        <notes>Test Purpose: The purpose of this test is to verify the successful Network initiated implicit de-registration: mobile reachable timer.
-
+        <documentation>5G_DEREG_017 Verify that UE subscriber can be manually deleted from AMF</documentation>
+        <tags>5G_DEREG_017, Automation_Next_Gen_Framework</tags>
+        <notes>Test Purpose: The purpose of this test is to that UE subscriber can be manually deleted from AMF.
+Pre-requisites/Test Environment:
+•\tSuccessfully registered UE in 5G network with PDU session is connected.
+Test Dependencies: 
+•\tUE must do the 5G registration with PDU connected mode.
+Test parameter and Tools:
+•\tInternal log and Wireshark.
+Test Procedure:
+•\tStart the trace / log collection.
+•\tAttach UE in 5G network.
+•\tCheck UE status in AMF by using command. cmm subscriber show --imsi &lt;imsi&gt; | grep mState.
+•\tDelete the subscriber in AMF using, cmm subscriber delete –imsi.
+•\tStop the trace / log collection.
+Remarks: 
+•\t3GPP TS References - 3GPP ETSI TS 123 502 V16.5.0 Article 4.2.2.3.3
+•\tCall Flow References - E2E Call Flow Document Appendix Section 2.6.
 Expected Result/Post Condition:  
-•\tVerify the purge timer expired in AMF.
-•\tVerify AMF must initiate the deregistration request to UE.
-•\tVerify SMF must release all user plane resources of the PDU session.
+•\tAMF must initiate the deregistration request to UE.
+•\tUE must deregister from 5G Network and SMF must release all user plane resources of the PDU session.
 •\tVerify UE must be deregistered state in AMF by using show – IMSI | grep mState command.
-•\tVerify in UDR subscriber profile, UE must be deregistered Purge=True using ldap command.
-•\tReset purge timer value in AMF by using cmm amfMobilityTimers modify --amfTimerName purgeTimer –amfTimerValue. 
+•\tVerify that AMF sends &quot;Deregistration Request&quot; with 5GMM cause &quot;Implicitly deregistered (10)&quot;.
 </notes>
         <language>Python</language>
     </general>
