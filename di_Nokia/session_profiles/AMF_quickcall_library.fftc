@@ -127,17 +127,37 @@
                 </item>
             </arguments>
         </item>
-        <item name="set_mobility_timer" isPublic="true">
+        <item name="get_mobility_timer" isPublic="true">
             <steps>
-                <item guid="372d8775-1a2f-4479-8996-cece6f6496b0" action="set_write_mode_on" session="[session]" useFieldsInCommand="false">
+                <item guid="8a10c23d-9b68-4cdb-bdef-0380802f983c" action="command" session="[session]">
+                    <command>
+                        <body>cmm amfMobilityTimers list -f json</body>
+                    </command>
+                    <postProcessing>
+                        <storeResponseAt>response</storeResponseAt>
+                        <storeResponseText>true</storeResponseText>
+                    </postProcessing>
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                 </item>
-                <item guid="b31cc1fc-60a4-4f51-9908-ab867c5a94a6" action="if" useFieldsInCommand="false">
+                <item guid="97182280-9eda-410a-acd1-d5f701e67787" action="return">
+                    <command>
+                        <body>[response]</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+        </item>
+        <item name="set_mobility_timer" isPublic="true">
+            <steps>
+                <item guid="127ec9b4-add1-4adb-9447-50768abca3aa" action="set_write_mode_on" session="[session]" useFieldsInCommand="false">
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                </item>
+                <item guid="cab8aa91-f7d7-4397-87c3-8c9d14884dd6" action="if" useFieldsInCommand="false">
                     <command>
                         <body>[timer_name] == &apos;purgeTimer&apos;:</body>
                     </command>
                     <nestedSteps>
-                        <item guid="8a10c23d-9b68-4cdb-bdef-0380802f983c" action="command" session="[session]">
+                        <item guid="1ca150fb-a1e1-4af2-ae53-b4e537130e19" action="command" session="[session]">
                             <command>
                                 <body>cmm amfMobilityTimers modify --amfTimerName [timer_name] --amfTimerValue [timer_value]  -f json</body>
                             </command>
@@ -150,9 +170,9 @@
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="4d27f378-fd27-4b95-8b46-01209bbfab35" action="else" useFieldsInCommand="false">
+                <item guid="752ffdfd-8f5a-4a31-99c6-d73439b63573" action="else" useFieldsInCommand="false">
                     <nestedSteps>
-                        <item guid="7519d212-eae6-4d22-a89e-33f401922f0f" action="command" session="[session]">
+                        <item guid="7357ad05-2355-48bc-beaf-94bd7f3ceb51" action="command" session="[session]">
                             <command>
                                 <body>cmm amfMobilityTimers modify --amfTimerName [timer_name] --amfTimerValue [timer_value] --amfTimerUnit [timer_unit] -f json</body>
                             </command>
@@ -165,7 +185,7 @@
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="97182280-9eda-410a-acd1-d5f701e67787" action="return">
+                <item guid="d55850a1-adcb-4973-aa60-e09209bc627e" action="return">
                     <command>
                         <body>[response]</body>
                     </command>
@@ -186,12 +206,32 @@
                 </item>
             </arguments>
         </item>
-        <item name="set_nas_timer" isPublic="true">
+        <item name="get_nas_timer" isPublic="true">
             <steps>
-                <item guid="de8410a6-f453-4a02-a0ad-55e6c5c3a337" action="set_write_mode_on" session="[session]" useFieldsInCommand="false">
+                <item guid="6060bb2f-ba9a-4dfe-a710-5fa5dab91195" action="command" session="[session]">
+                    <command>
+                        <body>cmm amfNasTimers list -f json</body>
+                    </command>
+                    <postProcessing>
+                        <storeResponseAt>response</storeResponseAt>
+                        <storeResponseText>true</storeResponseText>
+                    </postProcessing>
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                 </item>
-                <item guid="6060bb2f-ba9a-4dfe-a710-5fa5dab91195" action="command" session="[session]">
+                <item guid="0be51b2b-05ec-48da-a462-95598ecae95b" action="return">
+                    <command>
+                        <body>[response]</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+        </item>
+        <item name="set_nas_timer" isPublic="true">
+            <steps>
+                <item guid="1daa050f-84b5-4fa2-af1d-5cd81d580099" action="set_write_mode_on" session="[session]" useFieldsInCommand="false">
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                </item>
+                <item guid="8ff3c167-95b4-491b-a914-6deda2801e48" action="command" session="[session]">
                     <command>
                         <body>cmm amfNasTimers modify [timer_name] --amfTimerValue [timer_value] --amfTimerUnit [timer_unit] -f json</body>
                     </command>
@@ -201,7 +241,7 @@
                     </postProcessing>
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                 </item>
-                <item guid="0be51b2b-05ec-48da-a462-95598ecae95b" action="return">
+                <item guid="c9c03f78-2505-458e-bb05-506ddeaff32c" action="return">
                     <command>
                         <body>[response]</body>
                     </command>
