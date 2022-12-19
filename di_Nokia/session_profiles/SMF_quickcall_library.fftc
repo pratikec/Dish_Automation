@@ -22,5 +22,66 @@
                 </item>
             </arguments>
         </item>
+        <item name="get_subscriber_pdus" isPublic="true">
+            <steps>
+                <item guid="753d1b16-2bd8-41f2-baf7-4ff7007f714f" action="command" session="[session]">
+                    <command>
+                        <body>show mobile-gateway pdn bearer-context imsi [supi] </body>
+                    </command>
+                    <postProcessing>
+                        <analysisRules>
+                            <item>
+                                <extractorInfo extractorType="query">
+                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup" declareNoMatchIssue="false">
+                                        <query>pdu()</query>
+                                    </extractorProperties>
+                                </extractorInfo>
+                                <processorInfo ruleType="store">
+                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                        <storageLocation>pdu_list</storageLocation>
+                                        <storeInAList>true</storeInAList>
+                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                    </ruleProperties>
+                                </processorInfo>
+                            </item>
+                        </analysisRules>
+                    </postProcessing>
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                </item>
+                <item guid="44d2b07c-5b90-4e6f-8658-de86df86ba31" action="if" useFieldsInCommand="false">
+                    <command>
+                        <body>type(pdu_list) == str:</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="bd73f0fd-af9e-4df7-bc6b-7c9a7aa14fc5" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ret = &apos;{&quot;pdus&quot;: []}&apos;</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="fa6b83c0-afe3-42c9-9d0d-476fe4b1f637" action="else" useFieldsInCommand="false">
+                    <nestedSteps>
+                        <item guid="248994fe-e475-4d6e-b648-89411707ba74" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ret = &apos;{&quot;pdus&quot;: [&apos;+pdu_list+&apos;]}&apos;</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="59fd9bf8-b330-43bd-b60d-02c1daff1f33" action="return">
+                    <command>
+                        <body>[ret]</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+        </item>
     </procedures>
 </testCase>
