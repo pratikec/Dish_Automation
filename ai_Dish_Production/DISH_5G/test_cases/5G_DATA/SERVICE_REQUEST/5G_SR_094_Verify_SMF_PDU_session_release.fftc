@@ -1141,6 +1141,31 @@ Expected Result/Post Condition:
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
+                <item guid="9349e3cb-8ba4-4326-905b-8766edfd1c1f" action="if" useFieldsInCommand="false">
+                    <command>
+                        <body>param(&apos;SMF/hostname&apos;) != &quot;&quot;:</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="c0628a96-d74f-47c9-97b2-2eefc91fcd07" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ipAddr = param(&apos;SMF/hostname&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="a627ff82-b7b8-4bff-83c4-d2687960d407" action="else" useFieldsInCommand="false">
+                    <nestedSteps>
+                        <item guid="5038ac66-e1b8-43eb-a65f-3b47579fe2ee" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ipAddr = param(&apos;SMF/ip_address&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
                 <item guid="a0ae5878-c2c0-4876-86dd-62d34de7896a" action="message" useFieldsInCommand="false">
                     <command>
                         <body>Information:Disabling UE in SMF ([ipAddr]) while in Landslide state [param(&apos;TMD_Name/process_manager/nf_interaction_during/item/trigger_state&apos;)] and UE in CONNECTED mode</body>
@@ -1158,8 +1183,9 @@ Expected Result/Post Condition:
                         <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                         <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
                             <ipAddress inherit="false">[ipAddr]</ipAddress>
-                            <user inherit="false">[param(&apos;AMF/username&apos;)]</user>
-                            <password inherit="false" masked="false">[param(&apos;AMF/password&apos;)]</password>
+                            <port inherit="false">[param(&apos;SMF/ssh_port&apos;)]</port>
+                            <user inherit="false">[param(&apos;SMF/username&apos;)]</user>
+                            <password inherit="false" masked="false">[param(&apos;SMF/password&apos;)]</password>
                         </sessionProperties>
                         <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
