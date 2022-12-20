@@ -1,82 +1,79 @@
 <?xml version="1.0"?>
 <testCase version="9.0.4.202208111512">
     <general>
-        <documentation>5G_DEREG_015 Network initiated implicit de-registration: mobile reachable timer.</documentation>
-        <tags>5G_DEREG_015, Automation_Next_Gen_Framework</tags>
-        <notes>Test Purpose: The purpose of this test is to verify the successful Network initiated implicit de-registration: mobile reachable timer.
-
+        <documentation>5G_SR_045 Verify SMF PDU session release. </documentation>
+        <tags>Automation_Next_Gen_Framework_v2, 5G_SR_045</tags>
+        <notes>Test Purpose: The purpose of this test is to verify successful UE initiated Service Request when UE is in CM-IDLE mode - without PDU. 
+Pre-requisites/Test Environment:
+•\tUE with DISH SIM.
+•\tThe trace/log collection is started.
+Test Dependencies:
+•\tUE registered in 5G network 
+Test parameter and Tools:
+•\tInternal logs and Wireshark.
+Test Procedure:
+•\tStart the traces/logs collection.
+•\tCheck on AMF the registration profile of the UE: cmm subscriber show –imsi &lt;imsi&gt;.
+•\tEnsure that there is no data session on the SMF / UPF: show mobile-gateway pdn pdu-session.
+•\tWait until the UE goes in Idle mode.
+•\tEnsure on AMF that the UE is CM-IDLE state: cmm subscriber show --imsi &lt;imsi&gt; | grep mState.
+•\tStart a data session.
+•\tVerify the data session on the SMF / UPF: show mobile-gateway pdn pdu-session.
+•\tStop the traces/logs collection.
+Remarks: 
+•\t3GPP TS References - 3GPP TS 23.502 version 15.2.0 Release 15 4.2.3.3, 3GPP TS 24.501 version 15.3.0 Release 15
+•\tCall Flow References - E2E Call Flow Document Appendix Section 3.5.
 Expected Result/Post Condition:  
-•\tVerify the purge timer expired in AMF.
-•\tVerify AMF must initiate the deregistration request to UE.
-•\tVerify SMF must release all user plane resources of the PDU session.
-•\tVerify UE must be deregistered state in AMF by using show – IMSI | grep mState command.
-•\tVerify in UDR subscriber profile, UE must be deregistered Purge=True using ldap command.
-•\tReset purge timer value in AMF by using cmm amfMobilityTimers modify --amfTimerName purgeTimer –amfTimerValue. 
+•\tVerify UE sends the Service Request Procedure successfully.
+•\tVerify UE sends PDU session establishment request to AMF.
+•\tVerify the PDU session established Successfully.
+•\tThe traces/logs collection is successfully stopped
+
 </notes>
         <language>Python</language>
     </general>
     <procedures>
         <item name="main">
             <steps>
-                <item guid="787726ba-6d30-4c38-a6e1-9f71b618cec6" action="comment" useFieldsInCommand="false">
+                <item guid="0f39d5f5-1021-42e5-a8d1-e08b15debbc1" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="41b435da-2104-457e-90f3-85e2638f1b19" action="comment" useFieldsInCommand="false">
+                <item guid="0d827159-4081-4dbe-b1bf-19ba44800154" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Define Landslide Library Key, project_id; INIT instance_id aka tc_id, failure_originators_list and write_cause_code_data</body>
                     </command>
                     <nestedSteps>
-                        <item guid="3dd0cea4-4f7a-4e0c-85be-b852c5e34e5f" action="comment" useFieldsInCommand="false">
+                        <item guid="707bbd4a-ed57-4f63-91bc-85563c05bdbf" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Local process driver variable init. (Instence level parameters)</body>
                             </command>
                             <nestedSteps>
-                                <item guid="38d9b627-28bf-41ac-a96f-721ba3c39f7b" action="comment" useFieldsInCommand="false">
-                                    <command>
-                                        <body>Set the tmd_query_path</body>
-                                    </command>
-                                    <nestedSteps>
-                                        <item guid="b27c691a-0654-4fb9-b78c-025322611e4a" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>tmd_key = param(&apos;TC_parameters/tmd_key&apos;)</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="68aac920-a6ff-4ce9-b425-130562adef25" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>tmd_query_path = &apos;TMD_Name/{0}/&apos;.format(tmd_key)</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                    </nestedSteps>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="7953eb73-964b-4e86-ab4f-038b21fae733" action="comment" useFieldsInCommand="false">
+                                <item guid="571331e7-a9b2-4426-93c9-3dfaf02139e1" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Set the tmd variables</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="a854d701-a5d0-4ace-9d90-2a5ef53e0831" action="eval" useFieldsInCommand="false">
+                                        <item guid="a9af3bd9-6da7-4275-9a0e-6ee87af6416b" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>additional_validation = param(tmd_query_path + &quot;/additional_validation&quot;, &apos;False&apos;)</body>
+                                                <body>additional_validation = param(&apos;TMD_Name/process_manager/additional_validation&apos;, &apos;False&apos;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="819167d9-44c8-4f64-9f11-d8b357086118" action="eval" useFieldsInCommand="false">
+                                        <item guid="5a75f818-0a45-4a04-8058-df35894f7b47" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>nf_interaction = param(tmd_query_path + &quot;/nf_interaction&quot;, &apos;False&apos;)</body>
+                                                <body>nf_interaction = param(&apos;TMD_Name/process_manager/nf_interaction&apos;, &apos;False&apos;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="989bbccb-9f44-47d5-98ec-9ae134316f9a" action="eval" useFieldsInCommand="false">
+                                        <item guid="e5944b36-0a2a-4ee2-9828-943594652dac" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>pcap_analysis = param(tmd_query_path + &quot;/pcap_analysis&quot;, &quot;false&quot;)</body>
+                                                <body>pcap_analysis = param(&apos;TMD_Name/process_manager/pcap_analysis&apos;, &quot;false&quot;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="d616b4a3-7bca-4dac-9272-47a45a4e891b" action="eval" useFieldsInCommand="false">
+                                        <item guid="3f2cf9d4-b84d-43b3-a49c-45596f2dc7b7" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>show_charts = param(tmd_query_path + &quot;/show_charts&quot;, &apos;False&apos;)</body>
+                                                <body>show_charts = param(&apos;TMD_Name/process_manager/show_charts&apos;, &quot;false&quot;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
@@ -86,37 +83,43 @@ Expected Result/Post Condition:
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="caabae3b-790d-4fe3-a4ae-41019382db8c" action="eval" useFieldsInCommand="false">
+                        <item guid="f46c0365-5987-4b8f-9266-132e590c171f" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>libraryName = &quot;{Dish 5G Velocity Automation}&quot;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="12253e9b-cb86-4e23-840a-8e08fabb8339" action="eval" useFieldsInCommand="false">
+                        <item guid="af14c9f7-2ce4-4d8d-a9a1-b95c2c1ec04d" action="eval" skip="true" useFieldsInCommand="false">
+                            <command>
+                                <body>libraryName = &quot;{Dish 5G Velocity Scrub}&quot;</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="01b375a5-6fc5-472e-ad62-b9b0431bc4f7" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>tc_id = info(&apos;testCaseName&apos;, &apos;main&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="01d0fefd-b210-474f-bc2d-5cf8a9960e05" action="eval" useFieldsInCommand="false">
+                        <item guid="20f13ef2-93b0-4598-b07f-6f21e13ae484" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>project_id = info(&apos;testCaseProject&apos;, &apos;main&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="9403461d-bac0-4ab5-a02b-732b2b2b295f" action="eval" useFieldsInCommand="false">
+                        <item guid="f7f7c274-6783-4652-9106-ffcd3dea5693" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>failure_originators_list = []</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="0de713a5-952f-4ff3-b844-32e5e9e6ed12" action="eval" useFieldsInCommand="false">
+                        <item guid="b25dde58-838d-4de0-8abb-0762b7aa9193" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>write_cause_code_data = &quot;False&quot;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="420a54ac-9ac7-4849-9ca6-f891a5d5cbe6" action="eval" useFieldsInCommand="false">
+                        <item guid="546c6b54-76b2-4593-bc3e-70d79f9e3871" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>ls_criteria_data_error = &quot;False&quot;</body>
                             </command>
@@ -125,12 +128,12 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="93bb75fe-7235-4c56-8d17-460770219806" action="comment" useFieldsInCommand="false">
+                <item guid="ab1c9b60-3aa4-4fc4-a337-c592c2522c14" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Call test_instance_init - Process will ensure the driving data is correct, Landslide configured and status checked. If you return all is well or there was an issue an we&apos;ve Aborted.</body>
                     </command>
                     <nestedSteps>
-                        <item guid="b7938f49-50b7-4f11-a994-0a6295fe6d6c" action="call" useFieldsInCommand="false">
+                        <item guid="6bb14bad-81a6-4d32-aea8-f51b299d6de2" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#test_instance_init -instance_id [tc_id] -ls_library_name [libraryName] -project_id [project_id]</body>
                             </command>
@@ -160,36 +163,35 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="e9ce6bfa-129a-4164-8071-80ba5d4f4711" action="comment" useFieldsInCommand="false">
+                <item guid="1e1bfc3f-fff1-4345-95ef-406619e667b9" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>!!!! Perform Any REQUIRED Modifacation(s) to &apos;run_data_list&apos; driving data HERE!!!!   Next step Landslide execution.</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="3111f6de-952b-4ce8-b588-7efc020687c1" action="comment" useFieldsInCommand="false">
+                <item guid="7115b239-d6f6-4624-9e0f-9d577bff8d11" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>#### Check for any pre-test activities and process as required. ?!?!!? Network CHECK/QUERY/MODIFY (Prior to Landslide Execution) ####</body>
                     </command>
                     <nestedSteps>
-                        <item guid="4a27a370-dcf3-4d62-adb2-caf9ddb72a81" action="if" useFieldsInCommand="false">
+                        <item guid="030350fa-660d-4482-b3eb-501a2d171675" action="if" useFieldsInCommand="false">
                             <command>
-                                <body>param(&apos;TMD_Name/process_manager/nf_interaction_pre&apos;)== True:</body>
+                                <body>str(nf_interaction) == &quot;True&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="6f85a3d1-0f3a-4db6-a8d9-90cc9c81fc05" action="comment" useFieldsInCommand="false">
+                                <item guid="bf128ea5-519a-471b-9808-b36b9e9648f0" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Routine is just a stub; Awaiting requirements and process definition to continue/complete.</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="cf52c462-990d-45a3-ba64-ef9fdcf2c56f" action="call" useFieldsInCommand="false">
+                                <item guid="f0fffc7c-2dfd-415d-ac39-46e2e384127b" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>configureTimersForTest()</body>
+                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#network_function_mgr -instance_id [tc_id] -project_id [project_id] -run_data [run_data_list] -nf_instance_id NOT_DEFINED_instance_1</body>
                                     </command>
-                                    <postProcessing>
-                                        <storeResponseAt>timer_json</storeResponseAt>
-                                        <storeResponseText>true</storeResponseText>
-                                    </postProcessing>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="9cbb089a-4439-4027-8e9e-d0f35f5f4115" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -198,12 +200,12 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="5328f091-9d92-42e9-9b64-9172051657d2" action="comment" useFieldsInCommand="false">
+                <item guid="2af8370a-d9fe-4348-95ce-9d6a4eb405d3" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Add a seperator; we&apos;ve completed the setup, start the Landslide process</body>
                     </command>
                     <nestedSteps>
-                        <item guid="720785fb-df04-4439-ae1e-cdf7726ddc0e" action="call" useFieldsInCommand="false">
+                        <item guid="e9fcc928-48f1-49af-8c8d-b41f936ee2ff" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://ai_LS_5G/utility_library/utils.fftc#insert_devider_string -length 135</body>
                             </command>
@@ -212,12 +214,12 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="05d89326-3e24-4e4d-942f-28b912eb6d26" action="comment" useFieldsInCommand="false">
+                <item guid="2c369ab8-66b2-465a-9d27-49118026acb9" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>##### Perform Landslide Test Procedure #####</body>
                     </command>
                     <nestedSteps>
-                        <item guid="58fab8d0-fba3-4dd4-807b-d366964b5023" action="call" useFieldsInCommand="false">
+                        <item guid="1070c473-4a46-4e03-9f5f-88b2ae3af57c" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_execute_landslide_procedure -run_data_list [run_data_list]</body>
                             </command>
@@ -330,17 +332,17 @@ Expected Result/Post Condition:
                             </postProcessing>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="408555f4-d71c-4036-b533-0f8a85269728" action="comment" useFieldsInCommand="false">
+                        <item guid="f1c572bb-e12c-4d86-96ad-5941c536eca7" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Check &apos;exec_ls_test_data&apos; for logged failure in criteria validation; Act accordingly.... 2 or 3 items we can work with all others counts are bad</body>
                             </command>
                             <nestedSteps>
-                                <item guid="7e43cd47-27d3-4404-9cca-011b0f11ae25" action="if" useFieldsInCommand="false">
+                                <item guid="370e31a9-856f-4de5-9e7f-ce41f0c5c94b" action="if" useFieldsInCommand="false">
                                     <command>
                                         <body>int(exec_ls_testdata_item_cnt) == 3:</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="43a2ede8-5899-4c2c-9741-add6f8ebbc9c" action="eval" useFieldsInCommand="false">
+                                        <item guid="f5ad5705-6063-4704-8517-587225bec7aa" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>print(exec_ls_testdata)</body>
                                             </command>
@@ -395,13 +397,13 @@ Expected Result/Post Condition:
                                             </postProcessing>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="5b58d325-7c42-47d7-ae30-cc139f9ad6a9" action="eval" useFieldsInCommand="false">
+                                        <item guid="ffa4ac8a-2d5a-48d0-b555-0067d4a18828" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>failure_originators_list.append(failure_originator)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="91370f91-bd0c-4961-8fb2-853657ced7db" action="eval" useFieldsInCommand="false">
+                                        <item guid="150c9bea-7d7a-4f50-9eb0-38a886dbf760" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>write_cause_code_data = &quot;True&quot;</body>
                                             </command>
@@ -410,12 +412,12 @@ Expected Result/Post Condition:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="70ec6c34-9661-4211-8c59-6c00cf0d22c0" action="elif" useFieldsInCommand="false">
+                                <item guid="95eb056d-4a0c-40b4-b10c-c64cbb389600" action="elif" useFieldsInCommand="false">
                                     <command>
                                         <body>int(exec_ls_testdata_item_cnt) == 2:</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="311f83ea-3b25-460d-aeba-54ea228e193a" action="eval" useFieldsInCommand="false">
+                                        <item guid="28548fde-3832-407b-a34a-c9732346f334" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>print(exec_ls_testdata)</body>
                                             </command>
@@ -458,12 +460,12 @@ Expected Result/Post Condition:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="188c2857-fc70-48b9-98ca-d52efdb2cc36" action="else" useFieldsInCommand="false">
+                                <item guid="e0ec404a-2075-4d4b-bd1d-b9cc3e6d49f4" action="else" useFieldsInCommand="false">
                                     <command>
                                         <body>ERROR in data data return shape, can&apos;t continue with PCAP validation</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="842e8f41-5ff7-4a13-9a72-32133f1a5088" action="eval" useFieldsInCommand="false">
+                                        <item guid="45e644ee-243b-4913-a7e9-0fcaf218a0ab" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>ls_criteria_data_error = &quot;True&quot;</body>
                                             </command>
@@ -478,27 +480,27 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="70bab8d4-c88e-412a-95a8-822d8b5550c5" action="comment" useFieldsInCommand="false">
+                <item guid="b76cbcbb-2aff-499f-aa5d-ede3aa93f95b" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Check for additional Validation; Landslide Criteria Validation has been completed</body>
                     </command>
                     <nestedSteps>
-                        <item guid="606dc149-8493-4cb7-a588-5720d958fcc6" action="if" useFieldsInCommand="false">
+                        <item guid="cd6e97c6-ba82-4b78-b5b8-98db63e57adf" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(pcap_analysis) == &quot;True&quot; and str(errorsAndWarnings) == &quot;False&quot; and str(ls_criteria_data_error) == &quot;False&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="3f73bda5-6e12-4649-99ae-de235a8292ca" action="comment" useFieldsInCommand="false">
+                                <item guid="3e888a97-a5e1-46a5-93b5-802b78581139" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Check &apos;exec_ls_test_data&apos;; Act accordingly.... 2 or 3 items we can work with all others counts are bad</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="61ac5e4b-b352-40dd-b34f-e87e777a8587" action="if" useFieldsInCommand="false">
+                                        <item guid="4467cfd4-3010-4f4f-aa49-a32f299a400e" action="if" useFieldsInCommand="false">
                                             <command>
                                                 <body>int(exec_ls_testdata_item_cnt) == 3:</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="6fcfc950-852a-43af-9756-446c1b0017a6" action="eval" useFieldsInCommand="false">
+                                                <item guid="d1816b71-6135-4d0f-a349-6d7e3a78fa5c" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>print(exec_ls_testdata)</body>
                                                     </command>
@@ -553,7 +555,7 @@ Expected Result/Post Condition:
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="78d24df6-0670-4ec7-8354-ba731a58c709" action="eval" useFieldsInCommand="false">
+                                                <item guid="351a6b45-449d-4153-9f37-075de4fda864" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>ls_pcap_data_error = &quot;False&quot;</body>
                                                     </command>
@@ -562,12 +564,12 @@ Expected Result/Post Condition:
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="0cd1cf09-5a7d-43f5-bddc-363adcb02966" action="elif" useFieldsInCommand="false">
+                                        <item guid="ca0b37f0-7cf2-4601-845b-b2097377b12f" action="elif" useFieldsInCommand="false">
                                             <command>
                                                 <body>int(exec_ls_testdata_item_cnt) == 2:</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="af408df5-e414-426e-9ddc-1739a922eb01" action="eval" useFieldsInCommand="false">
+                                                <item guid="74629b38-cf98-48b3-bf52-3f5efc1c7973" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>print(exec_ls_testdata)</body>
                                                     </command>
@@ -607,7 +609,7 @@ Expected Result/Post Condition:
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="e1458ada-3e95-4463-a2df-1d6b37c52241" action="eval" useFieldsInCommand="false">
+                                                <item guid="9332db1a-f3f0-4f99-9df9-e85a29c47070" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>ls_pcap_data_error = &quot;False&quot;</body>
                                                     </command>
@@ -616,12 +618,12 @@ Expected Result/Post Condition:
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="efb493f5-475b-4219-b98f-771f6cafcd1b" action="else" useFieldsInCommand="false">
+                                        <item guid="1af6e94c-315f-4324-a37b-5d825da92595" action="else" useFieldsInCommand="false">
                                             <command>
                                                 <body>ERROR in data data return shape, can&apos;t continue with PCAP validation</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="f3de9d8c-6d9a-4c8a-bd72-31c49a271843" action="eval" useFieldsInCommand="false">
+                                                <item guid="27793329-67ce-41d6-9bff-5bc543842c70" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>ls_pcap_data_error = &quot;True&quot;</body>
                                                     </command>
@@ -633,17 +635,17 @@ Expected Result/Post Condition:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="9c369706-4303-4c59-bfcd-24e75ac313f0" action="if" useFieldsInCommand="false">
+                                <item guid="e4ffd26e-1c6d-4592-9c67-e042d50c768a" action="if" useFieldsInCommand="false">
                                     <command>
                                         <body>str(ls_pcap_data_error) == &quot;False&quot;:</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="99d1d51d-5015-4b86-9167-abb7685bbd90" action="comment" useFieldsInCommand="false">
+                                        <item guid="a8369180-a002-4627-8fe3-9666e8931a4e" action="comment" useFieldsInCommand="false">
                                             <command>
                                                 <body>Message Validation Start</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="4f6bed31-8168-4cf1-916f-3cc33357413e" action="message" useFieldsInCommand="false">
+                                                <item guid="3ad5952d-2b66-4a4a-b9f1-5cf73eb054a2" action="message" useFieldsInCommand="false">
                                                     <command>
                                                         <body>Information: Starting Landslide PCAP Validation</body>
                                                     </command>
@@ -654,12 +656,12 @@ Expected Result/Post Condition:
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="f1068d8e-4c33-4460-85bf-de3f634bd4d3" action="comment" useFieldsInCommand="false">
+                                        <item guid="c57d7668-b97e-4e37-8e46-913cd51a0e10" action="comment" useFieldsInCommand="false">
                                             <command>
                                                 <body>Call pcap_validation and do the work; based upon the return, report cause codes if failure logged</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="aaaf2003-ca23-450e-8a11-ff6c3c687277" action="call" useFieldsInCommand="false">
+                                                <item guid="e5361355-d258-4f52-a1ab-699107ff973d" action="call" useFieldsInCommand="false">
                                                     <command>
                                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#utility_pcap_validation -results_url_list [results_payload_uri_list] -running_id [running_id]</body>
                                                     </command>
@@ -684,27 +686,27 @@ Expected Result/Post Condition:
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="e307acad-91c7-49e0-bb3b-1e33d5537550" action="if" useFieldsInCommand="false">
+                                                <item guid="83979ed1-80f1-43ab-bc71-d550a946e792" action="if" useFieldsInCommand="false">
                                                     <command>
                                                         <body>str(pcap_return_status) != &quot;PASSED&quot;:</body>
                                                     </command>
                                                     <nestedSteps>
-                                                        <item guid="420339cf-a600-4edc-8dc7-3f4995fbc146" action="comment" useFieldsInCommand="false">
+                                                        <item guid="8e2fb1c4-83a9-4dee-9982-a784aaadcf90" action="comment" useFieldsInCommand="false">
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="bddfd5e6-5f21-44d9-9888-60b4d98efadd" action="eval" useFieldsInCommand="false">
+                                                        <item guid="8d0e4ac6-936b-418c-8bcd-3f0a97d0471c" action="eval" useFieldsInCommand="false">
                                                             <command>
                                                                 <body>write_cause_code_data = &quot;True&quot;</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="090ba10f-3b06-4f42-ae2d-7c1632568f22" action="eval" useFieldsInCommand="false">
+                                                        <item guid="2e3cb918-837f-4a47-9646-639275130044" action="eval" useFieldsInCommand="false">
                                                             <command>
                                                                 <body>failure_originators_list.append(&apos;pcap&apos;)</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="5389ded0-2aa9-48b7-ae68-032e061f850b" action="comment" useFieldsInCommand="false">
+                                                        <item guid="1e827483-361f-4600-9d73-fb2ded16cfc0" action="comment" useFieldsInCommand="false">
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                     </nestedSteps>
@@ -716,55 +718,41 @@ Expected Result/Post Condition:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="6497bbb7-03c7-4090-9226-665ae2336e3a" action="comment" useFieldsInCommand="false">
+                                <item guid="49412a0e-dbea-4890-a68e-922b698df7c4" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="a70a19c2-766b-419b-a308-82cb7e2838bc" action="if" useFieldsInCommand="false">
+                        <item guid="c944668e-162d-4eae-903f-ff21361b6787" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(additional_validation) == &quot;True&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="165d8fc5-6f54-43ed-89b5-5c7e01fd5a78" action="comment" useFieldsInCommand="false">
+                                <item guid="42ec32bd-f1bd-4e5d-83f9-ab67a6c70f14" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Routine is just a stub; Awaiting requirements and process definition to continue/complete.</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="e7d0e28e-3b14-4038-add7-e10c8e1cdb02" action="call" useFieldsInCommand="false">
+                                <item guid="b95669bc-c7a9-45b8-be79-aedb38c04b9e" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#additional_validation_mgr -instance_id [tc_id] -project_id [project_id] -running_id [running_id] -validate_process_type NOT_DEFINED -validation_type_id NOT_DEFINED</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="a405cef7-8b14-4b0a-95a8-03ffe1f71f6a" action="comment" useFieldsInCommand="false">
+                                <item guid="ef0a358d-ee0e-478e-820e-b5ca6637322e" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="9e5b562f-22cb-4447-a912-372c523b3f37" action="if" useFieldsInCommand="false">
-                            <command>
-                                <body>param(&apos;TMD_Name/process_manager/nf_interaction_post&apos;) == True:</body>
-                            </command>
-                            <nestedSteps>
-                                <item guid="a757016e-46a7-472b-a4d2-709fccd8963e" action="call" useFieldsInCommand="false">
-                                    <command>
-                                        <body>restoreTimers(timer_json=timer_json)</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                            </nestedSteps>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="6a75a3c0-1b3b-4778-b32f-2e34b7b8243e" action="comment" useFieldsInCommand="false">
+                        <item guid="0c157cea-3967-4a1b-adb7-fb11b91d3127" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Add a seperator; we&apos;re done here</body>
                             </command>
                             <nestedSteps>
-                                <item guid="e323f3f8-f5bc-4332-9307-928ccc07e416" action="call" useFieldsInCommand="false">
+                                <item guid="0dbb2ec9-f9b8-4824-8b7f-cb7a4251b395" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://ai_LS_5G/utility_library/utils.fftc#insert_devider_string -length 135</body>
                                     </command>
@@ -776,26 +764,26 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="becacb69-b3fb-40d5-9ec5-040fc38a8664" action="comment" useFieldsInCommand="false">
+                <item guid="a355b2f2-49db-4285-8e47-0e279a08a22f" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>If a FAILURE was logged in ANY of the above validation processes.  Call &apos;write_landslide_extracted_cause_code_data&apos; and log as extracted data</body>
                     </command>
                     <nestedSteps>
-                        <item guid="127f6194-2602-4c40-88b2-da0ed237b569" action="if" useFieldsInCommand="false">
+                        <item guid="5df81264-01c7-43d3-9151-cefa27ba4f4f" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(write_cause_code_data) == &quot;True&quot; and str(ls_criteria_data_error) == &quot;False&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="3d84914f-50d1-46af-8e18-abebbabf50e4" action="comment" useFieldsInCommand="false">
+                                <item guid="6b6263be-a48d-45f9-8423-3108b8902024" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="afd3c5c3-0f73-478a-8fbd-88b0213fff69" action="call" useFieldsInCommand="false">
+                                <item guid="9eafc56e-37c2-4181-a333-14509ce706f3" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#write_landslide_extracted_cause_code_data -failure_originator [failure_originators_list] -results_payload_uri_list [results_payload_uri_list]</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="6747cd35-7b91-47be-baac-f7f64b95b86e" action="comment" useFieldsInCommand="false">
+                                <item guid="cec7e1bb-56b4-4f32-bd92-7c0476a54841" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -804,12 +792,12 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="45736fd1-0c71-43b9-92df-318367e156b0" action="comment" useFieldsInCommand="false">
+                <item guid="210fa278-f388-4ce6-8acd-428f237160ee" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Display end of instance info</body>
                     </command>
                     <nestedSteps>
-                        <item guid="f4aee318-8dbc-4ace-91fe-f5147dcbadea" action="eval" useFieldsInCommand="false">
+                        <item guid="8bdb0ada-7e04-4288-b7a9-25412bae3cdc" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>print(info(&apos;testCaseName&apos;, &apos;main&apos;))</body>
                             </command>
@@ -832,50 +820,50 @@ Expected Result/Post Condition:
                             </postProcessing>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="6e4ccf0e-7be3-4d62-8cba-1e7e83996890" action="comment" useFieldsInCommand="false">
+                        <item guid="af805626-3f9c-40bf-b0fe-710327ef7fa9" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Report the RID information Or the error that came back from &apos;execute_dish_landslide_procedure&apos;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="44e2ce05-ad66-44fb-a3a3-39f7198bde16" action="if" useFieldsInCommand="false">
+                        <item guid="dd8a82aa-86dc-43c5-b63e-0734c2728508" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>errorsAndWarnings:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="cbe89277-aafb-46d7-8c9a-bcf1f6733117" action="comment" useFieldsInCommand="false">
+                                <item guid="53afc52c-3416-4198-8817-9ce1a1b5367b" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>If we&apos;re here the exec_ls_testdata contains the errorsAndWarnings data</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="b072f754-6169-4648-be2e-abb6678cb1a6" action="eval" useFieldsInCommand="false">
+                                <item guid="17a27871-3bed-4b9f-a574-d74649e3a977" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>exec_ls_testdata</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="8ef04260-b59f-42c5-837d-31632d5fc3d0" action="comment" useFieldsInCommand="false">
+                                <item guid="d905680e-9e19-47ea-b93b-10463d54bf9f" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="f0f99e48-2ad4-4c3b-aa6f-b46096ad1ec8" action="else" useFieldsInCommand="false">
+                        <item guid="18c78ee3-57e6-4619-a73f-09932e9fb5d8" action="else" useFieldsInCommand="false">
                             <nestedSteps>
-                                <item guid="45e5b458-7a0d-4678-80d7-ec717de8ec85" action="comment" useFieldsInCommand="false">
+                                <item guid="36abd558-ea36-4f59-aa6a-90abaaaa5446" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Display the RIDs for this instance</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="45670bd3-7d12-45b0-b516-943ce47ba7e1" action="eval" useFieldsInCommand="false">
+                                <item guid="91d790a4-940f-4b48-8c9a-f7480d2ffc91" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>rid_msg = &quot;Landslide Running IDs: &quot; + str(running_id)</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="f1ef09bf-6b88-4520-8131-d25bca5ea0eb" action="eval" useFieldsInCommand="false">
+                                <item guid="d708338d-68e7-46f1-a9c9-eb016a571aeb" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>print(rid_msg)</body>
                                     </command>
@@ -898,7 +886,7 @@ Expected Result/Post Condition:
                                     </postProcessing>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="57348edc-2e7d-4aba-b546-562af7d489be" action="comment" useFieldsInCommand="false">
+                                <item guid="637ddd28-7a70-4d4d-9f56-af16b40b0f90" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -907,17 +895,17 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="8851182f-eb36-49d6-a7f4-0f4beed45d58" action="comment" useFieldsInCommand="false">
+                <item guid="b9a8acd7-7407-44dc-a58c-f4279859f661" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Show charts</body>
                     </command>
                     <nestedSteps>
-                        <item guid="a8340149-c518-4334-b1b6-d2ff824fc9f7" action="if" useFieldsInCommand="false">
+                        <item guid="02659ff3-eeb3-49be-8e33-8da051d2dcd8" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>show_charts:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="6c311cd0-d608-4afb-9269-331b6b57e9aa" action="call" useFieldsInCommand="false">
+                                <item guid="fcffb565-f580-42d5-86eb-444f2fc31be9" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#build_charts -reportData [result_list]</body>
                                     </command>
@@ -929,17 +917,17 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="b4382ade-ac7d-49f2-99a6-9ea089416024" action="comment" useFieldsInCommand="false">
+                <item guid="13425a57-6314-412c-9d93-d9ac4a5971fb" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Call post_instance_processor - Always called</body>
                     </command>
                     <nestedSteps>
-                        <item guid="c503dd9c-9911-4980-9d60-72287fc58e56" action="if" useFieldsInCommand="false">
+                        <item guid="a496c407-12b7-452c-8918-35f06e0d37f9" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(ls_criteria_data_error) == &quot;False&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="977a53df-f1d8-47ae-a6a1-167df95d66df" action="call" useFieldsInCommand="false">
+                                <item guid="fc5ce9c1-d373-4502-b74e-3f19630c468b" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#post_instance_processing -instance_id [tc_id] -project_id [project_id] -running_id [running_id]</body>
                                     </command>
@@ -951,12 +939,12 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="2c7dfab7-bb5d-4a31-8229-dac405161450" action="comment" useFieldsInCommand="false">
+                <item guid="a7ff970a-41cd-4034-a4ac-a05d6dd0187c" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Close the Landslide session opened via &apos;test_instance_init&apos;</body>
                     </command>
                     <nestedSteps>
-                        <item guid="08759287-03e5-40cb-a7c5-9b22ea6d4e41" action="call" useFieldsInCommand="false">
+                        <item guid="9e964ba1-e142-4952-a799-918aa4ec7ed4" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_close_landslide -session s1</body>
                             </command>
@@ -965,25 +953,19 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="4c43d296-73e5-4cd3-b084-8c779c4ca074" action="comment" useFieldsInCommand="false">
+                <item guid="f5e2e869-760e-49e4-a8ee-2fe2c18f9012" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
             </steps>
         </item>
-        <item name="configureTimersForTest" isPublic="true">
+        <item name="checkPduState" isPublic="true">
             <steps>
-                <item guid="1f615e50-0172-45b7-acd4-23c427fcd0ba" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>import json</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="260b697a-1a21-4cc5-afb0-626c743364ad" action="if" useFieldsInCommand="false">
+                <item guid="447e62f3-3f43-4371-b09d-3d0d816ba044" action="if" useFieldsInCommand="false">
                     <command>
                         <body>param(&apos;AMF/hostname&apos;) != &quot;&quot;:</body>
                     </command>
                     <nestedSteps>
-                        <item guid="2ef42ce8-1eff-4fa3-a44f-20eae83edb5a" action="eval" useFieldsInCommand="false">
+                        <item guid="492e0dad-df05-4ffa-bb0c-8139784437a0" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>ipAddr = param(&apos;AMF/hostname&apos;)</body>
                             </command>
@@ -992,9 +974,9 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="22997926-64fc-4474-b906-c947640cace6" action="else" useFieldsInCommand="false">
+                <item guid="6611de00-8a78-4b1d-a137-c11469284391" action="else" useFieldsInCommand="false">
                     <nestedSteps>
-                        <item guid="3cd57132-5d85-4be8-9b0e-7ea032995a53" action="eval" useFieldsInCommand="false">
+                        <item guid="54b136f0-fbd1-43b9-ba46-5abb5e1111ea" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>ipAddr = param(&apos;AMF/ip_address&apos;)</body>
                             </command>
@@ -1003,16 +985,7 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="2d801cd6-2ebd-475e-88fb-4372b6a8a865" action="message" useFieldsInCommand="false">
-                    <command>
-                        <body>Information:Waiting configuring timers to force UE to be deregistered ASAP (~1hr 20min)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                        <message inherit="false">Waiting configuring timers to force UE to be deregistered ASAP (~1hr 20min)</message>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="22bceca4-edec-474b-aa8c-f2502aefd028" action="open" session="AMF">
+                <item guid="61ba8a55-5510-4501-b2f1-2ec0bc3a0e51" action="open" session="AMF">
                     <command>
                         <body>project://di_[param(&apos;AMF/make&apos;)]/session_profiles/AMF.ffsp</body>
                     </command>
@@ -1028,87 +1001,89 @@ Expected Result/Post Condition:
                     </applicationProperties>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
-                <item guid="49cf728b-71b4-4419-91c9-205f119c4e9d" action="comment" useFieldsInCommand="false">
+                <item guid="ee6a689c-a8c6-4e14-8e8f-5e9259f1ba9c" action="message" useFieldsInCommand="false">
                     <command>
-                        <body>Read in original timers for returing</body>
+                        <body>Information:Waiting for UE to enter IDLE state</body>
                     </command>
                     <nestedSteps>
-                        <item guid="5b12577b-0105-4ede-8e5c-d3e71b7af9c6" action="get_nas_timer" session="AMF" useFieldsInCommand="false">
-                            <postProcessing>
-                                <storeResponseAt>nas</storeResponseAt>
-                                <storeResponseText>true</storeResponseText>
-                            </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                        <item guid="60daed9e-4f01-4e7d-ad28-bbe8975453c2" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>sub = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                             <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                         </item>
-                        <item guid="bfd4ce79-a688-4ca1-903a-2aa1f8f6ff0c" action="get_mobility_timer" session="AMF" useFieldsInCommand="false">
-                            <postProcessing>
-                                <storeResponseAt>mobility</storeResponseAt>
-                                <storeResponseText>true</storeResponseText>
-                            </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                        </item>
-                        <item guid="23f0fb86-3c0c-4a9b-b052-cbd8f9785f31" action="eval" useFieldsInCommand="false">
+                        <item guid="b16afc2f-4a11-4675-b7e9-a974d490a9f4" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
                             <command>
-                                <body>response_d = {}</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="636bd797-a7c2-4544-bf51-9241815de891" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>response_d[&apos;nas&apos;] = json.loads(nas)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="915d3931-d54f-4c78-aace-3326a9fb364f" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>response_d[&apos;mobility&apos;] = json.loads(mobility)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="09638aea-caa5-41d2-aa83-19d196b949c2" action="comment" useFieldsInCommand="false">
-                    <command>
-                        <body>Write NAS timer</body>
-                    </command>
-                    <nestedSteps>
-                        <item guid="bf973f9f-38d8-4054-bd08-7d16b4a8df18" action="set_nas_timer" session="AMF" useFieldsInCommand="false">
-                            <command>
-                                <body>-timer_name t3512 -timer_value 2 -timer_unit Minute</body>
+                                <body>-supi $sub</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
                                     <item>
                                         <extractorInfo extractorType="query">
                                             <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                <query>amfTimerValue()</query>
+                                                <query>amfCmState()</query>
                                             </extractorProperties>
                                         </extractorInfo>
                                         <processorInfo ruleType="assert">
                                             <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                <expression>value == &quot;2&quot;</expression>
+                                                <expression>str(value) == &quot;IDLE&quot;</expression>
                                                 <actionsWhenTrue>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                            <message>Successfully set T3512 timer to [str(value)]</message>
-                                                        </actionProperties>
-                                                    </item>
                                                     <item actionId="PassTestIfNotAlreadyFailed">
                                                         <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>AMF confirms that subscriber [sub] CM State is IDLE</message>
+                                                        </actionProperties>
                                                     </item>
                                                 </actionsWhenTrue>
                                                 <actionsWhenFalse>
                                                     <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                            <message>Failed to set T3512 timer to 2 actual was [str(value)]</message>
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>UE has not reached CONNECTED</message>
                                                         </actionProperties>
                                                     </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="15" delayBetweenRepeats="3.0"/>
+                                                    </item>
+                                                    <item actionId="SkipRemainingRules">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>amfRmState()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>str(value) == &quot;REGISTERED&quot;</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>AMF confirms that subscriber [sub] RM State is REGISTERED</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
                                                     <item actionId="FailTest">
                                                         <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>AMF says that subscriber [sub] CM State is not REGISTERED (but should be)</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="ExitProcedure">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
                                                     </item>
                                                 </actionsWhenFalse>
                                             </ruleProperties>
@@ -1116,298 +1091,121 @@ Expected Result/Post Condition:
                                     </item>
                                 </analysisRules>
                             </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>Timeout waiting for UE to reach IDLE state</message>
+                                        </actionProperties>
+                                    </item>
+                                </item>
+                                <item name="OnQueryExtractorInvalidQuery">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                            <message>UE has not reached IDLE</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="RepeatStep">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
+                                    </item>
+                                </item>
+                                <item name="OnResponseMappingIssue">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                            <message>UE has not reached IDLE</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="RepeatStep">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
+                                    </item>
+                                    <item actionId="SkipRemainingRules">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
                             <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
                             <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                         </item>
                     </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                        <message inherit="false">Waiting for UE to enter IDLE state</message>
+                    </applicationProperties>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
-                <item guid="4575b4cd-4d8e-4aee-84c3-d6e9dbd4156c" action="comment" useFieldsInCommand="false">
-                    <command>
-                        <body>Write Mobility timers</body>
-                    </command>
-                    <nestedSteps>
-                        <item guid="af42e1cf-16b0-4c60-919c-5549761c8f06" action="set_mobility_timer" session="AMF" useFieldsInCommand="false">
-                            <command>
-                                <body>-timer_name amfInitDeregistration -timer_value 5 -timer_unit Minute</body>
-                            </command>
-                            <postProcessing>
-                                <analysisRules>
-                                    <item>
-                                        <extractorInfo extractorType="query">
-                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                <query>amfTimerValue()</query>
-                                            </extractorProperties>
-                                        </extractorInfo>
-                                        <processorInfo ruleType="assert">
-                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                <expression>value == &quot;5&quot;</expression>
-                                                <actionsWhenTrue>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                            <message>Successfully set amfInitDeregistration timer to [str(value)]</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                    <item actionId="PassTestIfNotAlreadyFailed">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                </actionsWhenTrue>
-                                                <actionsWhenFalse>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                            <message>Failed to set amfInitDeregistration timer to 5 actual was [str(value)]</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                    <item actionId="FailTest">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                </actionsWhenFalse>
-                                            </ruleProperties>
-                                        </processorInfo>
-                                    </item>
-                                </analysisRules>
-                            </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                        </item>
-                        <item guid="25562147-deec-4a1f-bb1a-897d01f2b46d" action="set_mobility_timer" session="AMF" useFieldsInCommand="false">
-                            <command>
-                                <body>-timer_name purgeTimer -timer_value 1 -timer_unit Hour</body>
-                            </command>
-                            <postProcessing>
-                                <analysisRules>
-                                    <item>
-                                        <extractorInfo extractorType="query">
-                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                <query>amfTimerValue()</query>
-                                            </extractorProperties>
-                                        </extractorInfo>
-                                        <processorInfo ruleType="assert">
-                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                <expression>value == &quot;1&quot;</expression>
-                                                <actionsWhenTrue>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                            <message>Successfully set purgeTimer to [str(value)]</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                    <item actionId="PassTestIfNotAlreadyFailed">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                </actionsWhenTrue>
-                                                <actionsWhenFalse>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                            <message>Failed to set purgeTimer to 2 actual was [str(value)]</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                    <item actionId="FailTest">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                </actionsWhenFalse>
-                                            </ruleProperties>
-                                        </processorInfo>
-                                    </item>
-                                </analysisRules>
-                            </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="a05379d0-4523-4e1d-95a2-d3da4ca0d481" action="close" session="AMF" useFieldsInCommand="false">
+                <item guid="a6ca444e-fb14-401a-abe8-af5e83565269" action="close" session="AMF" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
-                <item guid="03844d68-393e-4e2f-a653-9dce50331a42" action="return">
+                <item guid="9349e3cb-8ba4-4326-905b-8766edfd1c1f" action="if" useFieldsInCommand="false">
                     <command>
-                        <body>[json.dumps(response_d)]</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-            </steps>
-        </item>
-        <item name="restoreTimers" isPublic="true">
-            <steps>
-                <item guid="4146366e-20f8-4aae-a7c2-d1dcc0601cea" action="if" useFieldsInCommand="false">
-                    <command>
-                        <body>param(&apos;AMF/hostname&apos;) != &quot;&quot;:</body>
+                        <body>param(&apos;SMF/hostname&apos;) != &quot;&quot;:</body>
                     </command>
                     <nestedSteps>
-                        <item guid="398698c2-1fcf-4fed-b758-85603cf0491d" action="eval" useFieldsInCommand="false">
+                        <item guid="c0628a96-d74f-47c9-97b2-2eefc91fcd07" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>ipAddr = param(&apos;AMF/hostname&apos;)</body>
+                                <body>ipAddr = param(&apos;SMF/hostname&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="4f19306a-a935-4a29-ae3b-eb1cb27c12a6" action="else" useFieldsInCommand="false">
+                <item guid="a627ff82-b7b8-4bff-83c4-d2687960d407" action="else" useFieldsInCommand="false">
                     <nestedSteps>
-                        <item guid="261bf746-e043-4cd3-9983-f90ce4a9a531" action="eval" useFieldsInCommand="false">
+                        <item guid="5038ac66-e1b8-43eb-a65f-3b47579fe2ee" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>ipAddr = param(&apos;AMF/ip_address&apos;)</body>
+                                <body>ipAddr = param(&apos;SMF/ip_address&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="33c8b702-2074-48d2-9cf4-3c44b47375e0" action="message" useFieldsInCommand="false">
+                <item guid="8e0a7c12-5d2f-497a-8d8a-883ef08e1c0b" action="open" session="SMF">
                     <command>
-                        <body>Information:Restoring original timer values</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                        <message inherit="false">Restoring original timer values</message>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="badcb7ab-1a68-482d-987f-3dac357e2835" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>timer_json</body>
-                    </command>
-                    <postProcessing>
-                        <analysisRules>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>mapped/Json/nas/item[./amfNasTimers=&apos;t3512&apos;]/amfTimerValue</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="store">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                        <storageLocation>t3512_value</storageLocation>
-                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>mapped/Json/nas/item[./amfNasTimers=&apos;t3512&apos;]/amfTimerUnit</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="store">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                        <storageLocation>t3512_unit</storageLocation>
-                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>mapped/Json/mobility/item[./amfMobilityTimers=&apos;amfInitDeregistration&apos;]/amfTimerValue</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="store">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                        <storageLocation>amfInitDeregistration_value</storageLocation>
-                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>mapped/Json/mobility/item[./amfMobilityTimers=&apos;amfInitDeregistration&apos;]/amfTimerUnit</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="store">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                        <storageLocation>amfInitDeregistration_unit</storageLocation>
-                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>mapped/Json/mobility/item[./amfMobilityTimers=&apos;purgeTimer&apos;]/amfTimerValue</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="store">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                        <storageLocation>purgeTimer_value</storageLocation>
-                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>mapped/Json/mobility/item[./amfMobilityTimers=&apos;purgeTimer&apos;]/amfTimerUnit</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="store">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                        <storageLocation>purgeTimer_unit</storageLocation>
-                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                        </analysisRules>
-                    </postProcessing>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="6b96d857-33b8-464c-b1bd-d05af5285948" action="open" session="AMF">
-                    <command>
-                        <body>project://di_[param(&apos;AMF/make&apos;)]/session_profiles/AMF.ffsp</body>
+                        <body>project://di_[param(&apos;SMF/make&apos;)]/session_profiles/SMF.ffsp</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
                         <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                         <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
                             <ipAddress inherit="false">[ipAddr]</ipAddress>
-                            <user inherit="false">[param(&apos;AMF/username&apos;)]</user>
-                            <password inherit="false" masked="false">[param(&apos;AMF/password&apos;)]</password>
+                            <port inherit="false">[param(&apos;SMF/ssh_port&apos;)]</port>
+                            <user inherit="false">[param(&apos;SMF/username&apos;)]</user>
+                            <password inherit="false" masked="false">[param(&apos;SMF/password&apos;)]</password>
                         </sessionProperties>
                         <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                     </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
                 </item>
-                <item guid="00d25bab-3e5a-41b0-8805-d0db901d12ad" action="comment" useFieldsInCommand="false">
+                <item guid="0ebccbab-dcff-42a6-9fdd-ec32d38fa239" action="message" useFieldsInCommand="false">
                     <command>
-                        <body>Write NAS timer</body>
+                        <body>Information:Verify in SMF there are zero PDUs for UE in IDLE mode</body>
                     </command>
                     <nestedSteps>
-                        <item guid="5b337544-678f-446b-ad1f-30de43cdf67e" action="set_nas_timer" session="AMF" useFieldsInCommand="false">
+                        <item guid="167ba901-1d71-4c56-a638-204e34f19397" action="get_subscriber_pdus" session="SMF" useFieldsInCommand="false">
                             <command>
-                                <body>-timer_name t3512 -timer_value $t3512_value -timer_unit $t3512_unit</body>
+                                <body>-supi $sub</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
                                     <item>
                                         <extractorInfo extractorType="query">
                                             <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                <query>amfTimerValue()</query>
+                                                <query>pdus()</query>
                                             </extractorProperties>
                                         </extractorInfo>
                                         <processorInfo ruleType="assert">
                                             <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                <expression>value == str(t3512_value)</expression>
+                                                <expression>len(value) == 0</expression>
                                                 <actionsWhenTrue>
                                                     <item actionId="DeclareExecutionIssue">
                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                            <message>Successfully set T3512 timer back to [str(value)]</message>
+                                                            <message>Zero PDU(s) found in SMF for subscriber  [sub]</message>
                                                         </actionProperties>
                                                     </item>
                                                     <item actionId="PassTestIfNotAlreadyFailed">
@@ -1416,12 +1214,12 @@ Expected Result/Post Condition:
                                                 </actionsWhenTrue>
                                                 <actionsWhenFalse>
                                                     <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                            <message>Failed to set T3512 timer back to [str(t3512_value)] actual was [str(value)]</message>
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>PDUs not yet removed, waiting 5 sec and trying again.</message>
                                                         </actionProperties>
                                                     </item>
-                                                    <item actionId="FailTest">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
                                                     </item>
                                                 </actionsWhenFalse>
                                             </ruleProperties>
@@ -1429,114 +1227,187 @@ Expected Result/Post Condition:
                                     </item>
                                 </analysisRules>
                             </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>PDUs not removed.  Exiting</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="ExitProcedure">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                                    </item>
+                                </item>
+                                <item name="OnQueryExtractorInvalidQuery">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                            <message>Zero PDU(s) found in SMF for subscriber  [sub]</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
                             <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                        <message inherit="false">Verify in SMF there are zero PDUs for UE in IDLE mode</message>
+                    </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="004f0edd-640f-4a16-8e4f-3e12361de390" action="message" useFieldsInCommand="false">
+                    <command>
+                        <body>Information:Wait for UE to start Ping traffic to bring PDU up</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="53615d0b-917d-4d43-a1a7-37d088ddf8d3" action="get_subscriber_pdus" session="SMF" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>pdus()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>len(value) &gt; 0</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>PDU(s) up in SMF found PDU(s): [str(value)]</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>PDUs not up yet waiting 5 sec and trying again.</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>PDUs did not come up, aborting SMF interaction.</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="ExitProcedure">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                        <message inherit="false">Wait for UE to start Ping traffic to bring PDU up</message>
+                    </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="07fa2069-a0a7-47f0-9a8a-3b37d56a66f9" action="close" session="SMF">
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="b3100c73-4f49-46b2-a896-017fa3b4e140" action="comment" skip="true" useFieldsInCommand="false">
+                    <command>
+                        <body>Skipping because determinge UE is down is difficult becaus it automatically reconnects IMMEDIATLY</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="d0c46377-41f5-4b83-a6ed-33c1d0f46254" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:Verifying UE is down</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Verifying UE is down</message>
+                            </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="fc227ea4-57d4-4eef-bc87-765b0cd7f404" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>amfCmState()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>str(value) == &quot;CONNECTED&quot;</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>UE removed from AMF but still connected.</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10"/>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>UE removed from AMF but still present in AMF database.</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnResponseMappingIssue">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                            <message>Subscriber sucessfully removed from AMF</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="SkipRemainingRules">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
                             <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="69837028-1bac-40ee-8a55-45f28b001466" action="comment" useFieldsInCommand="false">
-                    <command>
-                        <body>Write Mobility timers</body>
-                    </command>
-                    <nestedSteps>
-                        <item guid="d7384cb6-7d4b-49e1-91b4-4b5cb0f037d5" action="set_mobility_timer" session="AMF" useFieldsInCommand="false">
-                            <command>
-                                <body>-timer_name amfInitDeregistration -timer_value $amfInitDeregistration_value -timer_unit $amfInitDeregistration_unit</body>
-                            </command>
-                            <postProcessing>
-                                <analysisRules>
-                                    <item>
-                                        <extractorInfo extractorType="query">
-                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                <query>amfTimerValue()</query>
-                                            </extractorProperties>
-                                        </extractorInfo>
-                                        <processorInfo ruleType="assert">
-                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                <expression>value == str(amfInitDeregistration_value)</expression>
-                                                <actionsWhenTrue>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                            <message>Successfully set amfInitDeregistration timer back to [str(value)]</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                    <item actionId="PassTestIfNotAlreadyFailed">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                </actionsWhenTrue>
-                                                <actionsWhenFalse>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                            <message>Failed to set amfInitDeregistration timer back to [str(amfInitDeregistration_value)] actual was [str(value)]</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                    <item actionId="FailTest">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                </actionsWhenFalse>
-                                            </ruleProperties>
-                                        </processorInfo>
-                                    </item>
-                                </analysisRules>
-                            </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                        </item>
-                        <item guid="8a181b5b-5cf0-4138-a808-c132d9058a5a" action="set_mobility_timer" session="AMF" useFieldsInCommand="false">
-                            <command>
-                                <body>-timer_name purgeTimer -timer_value $purgeTimer_value -timer_unit $purgeTimer_unit</body>
-                            </command>
-                            <postProcessing>
-                                <analysisRules>
-                                    <item>
-                                        <extractorInfo extractorType="query">
-                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                <query>amfTimerValue()</query>
-                                            </extractorProperties>
-                                        </extractorInfo>
-                                        <processorInfo ruleType="assert">
-                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                <expression>value == str(purgeTimer_value)</expression>
-                                                <actionsWhenTrue>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                            <message>Successfully set purgeTimer back to [str(value)]</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                    <item actionId="PassTestIfNotAlreadyFailed">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                </actionsWhenTrue>
-                                                <actionsWhenFalse>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                            <message>Failed to set purgeTimer to back to [str(purgeTimer_value)] actual was [str(value)]</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                    <item actionId="FailTest">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                </actionsWhenFalse>
-                                            </ruleProperties>
-                                        </processorInfo>
-                                    </item>
-                                </analysisRules>
-                            </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
             </steps>
-            <arguments>
-                <item name="timer_json">
-                    <isMandatory>true</isMandatory>
-                </item>
-            </arguments>
         </item>
     </procedures>
 </testCase>
