@@ -24,31 +24,19 @@ Expected Result/Post Condition:
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="40d07fd7-0658-4144-849e-5ee39922ecdd" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>import json</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
                 <item guid="2df9323e-7f1c-4217-a0e3-13f299d2c0ca" action="call" useFieldsInCommand="false">
                     <command>
                         <body>configureTimersForTest()</body>
                     </command>
                     <postProcessing>
-                        <storeResponseAt>timer_dict</storeResponseAt>
+                        <storeResponseAt>timer_json</storeResponseAt>
                         <storeResponseText>true</storeResponseText>
                     </postProcessing>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="c175a8d3-8d4e-45dd-9a7f-dfd1d8cf1f6e" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>json.dumps(timer_dict)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
                 <item guid="f7834f89-94f9-4d2d-a45e-13c3e49696a9" action="call" useFieldsInCommand="false">
                     <command>
-                        <body>restoreTimers(timer_json=json.dumps(timer_dict))</body>
+                        <body>restoreTimers(timer_json=timer_json)</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
@@ -1009,6 +997,12 @@ Expected Result/Post Condition:
         </item>
         <item name="configureTimersForTest" isPublic="true">
             <steps>
+                <item guid="1f615e50-0172-45b7-acd4-23c427fcd0ba" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>import json</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
                 <item guid="260b697a-1a21-4cc5-afb0-626c743364ad" action="if" useFieldsInCommand="false">
                     <command>
                         <body>param(&apos;AMF/hostname&apos;) != &quot;&quot;:</body>
@@ -1072,54 +1066,12 @@ Expected Result/Post Condition:
                             <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                             <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                         </item>
-                        <item guid="205b60e6-c453-44d4-8908-41e1e717033f" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>nas_d = json.loads(nas)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                        </item>
-                        <item guid="a2cf1a50-c5d0-4b48-a274-3a4e3f8db62d" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>nas_d</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                        </item>
-                        <item guid="668eab70-e092-4e1f-b377-54bbe5c26e00" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>type(nas_d)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                        </item>
                         <item guid="bfd4ce79-a688-4ca1-903a-2aa1f8f6ff0c" action="get_mobility_timer" session="AMF" useFieldsInCommand="false">
                             <postProcessing>
                                 <storeResponseAt>mobility</storeResponseAt>
                                 <storeResponseText>true</storeResponseText>
                             </postProcessing>
                             <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                        </item>
-                        <item guid="0793b270-53a7-446b-b73f-722ca5f4dd9b" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>mobility_d = json.loads(mobility)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                        </item>
-                        <item guid="78704f84-16cc-44fe-9981-7062535a7495" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>mobility_d</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                        </item>
-                        <item guid="578d5474-0b8c-4811-ae3a-24045313ab58" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>type(mobility_d)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                             <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                         </item>
                         <item guid="23f0fb86-3c0c-4a9b-b052-cbd8f9785f31" action="eval" useFieldsInCommand="false">
@@ -1130,13 +1082,13 @@ Expected Result/Post Condition:
                         </item>
                         <item guid="636bd797-a7c2-4544-bf51-9241815de891" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>response_d[&apos;nas&apos;] = nas_d</body>
+                                <body>response_d[&apos;nas&apos;] = json.loads(nas)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="915d3931-d54f-4c78-aace-3326a9fb364f" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>response_d[&apos;mobility&apos;] = mobility_d</body>
+                                <body>response_d[&apos;mobility&apos;] = json.loads(mobility)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -1297,7 +1249,7 @@ Expected Result/Post Condition:
                 </item>
                 <item guid="03844d68-393e-4e2f-a653-9dce50331a42" action="return">
                     <command>
-                        <body>[response]</body>
+                        <body>[json.dumps(response_d)]</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
