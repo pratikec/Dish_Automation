@@ -1017,131 +1017,135 @@ Performance Counters:
                     </applicationProperties>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
-                <item guid="2efccaac-639e-4eb4-8391-4b17bdd4d219" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
+                <item guid="78bed84b-429b-42aa-bfa8-8cdbe9a5398d" action="comment" useFieldsInCommand="false">
                     <command>
-                        <body>-supi $sub</body>
+                        <body>Verify sub connected/registerd</body>
                     </command>
-                    <postProcessing>
-                        <analysisRules>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfCmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) == &quot;CONNECTED&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] CM State is CONNECTED</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                                    <message>UE has not reached CONNECTED</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="RepeatStep">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="15" delayBetweenRepeats="3.0"/>
-                                            </item>
-                                            <item actionId="SkipRemainingRules">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfRmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) == &quot;REGISTERED&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] RM State is REGISTERED</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="FailTest">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>AMF says that subscriber [sub] CM State is not REGISTERED (but should be)</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>Exiting w/out deleting subscriber</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="ExitProcedure">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                        </analysisRules>
-                    </postProcessing>
-                    <eventHandlers>
-                        <item name="OnRepeatStepMaxCountExceeded">
-                            <item actionId="FailTest">
-                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            </item>
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                    <message>Timeout waiting for UE to reach IDLE state</message>
-                                </actionProperties>
-                            </item>
+                    <nestedSteps>
+                        <item guid="2efccaac-639e-4eb4-8391-4b17bdd4d219" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>amfCmState()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>str(value) == &quot;CONNECTED&quot;</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>AMF confirms that subscriber [sub] CM State is CONNECTED</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>UE has not reached CONNECTED</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="15" delayBetweenRepeats="3.0"/>
+                                                    </item>
+                                                    <item actionId="SkipRemainingRules">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>amfRmState()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>str(value) == &quot;REGISTERED&quot;</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>AMF confirms that subscriber [sub] RM State is REGISTERED</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="FailTest">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>AMF says that subscriber [sub] CM State is not REGISTERED (but should be)</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>Exiting w/out deleting subscriber</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="ExitProcedure">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>Timeout waiting for UE to reach IDLE state</message>
+                                        </actionProperties>
+                                    </item>
+                                </item>
+                                <item name="OnQueryExtractorInvalidQuery">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                            <message>UE has not reached IDLE</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="RepeatStep">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
+                                    </item>
+                                </item>
+                                <item name="OnResponseMappingIssue">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                            <message>UE has not reached IDLE</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="RepeatStep">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
+                                    </item>
+                                    <item actionId="SkipRemainingRules">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                         </item>
-                        <item name="OnQueryExtractorInvalidQuery">
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                    <message>UE has not reached IDLE</message>
-                                </actionProperties>
-                            </item>
-                            <item actionId="RepeatStep">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
-                            </item>
-                        </item>
-                        <item name="OnResponseMappingIssue">
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                    <message>UE has not reached IDLE</message>
-                                </actionProperties>
-                            </item>
-                            <item actionId="RepeatStep">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
-                            </item>
-                            <item actionId="SkipRemainingRules">
-                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            </item>
-                        </item>
-                    </eventHandlers>
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="210f8764-bb5a-40b0-8d02-e14da88bcca1" action="close" session="AMF" useFieldsInCommand="false">
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="ad67f467-c26d-45eb-9779-efbb203275dc" action="if" useFieldsInCommand="false">
                     <command>
@@ -1168,15 +1172,6 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="be787641-326c-401e-8a9e-37842b23f92f" action="message" useFieldsInCommand="false">
-                    <command>
-                        <body>Information:Verifying subscriber [sub] has at least one PDU registered in the SMF</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                        <message inherit="false">Verifying subscriber [sub] has at least one PDU registered in the SMF</message>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
                 <item guid="0400b0b1-0eac-4c17-95fb-57ca9aa02938" action="open" session="SMF">
                     <command>
                         <body>project://di_[param(&apos;SMF/make&apos;)]/session_profiles/SMF.ffsp</body>
@@ -1194,146 +1189,295 @@ Performance Counters:
                     </applicationProperties>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
                 </item>
-                <item guid="32b4fae7-0398-4cbd-9f05-8cf374d6b6e3" action="get_subscriber_pdus" session="SMF" useFieldsInCommand="false">
+                <item guid="be787641-326c-401e-8a9e-37842b23f92f" action="message" useFieldsInCommand="false">
                     <command>
-                        <body>-supi $sub</body>
+                        <body>Information:Verifying subscriber [sub] has at least one PDU registered in the SMF</body>
                     </command>
-                    <postProcessing>
-                        <analysisRules>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>pdus()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>len(value) &gt; 0</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>PDU(s) up in SMF found PDU(s): [str(value)]</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                                    <message>PDUs not up yet waiting 5 sec and trying again.</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="RepeatStep">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                        </analysisRules>
-                    </postProcessing>
-                    <eventHandlers>
-                        <item name="OnRepeatStepMaxCountExceeded">
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                    <message>PDUs did not come up, aborting SMF interaction.</message>
-                                </actionProperties>
-                            </item>
-                            <item actionId="FailTest">
-                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            </item>
-                            <item actionId="ExitProcedure">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
-                            </item>
+                    <nestedSteps>
+                        <item guid="32b4fae7-0398-4cbd-9f05-8cf374d6b6e3" action="get_subscriber_pdus" session="SMF" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>pdus()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>len(value) &gt; 0</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>PDU(s) up in SMF found PDU(s): [str(value)]</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>PDUs not up yet waiting 5 sec and trying again.</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>PDUs did not come up, aborting SMF interaction.</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="ExitProcedure">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
                         </item>
-                    </eventHandlers>
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                        <message inherit="false">Verifying subscriber [sub] has at least one PDU registered in the SMF</message>
+                    </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
                 <item guid="919a9ab9-1fc3-4e8c-8bc7-fffc72cf270b" action="message" useFieldsInCommand="false">
                     <command>
                         <body>Information:Disabling UE in SMF ([ipAddr]) while in Landslide state [param(&apos;TMD_Name/process_manager/nf_interaction_during/item/trigger_state&apos;)] and UE in CONNECTED mode</body>
                     </command>
+                    <nestedSteps>
+                        <item guid="19f2d97c-a4f6-4d5d-93b6-259fd314fe65" action="delete_supi" session="SMF" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="3fe965cf-8169-4cdb-af18-63225f30e46a" action="sleep">
+                            <command>
+                                <body>2</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                    </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
                         <message inherit="false">Disabling UE in SMF ([ipAddr]) while in Landslide state [param(&apos;TMD_Name/process_manager/nf_interaction_during/item/trigger_state&apos;)] and UE in CONNECTED mode</message>
                     </applicationProperties>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
-                <item guid="19f2d97c-a4f6-4d5d-93b6-259fd314fe65" action="delete_supi" session="SMF" useFieldsInCommand="false">
+                <item guid="608af071-d335-4804-8215-0df06e5829c2" action="comment" useFieldsInCommand="false">
                     <command>
-                        <body>-supi $sub</body>
+                        <body>Verif PDUs are removed from SMF</body>
                     </command>
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="3fe965cf-8169-4cdb-af18-63225f30e46a" action="sleep">
-                    <command>
-                        <body>2</body>
-                    </command>
+                    <nestedSteps>
+                        <item guid="0155eee0-c566-4b45-8b55-b1c224c99d29" action="get_subscriber_pdus" session="SMF" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>pdus()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>len(value) == 0</expression>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>PDUs not yet removed, waiting 5 sec and trying again.</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>PDUs did not come up, aborting SMF interaction.</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="ExitProcedure">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                                    </item>
+                                </item>
+                                <item name="OnQueryExtractorInvalidQuery">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                            <message>PDU(s) sucessfully deleted from SMF for subscriber [sub]</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
+                        </item>
+                    </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="0155eee0-c566-4b45-8b55-b1c224c99d29" action="get_subscriber_pdus" session="SMF" useFieldsInCommand="false">
-                    <command>
-                        <body>-supi $sub</body>
-                    </command>
-                    <postProcessing>
-                        <analysisRules>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>pdus()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>len(value) == 0</expression>
-                                        <actionsWhenFalse>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                                    <message>PDUs not yet removed, waiting 5 sec and trying again.</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="RepeatStep">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                        </analysisRules>
-                    </postProcessing>
-                    <eventHandlers>
-                        <item name="OnRepeatStepMaxCountExceeded">
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                    <message>PDUs did not come up, aborting SMF interaction.</message>
-                                </actionProperties>
-                            </item>
-                            <item actionId="FailTest">
-                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            </item>
-                            <item actionId="ExitProcedure">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
-                            </item>
-                        </item>
-                        <item name="OnQueryExtractorInvalidQuery">
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                    <message>PDU(s) sucessfully deleted from SMF for subscriber [sub]</message>
-                                </actionProperties>
-                            </item>
-                            <item actionId="PassTestIfNotAlreadyFailed">
-                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            </item>
-                        </item>
-                    </eventHandlers>
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
                 </item>
                 <item guid="1c4a429d-afb4-4769-a0f2-4bf0f3ff0aaa" action="close" session="SMF">
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="852cd8f6-b58d-4ccc-920b-986bd77cb5fc" action="message" useFieldsInCommand="false">
+                    <command>
+                        <body>Information:Verify AMF shows 0 PDU session count for subscriber</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="57f7b392-d33e-497a-8dde-0ad0d6b8f130" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>pduSessCount()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>str(value) == &quot;0&quot;</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>AMF confirms that subscriber [sub] has zero PDUs</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>AMF still reporting UE has [str(value)] PDUs, waiting and checking again</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
+                                                    </item>
+                                                    <item actionId="SkipRemainingRules">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>amfRmState()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>str(value) == &quot;REGISTERED&quot;</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>AMF confirms that subscriber [sub] RM State is REGISTERED</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="FailTest">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>AMF says that subscriber [sub] CM State is not REGISTERED but never dropped the PDU prior to deregistering</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>Timeout waiting for UE to reach IDLE state</message>
+                                        </actionProperties>
+                                    </item>
+                                </item>
+                                <item name="OnQueryExtractorInvalidQuery">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                            <message>UE has not reached IDLE</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="RepeatStep">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
+                                    </item>
+                                </item>
+                                <item name="OnResponseMappingIssue">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                            <message>UE has not reached IDLE</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="RepeatStep">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
+                                    </item>
+                                    <item actionId="SkipRemainingRules">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                        <message inherit="false">Verify AMF shows 0 PDU session count for subscriber</message>
+                    </applicationProperties>
+                </item>
+                <item guid="84258ad9-eb67-42c9-af3e-1cee601fb406" action="close" session="AMF" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
