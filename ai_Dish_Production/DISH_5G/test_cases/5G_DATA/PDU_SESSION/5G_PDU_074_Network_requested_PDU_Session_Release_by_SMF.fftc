@@ -1203,7 +1203,7 @@ Performance Counters:
                                     <item>
                                         <extractorInfo extractorType="query">
                                             <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                <query>pdus()</query>
+                                                <query>mapped/Json/pdus/item</query>
                                             </extractorProperties>
                                         </extractorInfo>
                                         <processorInfo ruleType="assert">
@@ -1297,12 +1297,22 @@ Performance Counters:
                                     <item>
                                         <extractorInfo extractorType="query">
                                             <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                <query>pdus()</query>
+                                                <query>mapped/Json/pdus/item</query>
                                             </extractorProperties>
                                         </extractorInfo>
                                         <processorInfo ruleType="assert">
                                             <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
                                                 <expression>len(value) == 0</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>PDU(s) sucessfully deleted from SMF for subscriber [sub]</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenTrue>
                                                 <actionsWhenFalse>
                                                     <item actionId="DeclareExecutionIssue">
                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
@@ -1322,7 +1332,7 @@ Performance Counters:
                                 <item name="OnRepeatStepMaxCountExceeded">
                                     <item actionId="DeclareExecutionIssue">
                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                            <message>PDUs did not come up, aborting SMF interaction.</message>
+                                            <message>PDUs not removed, aborting SMF interaction.</message>
                                         </actionProperties>
                                     </item>
                                     <item actionId="FailTest">
@@ -1330,16 +1340,6 @@ Performance Counters:
                                     </item>
                                     <item actionId="ExitProcedure">
                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
-                                    </item>
-                                </item>
-                                <item name="OnQueryExtractorInvalidQuery">
-                                    <item actionId="DeclareExecutionIssue">
-                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                            <message>PDU(s) sucessfully deleted from SMF for subscriber [sub]</message>
-                                        </actionProperties>
-                                    </item>
-                                    <item actionId="PassTestIfNotAlreadyFailed">
-                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                     </item>
                                 </item>
                             </eventHandlers>
