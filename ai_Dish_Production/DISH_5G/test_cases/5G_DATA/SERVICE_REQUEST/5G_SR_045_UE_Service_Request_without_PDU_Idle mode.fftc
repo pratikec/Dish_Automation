@@ -1334,17 +1334,24 @@ Expected Result/Post Condition:
                                 <item name="OnRepeatStepMaxCountExceeded">
                                     <item actionId="DeclareExecutionIssue">
                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                            <message>PDUs did not come up, aborting SMF interaction.</message>
+                                            <message>PDUs did not come up even though Pings should have started.</message>
                                         </actionProperties>
                                     </item>
                                     <item actionId="FailTest">
                                         <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                     </item>
-                                    <item actionId="ExitProcedure">
-                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
-                                    </item>
                                 </item>
                                 <item name="OnQueryExtractorInvalidQuery">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                            <message>PDUs not up yet waiting 5 sec and trying again.</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="RepeatStep">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
+                                    </item>
+                                </item>
+                                <item name="OnNoMatchesFound">
                                     <item actionId="DeclareExecutionIssue">
                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
                                             <message>PDUs not up yet waiting 5 sec and trying again.</message>
