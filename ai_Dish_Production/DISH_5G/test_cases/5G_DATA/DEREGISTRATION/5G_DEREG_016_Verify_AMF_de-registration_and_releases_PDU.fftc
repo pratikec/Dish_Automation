@@ -1104,14 +1104,14 @@ Expected Result/Post Condition:
                             </item>
                             <item actionId="DeclareExecutionIssue">
                                 <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                    <message>Timeout waiting for UE to reach IDLE state</message>
+                                    <message>Timeout waiting for UE to reach CONNECTED state</message>
                                 </actionProperties>
                             </item>
                         </item>
                         <item name="OnResponseMappingIssue">
                             <item actionId="DeclareExecutionIssue">
                                 <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                    <message>UE has not reached IDLE</message>
+                                    <message>UE has not reached CONNECTED state</message>
                                 </actionProperties>
                             </item>
                             <item actionId="RepeatStep">
@@ -1121,7 +1121,6 @@ Expected Result/Post Condition:
                                 <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                             </item>
                         </item>
-                        <item name="OnQueryExtractorInvalidQuery"/>
                     </eventHandlers>
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                     <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
@@ -1193,7 +1192,7 @@ Expected Result/Post Condition:
                         <analysisRules>
                             <item>
                                 <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup" declareNoMatchIssue="false">
+                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
                                         <query>mapped/Json/pdus/item</query>
                                     </extractorProperties>
                                 </extractorInfo>
@@ -1285,6 +1284,31 @@ Expected Result/Post Condition:
                             <item>
                                 <extractorInfo extractorType="query">
                                     <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                        <query>responseLine()</query>
+                                    </extractorProperties>
+                                </extractorInfo>
+                                <processorInfo ruleType="assert">
+                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                        <expression>value == &quot;&quot;</expression>
+                                        <actionsWhenTrue>
+                                            <item actionId="DeclareExecutionIssue">
+                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                    <message>Subscriber removed from AMF</message>
+                                                </actionProperties>
+                                            </item>
+                                            <item actionId="PassTestIfNotAlreadyFailed">
+                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                            </item>
+                                            <item actionId="SkipRemainingRules">
+                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                            </item>
+                                        </actionsWhenTrue>
+                                    </ruleProperties>
+                                </processorInfo>
+                            </item>
+                            <item>
+                                <extractorInfo extractorType="query">
+                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup" declareNoMatchIssue="false">
                                         <query>amfCmState()</query>
                                     </extractorProperties>
                                 </extractorInfo>
@@ -1297,14 +1321,14 @@ Expected Result/Post Condition:
                                             </item>
                                             <item actionId="DeclareExecutionIssue">
                                                 <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] CM State is CONNECTED</message>
+                                                    <message>Subscriber removed from AMF</message>
                                                 </actionProperties>
                                             </item>
                                         </actionsWhenTrue>
                                         <actionsWhenFalse>
                                             <item actionId="DeclareExecutionIssue">
                                                 <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                                    <message>UE has not reached CONNECTED</message>
+                                                    <message>UE is still CONNECTED</message>
                                                 </actionProperties>
                                             </item>
                                             <item actionId="RepeatStep">
@@ -1312,46 +1336,6 @@ Expected Result/Post Condition:
                                             </item>
                                             <item actionId="SkipRemainingRules">
                                                 <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfRmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) == &quot;REGISTERED&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] RM State is REGISTERED</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="FailTest">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>AMF says that subscriber [sub] CM State is not REGISTERED (but should be)</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>Exiting w/out deleting subscriber</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="ExitProcedure">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
                                             </item>
                                         </actionsWhenFalse>
                                     </ruleProperties>
