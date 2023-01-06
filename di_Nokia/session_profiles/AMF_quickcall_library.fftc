@@ -267,111 +267,37 @@
                 <item guid="2e0e551e-0c12-4ced-a0f0-b2fc153b180d" action="set_write_mode_on" session="[session]" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                 </item>
-                <item guid="debfaa59-d971-46b2-9c8c-0f59f4cc14b7" action="eval" useFieldsInCommand="false">
+                <item guid="478b3002-41ca-46f9-89e2-61f270b14e48" action="command" session="[session]">
                     <command>
-                        <body>i = 0</body>
+                        <body>cmm subscriber delete --imsi [supi] -f json</body>
                     </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="4e6bc4c8-d4db-43a9-a8ce-848b395e2617" action="while" useFieldsInCommand="false">
-                    <command>
-                        <body>i &lt; 5:</body>
-                    </command>
-                    <nestedSteps>
-                        <item guid="fb5167d3-789b-473b-9d69-0286ca95d856" action="message" useFieldsInCommand="false">
-                            <command>
-                                <body>Information: Doing delete try [str(i)]</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                <message inherit="false"> Doing delete try [str(i)]</message>
-                            </applicationProperties>
-                        </item>
-                        <item guid="31b12a74-f892-4382-a1da-a3472cf32d87" action="command" session="[session]">
-                            <command>
-                                <body>cmm subscriber delete --imsi [supi] -f json</body>
-                            </command>
-                            <postProcessing>
-                                <storeResponseAt>response</storeResponseAt>
-                                <storeResponseText>true</storeResponseText>
-                            </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                        </item>
-                        <item guid="9ac06ea7-a714-495e-8380-a7f6c5052cd4" action="sleep">
-                            <command>
-                                <body>3</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="4e76ad40-3085-40dc-84c1-5a7cb5d84787" action="command" session="[session]" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false">
-                            <command>
-                                <body>cmm subscriber show --imsi [str(supi)] -f plain</body>
-                            </command>
-                            <postProcessing>
-                                <analysisRules>
-                                    <item>
-                                        <extractorInfo extractorType="query">
-                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup" declareNoMatchIssue="false">
-                                                <query>amfCmState()</query>
-                                            </extractorProperties>
-                                        </extractorInfo>
-                                        <processorInfo ruleType="assert">
-                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                <expression>str(value) == &quot;DISCONNECTED&quot;</expression>
-                                                <actionsWhenTrue>
-                                                    <item actionId="PassTestIfNotAlreadyFailed">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                            <message>Subscriber removed from AMF</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                    <item actionId="Break">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                </actionsWhenTrue>
-                                                <actionsWhenFalse>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                                            <message>UE is still CONNECTED</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                    <item actionId="RepeatStep">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="3.0"/>
-                                                    </item>
-                                                    <item actionId="SkipRemainingRules">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                </actionsWhenFalse>
-                                            </ruleProperties>
-                                        </processorInfo>
-                                    </item>
-                                </analysisRules>
-                            </postProcessing>
-                            <eventHandlers>
-                                <item name="OnMappingFail">
-                                    <item actionId="Break">
-                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                    </item>
-                                </item>
-                            </eventHandlers>
-                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                            <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
-                        </item>
-                        <item guid="bb5ba45c-36f7-41f5-97e3-8ddf5348367d" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>i = i + 1</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="27b5b7ef-c803-438e-9e6d-4ab4a97bd421" action="return">
-                    <command>
-                        <body>[response]</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <postProcessing>
+                        <analysisRules>
+                            <item>
+                                <extractorInfo extractorType="regex">
+                                    <extractorProperties type="com.fnfr.svt.mapping.regex.extractors.RegexExtractorPropertyGroup">
+                                        <regex>ERROR:</regex>
+                                    </extractorProperties>
+                                </extractorInfo>
+                                <processorInfo ruleType="assert">
+                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                        <expression>value == 1</expression>
+                                        <actionsWhenFalse>
+                                            <item actionId="RepeatStep">
+                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="35" delayBetweenRepeats="1.0"/>
+                                            </item>
+                                            <item actionId="DeclareExecutionIssue">
+                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                    <message> Tried to delete, but might still be there</message>
+                                                </actionProperties>
+                                            </item>
+                                        </actionsWhenFalse>
+                                    </ruleProperties>
+                                </processorInfo>
+                            </item>
+                        </analysisRules>
+                    </postProcessing>
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                 </item>
             </steps>
             <arguments>
