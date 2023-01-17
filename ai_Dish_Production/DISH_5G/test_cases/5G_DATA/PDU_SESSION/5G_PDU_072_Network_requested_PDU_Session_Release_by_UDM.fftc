@@ -1,31 +1,35 @@
 <?xml version="1.0"?>
 <testCase version="9.0.4.202208111512">
     <general>
-        <documentation>5G_PDU_074 Network requested PDU Session Release (by SMF).</documentation>
-        <tags>5G_PDU_074</tags>
-        <notes>Test Purpose: The purpose of this test is to verify Network requested PDU Session Release (by SMF).
+        <documentation>5G_PDU_072 Network requested PDU Session Release (by UDM).</documentation>
+        <tags>5G_PDU_072</tags>
+        <notes>Test Purpose: The purpose of this test is to verify UE requested PDU Session Release by UDM.
 Pre-requisites/Test Environment:
-•\tUE with DISH SIM.
-•\tAccess to SMF.
+•\tUE with Dish SIM.
+•\tThe trace/log collection is started.
 Test Dependencies: 
 •\tUE is registered with 5G network.
-UE has at least one active PDU Session.
+•\tUE has at least one active PDU Session.
+•\tUDR access required.
 Test parameter and Tools:
 •\tInternal log and Wireshark.
 Test Procedure:
 •\tStart the trace / log collection.
 •\tUE attaches and registers with network.
-•\tVerify the UE status in AMF, by using command: cmm subscriber show --imsi | grep mState.
-•\tConnect to the SMF and delete the subscriber&apos;s PDU.
-•\tSMF would notify the AMF of the PDU delete triggering a PDU session release.
-•\tStop the trace / log collection.
+•\tDelete the subscriber in UDR.
+•\tUDM triggers PDU session release.
+•\tEnsure the PDU session is released in the SMF using cmd: show mobile-gateway pdn pdu-session.
+•\tStop the trace/ log collection.
 Remarks: 
 •\t3GPP TS References - 3GPP TS 23.502 version 16.5.0 Release 16 4.3.4.2
 •\tCall Flow References - E2E Call Flow Document Appendix Section 3.7.
 Expected Result/Post Condition:  
-•\tVerify the SMF releases the IP address / Prefix(es) that were allocated to the PDU Session and releases the corresponding User Plane resources.
-•\tVerify the SMF sends an N4 Session Release Request (N4 Session ID) message to the UPF(s) of the PDU Session.
-•\tVerify SMF notifying the AMF that the PDU Session is released by invoking the: Nsmf_PDUSession_SMContextStatusNotify.
+•\tVerify UDR notifies the UDM about the deletion of the subscriber.
+•\tVerify UDM sends a subscription update notification to the AMF.
+•\tVerify AMF sends Nsmf_PDUSession_ReleaseSMContext to SMF.
+•\tVerify SMF sends Nudm SDM unsubscribe message to UDM and receives the response.
+•\tVerify the PDU session terminated successfully.
+•\tThe trace/ log collection is stopped successfully.
 Performance Counters:
 •\tVerify that the counter M176C020 (amf_pdu_sess_rel_att) in AMF has increased by 1.
 •\tVerify that the counter M176C021 (amf_pdu_sess_rel_succ) in AMF has increased by 1.
