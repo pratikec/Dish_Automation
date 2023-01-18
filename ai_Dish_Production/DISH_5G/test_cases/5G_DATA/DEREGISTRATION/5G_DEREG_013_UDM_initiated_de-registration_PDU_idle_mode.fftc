@@ -1,81 +1,75 @@
 <?xml version="1.0"?>
 <testCase version="9.0.4.202208111512">
     <general>
-        <documentation>5G_PDU_072 Network requested PDU Session Release (by UDM).</documentation>
-        <tags>5G_PDU_072</tags>
-        <notes>Test Purpose: The purpose of this test is to verify UE requested PDU Session Release by UDM.
+        <documentation>5G_DEREG_013 UDM initiated de-registration - with PDU - idle mode</documentation>
+        <tags>5G_DEREG_013</tags>
+        <notes>Test Purpose: The purpose of this test is to verify the successfully UDM initiate de-Registration of UE with PDU session, UE is in Idle mode.
 Pre-requisites/Test Environment:
-•\tUE with Dish SIM.
-•\tThe trace/log collection is started.
+•\tUE with DISH SIM.
 Test Dependencies: 
 •\tUE is registered with 5G network.
-•\tUE has at least one active PDU Session.
-•\tUDR access required.
 Test parameter and Tools:
 •\tInternal log and Wireshark.
 Test Procedure:
-•\tStart the trace / log collection.
-•\tUE attaches and registers with network.
-•\tDelete the subscriber in UDR.
-•\tUDM triggers PDU session release.
-•\tEnsure the PDU session is released in the SMF using cmd: show mobile-gateway pdn pdu-session.
-•\tStop the trace/ log collection.
+•\tUE attaches and registers to 5G network.
+•\tUE establishes PDU session.
+•\tWait for UE to go in idle state.
+•\tEnsure the UE IDLE mode state in AMF: cmm subscriber show --imsi &lt;imsi&gt; | grep mState.
+•\tVerify on SMF that UE has existing PDU session: show mobile-gateway pdn pdu-session.
+•\tUDR/UDM must initiate the delete/purge request by using SPML command/PGW GUI.
+•\tEnsure in AMF UE must be deregistered state by using show –imsi | grep mState command.
 Remarks: 
-•\t3GPP TS References - 3GPP TS 23.502 version 16.5.0 Release 16 4.3.4.2
-•\tCall Flow References - E2E Call Flow Document Appendix Section 3.7.
+•\t3GPP TS References - 3GPP TS 23.502 version 16.5.0 Release 16, TS 23.502 4.2.2.3.2,4.2.2.3.3 Release 17
+•\tCall Flow References - E2E Call Flow Document Appendix Section 2.7.
 Expected Result/Post Condition:  
-•\tVerify UDR notifies the UDM about the deletion of the subscriber.
-•\tVerify UDM sends a subscription update notification to the AMF.
-•\tVerify AMF sends Nsmf_PDUSession_ReleaseSMContext to SMF.
-•\tVerify SMF sends Nudm SDM unsubscribe message to UDM and receives the response.
-•\tVerify the PDU session terminated successfully.
-•\tThe trace/ log collection is stopped successfully.
-Performance Counters:
-•\tVerify that the counter M176C020 (amf_pdu_sess_rel_att) in AMF has increased by 1.
-•\tVerify that the counter M176C021 (amf_pdu_sess_rel_succ) in AMF has increased by 1.
+•\tVerify in UDR subscriber profile, UE must be deregistered PurgeFlag= true using ldap command.
+•\tVerify UDM sends Nudm_UECM_DeregistrationNotification request to AMF.
+•\tVerify AMF responds with Nudm_UECM_DeregistrationNotificationAck request to UDM, after sending deregistration request to UE.
+•\tVerify AMF sends Nsmf_PDUSession_RealeaseSMContext request to SMF for releasing existing PDU session.
+•\tVerify that AMF sends &quot;Deregistration Request&quot; with 5GMM cause &quot;Implicitly deregistered (10)&quot;
 </notes>
         <language>Python</language>
     </general>
     <procedures>
         <item name="main">
             <steps>
-                <item guid="d81b7c00-c6fd-4b79-a150-27222118a22e" action="comment" useFieldsInCommand="false">
+                <item guid="fd225321-9785-493a-8589-ccd2bdc06b89" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="19c8218f-3823-44d3-b01e-e36797bec0f7" action="comment" useFieldsInCommand="false">
+                <item guid="e3971197-11d3-4f98-b22e-ebe81a091c9f" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Define Landslide Library Key, project_id; INIT instance_id aka tc_id, failure_originators_list and write_cause_code_data</body>
                     </command>
                     <nestedSteps>
-                        <item guid="e4132a17-8bd6-4f69-89bd-825512c4d217" action="comment" useFieldsInCommand="false">
+                        <item guid="5c6dc980-e79e-478a-8de2-c7f935513032" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Local process driver variable init. (Instence level parameters)</body>
                             </command>
                             <nestedSteps>
-                                <item guid="d80273ad-b6d6-4478-8fa0-9460a8c3e51c" action="comment" useFieldsInCommand="false">
+                                <item guid="3bdcbd9e-3b65-4afd-8dfb-76a6ed3a65f3" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Set the tmd variables</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="76db86e6-dd4c-46b6-b123-a85eb69881e9" action="eval" useFieldsInCommand="false">
+                                        <item guid="246ea740-9e12-4890-b176-c403a6011bc4" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>additional_validation = param(&apos;TMD_Name/process_manager/additional_validation&apos;, &apos;False&apos;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="69fe707e-6ad5-44b6-8d3f-1e2d995e8d57" action="eval" useFieldsInCommand="false">
+                                        <item guid="5f7edc99-ef5f-4a4e-88b8-c004608a173b" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>nf_interaction = param(&apos;TMD_Name/process_manager/nf_interaction&apos;, &apos;False&apos;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="ad3f0dd6-e1bd-4888-abc1-fb2627f33df6" action="eval" useFieldsInCommand="false">
+                                        <item guid="520c6f3a-416d-4d66-96aa-e84bbdf8086c" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>pcap_analysis = param(&apos;TMD_Name/process_manager/pcap_analysis&apos;, &quot;false&quot;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="09cf8f48-3bff-4b98-b15a-bc54cfea2992" action="eval" useFieldsInCommand="false">
+                                        <item guid="0dbb2621-835a-468e-9550-d7e2bae5a394" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>show_charts = param(&apos;TMD_Name/process_manager/show_charts&apos;, &quot;false&quot;)</body>
                                             </command>
@@ -87,43 +81,43 @@ Performance Counters:
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="087ff55e-097f-4184-847b-8c780484f2f9" action="eval" useFieldsInCommand="false">
+                        <item guid="b4fccaf1-7119-4186-965a-f69cb7b6751a" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>libraryName = &quot;{Dish 5G Velocity Automation}&quot;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="aef0d0fb-5e9d-441a-affe-17e3916e8d7c" action="eval" skip="true" useFieldsInCommand="false">
+                        <item guid="d35af99d-1fc2-4f71-aa6c-1ff046631e36" action="eval" skip="true" useFieldsInCommand="false">
                             <command>
                                 <body>libraryName = &quot;{Dish 5G Velocity Scrub}&quot;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="62a25098-45bf-475e-9748-ddb07b00091f" action="eval" useFieldsInCommand="false">
+                        <item guid="e0308a18-fa58-4feb-8080-1aae88df55dc" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>tc_id = info(&apos;testCaseName&apos;, &apos;main&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="c3def6fd-660d-4039-93b6-181f6014fc46" action="eval" useFieldsInCommand="false">
+                        <item guid="7734bfa2-b610-48e7-9c01-15925fb1cef9" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>project_id = info(&apos;testCaseProject&apos;, &apos;main&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="047ddca8-d1c8-4ff0-8399-c2527b2d1b39" action="eval" useFieldsInCommand="false">
+                        <item guid="733110f7-21df-459a-8faf-8659d76ba55a" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>failure_originators_list = []</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="b120ca6c-e172-494b-aa1c-0119bcdb1e04" action="eval" useFieldsInCommand="false">
+                        <item guid="59bd945c-c1a2-4535-ad59-1ebbb1d06501" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>write_cause_code_data = &quot;False&quot;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="5fba32c0-37f6-44ac-9464-ea1ecb790b99" action="eval" useFieldsInCommand="false">
+                        <item guid="c220eb6e-b91d-42ff-9d17-7544cdecaac9" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>ls_criteria_data_error = &quot;False&quot;</body>
                             </command>
@@ -132,12 +126,12 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="373297db-7532-4559-91f2-f685e0a51ff6" action="comment" useFieldsInCommand="false">
+                <item guid="547c5d87-702a-46d2-859b-54e8117c9158" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Call test_instance_init - Process will ensure the driving data is correct, Landslide configured and status checked. If you return all is well or there was an issue an we&apos;ve Aborted.</body>
                     </command>
                     <nestedSteps>
-                        <item guid="f5e84375-833f-4618-b441-a3d2646d18a5" action="call" useFieldsInCommand="false">
+                        <item guid="b9536b23-29d6-4381-96c8-70811286aa67" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#test_instance_init -instance_id [tc_id] -ls_library_name [libraryName] -project_id [project_id]</body>
                             </command>
@@ -167,29 +161,29 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="ac5086cb-248a-4831-92a3-42aa4904648a" action="comment" useFieldsInCommand="false">
+                <item guid="2ca2eb4e-ba18-49a9-ac7d-cb2f0ba78819" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>UDM</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="4f567566-c4b9-46ca-ac68-34961181f6b6" action="comment" useFieldsInCommand="false">
+                <item guid="03903d07-198b-4557-b779-251c29f8165e" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>#### Check for any pre-test activities and process as required. ?!?!!? Network CHECK/QUERY/MODIFY (Prior to Landslide Execution) ####</body>
                     </command>
                     <nestedSteps>
-                        <item guid="34737f2c-7ea2-4f73-b9ad-2b20391b9b3d" action="if" useFieldsInCommand="false">
+                        <item guid="ff9dc2d9-6640-4526-bbf6-a58af462b6fb" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>param(&apos;TMD_Name/process_manager/nf_interaction_pre&apos;) == True:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="aa5356d8-36e3-488c-8f60-341e3a5f723d" action="comment" useFieldsInCommand="false">
+                                <item guid="3c9d71b5-4e9f-48c2-8ed4-537a74e21be0" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Routine is just a stub; Awaiting requirements and process definition to continue/complete.</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="807a9004-d864-4656-833b-03cd5a66ee21" action="call" useFieldsInCommand="false">
+                                <item guid="c2215690-68e5-4618-b46c-e345a384e811" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>saveSubUDM()</body>
                                     </command>
@@ -201,12 +195,12 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="1394e1f2-97d9-44b9-8fb8-634cc8e18d52" action="comment" useFieldsInCommand="false">
+                <item guid="73dc4165-46eb-4c5d-8c70-b967922f43cd" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Add a seperator; we&apos;ve completed the setup, start the Landslide process</body>
                     </command>
                     <nestedSteps>
-                        <item guid="58cc09a6-0c0e-440d-b03c-f48b0d8985a6" action="call" useFieldsInCommand="false">
+                        <item guid="44dd0456-afd9-47fe-887f-b3b24ac2be15" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://ai_LS_5G/utility_library/utils.fftc#insert_devider_string -length 135</body>
                             </command>
@@ -215,12 +209,12 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="56119f35-f52f-4c61-b70e-6d7d501c9962" action="comment" useFieldsInCommand="false">
+                <item guid="6bf2cbc9-a32e-4035-af71-c4b688afa891" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>##### Perform Landslide Test Procedure #####</body>
                     </command>
                     <nestedSteps>
-                        <item guid="716ee333-7f7b-4e04-8597-4d0c272d5fb0" action="call" useFieldsInCommand="false">
+                        <item guid="8ff8ca84-3662-49d8-8dd9-f9aa937d9d1b" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_execute_landslide_procedure -run_data_list [run_data_list]</body>
                             </command>
@@ -333,17 +327,17 @@ Performance Counters:
                             </postProcessing>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="34b426b1-2c35-4c52-bef9-9c948eb9989d" action="comment" useFieldsInCommand="false">
+                        <item guid="b0da8236-a89c-4086-b2de-756d2f27c5fe" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Check &apos;exec_ls_test_data&apos; for logged failure in criteria validation; Act accordingly.... 2 or 3 items we can work with all others counts are bad</body>
                             </command>
                             <nestedSteps>
-                                <item guid="1d91c29e-9b35-4cd2-a5ad-20eadc6bf2bd" action="if" useFieldsInCommand="false">
+                                <item guid="513a7f17-4ea0-4d9c-b425-4ba392bbbc5e" action="if" useFieldsInCommand="false">
                                     <command>
                                         <body>int(exec_ls_testdata_item_cnt) == 3:</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="0b1aa25e-4588-445e-9f4d-a8dc856de4b9" action="eval" useFieldsInCommand="false">
+                                        <item guid="1a4ed00a-8f27-4359-99fc-da72daf776b0" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>print(exec_ls_testdata)</body>
                                             </command>
@@ -398,13 +392,13 @@ Performance Counters:
                                             </postProcessing>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="7bf6f28a-b33f-4ff3-9f82-068b7465c4db" action="eval" useFieldsInCommand="false">
+                                        <item guid="dc825d83-e915-45f1-9262-6feec19799ad" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>failure_originators_list.append(failure_originator)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="84fca34a-c574-4c61-9a34-cb3783f36ded" action="eval" useFieldsInCommand="false">
+                                        <item guid="4ac1182f-8376-4766-89f2-9f87a8de034d" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>write_cause_code_data = &quot;True&quot;</body>
                                             </command>
@@ -413,12 +407,12 @@ Performance Counters:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="197727ae-047f-4786-be39-2e919b37d7d6" action="elif" useFieldsInCommand="false">
+                                <item guid="f0f11e13-318a-4561-9a4a-e9d86a53bc4d" action="elif" useFieldsInCommand="false">
                                     <command>
                                         <body>int(exec_ls_testdata_item_cnt) == 2:</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="aef75f25-00be-4707-b5d3-8280ff0fa93b" action="eval" useFieldsInCommand="false">
+                                        <item guid="c4c25d9c-b5c6-4f11-821f-22e74b01c29a" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>print(exec_ls_testdata)</body>
                                             </command>
@@ -461,12 +455,12 @@ Performance Counters:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="52d5e20a-f036-4848-92da-7ad005be71d1" action="else" useFieldsInCommand="false">
+                                <item guid="e77da8a0-26df-427b-843c-50c5548109fc" action="else" useFieldsInCommand="false">
                                     <command>
                                         <body>ERROR in data data return shape, can&apos;t continue with PCAP validation</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="a4f8292e-648a-4a73-8612-163ca4bd9908" action="eval" useFieldsInCommand="false">
+                                        <item guid="10a15802-096b-414a-bdf3-f3132cb0df3d" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>ls_criteria_data_error = &quot;True&quot;</body>
                                             </command>
@@ -481,27 +475,27 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="e4bf368b-de09-41ba-931a-9b9cea10b412" action="comment" useFieldsInCommand="false">
+                <item guid="977734b0-1c1e-4242-91db-4f7df0ae4347" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Check for additional Validation; Landslide Criteria Validation has been completed</body>
                     </command>
                     <nestedSteps>
-                        <item guid="e59b510e-7799-4c64-a517-d2cf91cb21ed" action="if" useFieldsInCommand="false">
+                        <item guid="daa6cfad-2107-443c-a11e-b03eeb6ccefa" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(pcap_analysis) == &quot;True&quot; and str(errorsAndWarnings) == &quot;False&quot; and str(ls_criteria_data_error) == &quot;False&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="57b8b64b-5baf-49dc-a665-388407e7e0c3" action="comment" useFieldsInCommand="false">
+                                <item guid="a18bf20e-a010-45c1-875b-6f549c365098" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Check &apos;exec_ls_test_data&apos;; Act accordingly.... 2 or 3 items we can work with all others counts are bad</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="b1180ed8-1c50-436c-a0b9-8c70c4dce84e" action="if" useFieldsInCommand="false">
+                                        <item guid="f6ff2d2d-6551-45a7-b0e1-6ac3f61dd62c" action="if" useFieldsInCommand="false">
                                             <command>
                                                 <body>int(exec_ls_testdata_item_cnt) == 3:</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="5e52a799-15ea-4778-906b-471189776a8c" action="eval" useFieldsInCommand="false">
+                                                <item guid="515e5169-aa93-47a1-a24c-4e822ec2cf81" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>print(exec_ls_testdata)</body>
                                                     </command>
@@ -556,7 +550,7 @@ Performance Counters:
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="30f7f506-687e-40ff-b264-2435b58cecf9" action="eval" useFieldsInCommand="false">
+                                                <item guid="9d2fedd2-d022-4592-9752-3e0744a9fa66" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>ls_pcap_data_error = &quot;False&quot;</body>
                                                     </command>
@@ -565,12 +559,12 @@ Performance Counters:
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="675a4be5-6ce7-4dfd-96ee-fa065f62a3dd" action="elif" useFieldsInCommand="false">
+                                        <item guid="9aebe255-c9e6-4fae-aadf-2866ee5bc943" action="elif" useFieldsInCommand="false">
                                             <command>
                                                 <body>int(exec_ls_testdata_item_cnt) == 2:</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="555fa320-dd60-40cf-9252-6c5bdffddd8a" action="eval" useFieldsInCommand="false">
+                                                <item guid="b0a467b9-0c35-43e0-bb92-35eb16e4fe36" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>print(exec_ls_testdata)</body>
                                                     </command>
@@ -610,7 +604,7 @@ Performance Counters:
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="da131cf3-4717-426e-99f4-46649e434222" action="eval" useFieldsInCommand="false">
+                                                <item guid="26ee39e0-be90-4420-995a-35762ee5c293" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>ls_pcap_data_error = &quot;False&quot;</body>
                                                     </command>
@@ -619,12 +613,12 @@ Performance Counters:
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="12868d03-721d-4d5b-bb94-dfda8e7ecbe9" action="else" useFieldsInCommand="false">
+                                        <item guid="c0f55c09-ebc9-43ec-8d45-c696fc5d99c3" action="else" useFieldsInCommand="false">
                                             <command>
                                                 <body>ERROR in data data return shape, can&apos;t continue with PCAP validation</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="c4a6d09f-e2be-4b33-b1ae-6bd617d34592" action="eval" useFieldsInCommand="false">
+                                                <item guid="af0ec5ef-70a5-44e5-85d2-a6dc35920842" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>ls_pcap_data_error = &quot;True&quot;</body>
                                                     </command>
@@ -636,17 +630,17 @@ Performance Counters:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="d1b59d14-8e3e-433e-81c6-ff454d519f72" action="if" useFieldsInCommand="false">
+                                <item guid="cc0b4645-46cc-4156-8b67-92eee0ad88f4" action="if" useFieldsInCommand="false">
                                     <command>
                                         <body>str(ls_pcap_data_error) == &quot;False&quot;:</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="64a1d463-3b51-4163-8301-1d43f6fd416e" action="comment" useFieldsInCommand="false">
+                                        <item guid="a3f0a4ab-b322-4986-af18-b4164e283864" action="comment" useFieldsInCommand="false">
                                             <command>
                                                 <body>Message Validation Start</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="094dffd4-90e7-4053-8de8-21510d767c40" action="message" useFieldsInCommand="false">
+                                                <item guid="f3c2ca72-0bba-4fe4-b95d-d0e443b93098" action="message" useFieldsInCommand="false">
                                                     <command>
                                                         <body>Information: Starting Landslide PCAP Validation</body>
                                                     </command>
@@ -657,12 +651,12 @@ Performance Counters:
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="77ecc98f-7d99-4255-938d-c9d1c0a22140" action="comment" useFieldsInCommand="false">
+                                        <item guid="74ff8b07-552e-443d-b103-12e96ce67d8f" action="comment" useFieldsInCommand="false">
                                             <command>
                                                 <body>Call pcap_validation and do the work; based upon the return, report cause codes if failure logged</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="499f3aed-e5fd-4b23-a9a2-c7dc53d3338f" action="call" useFieldsInCommand="false">
+                                                <item guid="c2cbcf45-667d-44c1-b677-78cf293364e8" action="call" useFieldsInCommand="false">
                                                     <command>
                                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#utility_pcap_validation -results_url_list [results_payload_uri_list] -running_id [running_id]</body>
                                                     </command>
@@ -687,27 +681,27 @@ Performance Counters:
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="7bbf922e-5887-4844-9823-f95d92b8e80f" action="if" useFieldsInCommand="false">
+                                                <item guid="67ffb9e4-0c45-46ec-ad60-05a348b073cb" action="if" useFieldsInCommand="false">
                                                     <command>
                                                         <body>str(pcap_return_status) != &quot;PASSED&quot;:</body>
                                                     </command>
                                                     <nestedSteps>
-                                                        <item guid="7bbe38fb-1831-4f61-b72c-d4ce7a711eb2" action="comment" useFieldsInCommand="false">
+                                                        <item guid="a8105c9a-0ab1-4c16-a0b0-7313cc774baa" action="comment" useFieldsInCommand="false">
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="f966f49f-b1fb-48ad-8dac-a12c89a8088b" action="eval" useFieldsInCommand="false">
+                                                        <item guid="e0324033-fd23-4b3a-af3d-449216bab8b9" action="eval" useFieldsInCommand="false">
                                                             <command>
                                                                 <body>write_cause_code_data = &quot;True&quot;</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="ec5ddd0a-6f11-4d16-bcef-d32fba28f294" action="eval" useFieldsInCommand="false">
+                                                        <item guid="64f39003-45db-4bde-83cf-69057947018a" action="eval" useFieldsInCommand="false">
                                                             <command>
                                                                 <body>failure_originators_list.append(&apos;pcap&apos;)</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="49ea0e04-76e9-4715-8476-ebc86a5658b2" action="comment" useFieldsInCommand="false">
+                                                        <item guid="bda148a2-cce1-4e09-aeaa-94f5cb8794f9" action="comment" useFieldsInCommand="false">
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                     </nestedSteps>
@@ -719,41 +713,41 @@ Performance Counters:
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="b7242aef-85fe-4e12-9b71-29e9ef936ee5" action="comment" useFieldsInCommand="false">
+                                <item guid="1d1c6483-309c-43e1-a8ba-53b0af767812" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="6f316c65-2ac3-4d89-af96-43afeacafe93" action="if" useFieldsInCommand="false">
+                        <item guid="65a466b9-2007-4377-ad5e-62d289644502" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(additional_validation) == &quot;True&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="1be3440c-d308-46e0-a213-de2a23149736" action="comment" useFieldsInCommand="false">
+                                <item guid="35c747c6-5ea7-4b90-ad7a-9c5fa1fb14b7" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Routine is just a stub; Awaiting requirements and process definition to continue/complete.</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="a8b7a7dd-09e6-45e7-b028-4275d8d69ca2" action="call" useFieldsInCommand="false">
+                                <item guid="d2e38cfd-67cd-4b01-a4eb-2c40e42a0def" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#additional_validation_mgr -instance_id [tc_id] -project_id [project_id] -running_id [running_id] -validate_process_type NOT_DEFINED -validation_type_id NOT_DEFINED</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="07629c32-3dcd-468f-bd28-a73bf6d23592" action="comment" useFieldsInCommand="false">
+                                <item guid="c51372dc-1c53-4e40-a2f7-7b0d81e74eff" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="45ed944f-8bec-47b7-a8b4-893dbf5d2cd7" action="comment" useFieldsInCommand="false">
+                        <item guid="2bf13deb-4fb4-4ddb-bfd5-ebc2b656946f" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Add a seperator; we&apos;re done here</body>
                             </command>
                             <nestedSteps>
-                                <item guid="fbe4db70-4ad5-4f55-aa36-8bd1687bc3af" action="call" useFieldsInCommand="false">
+                                <item guid="e9373714-5f8c-4b93-a230-f2568ff15b6b" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://ai_LS_5G/utility_library/utils.fftc#insert_devider_string -length 135</body>
                                     </command>
@@ -765,26 +759,26 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="c238bb00-bf9f-4f9c-af61-6c71f5866ef2" action="comment" useFieldsInCommand="false">
+                <item guid="64ad033c-466e-4384-8d21-e0a91370dff4" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>If a FAILURE was logged in ANY of the above validation processes.  Call &apos;write_landslide_extracted_cause_code_data&apos; and log as extracted data</body>
                     </command>
                     <nestedSteps>
-                        <item guid="9f053b97-6c21-4c9c-9db1-703d54abafde" action="if" useFieldsInCommand="false">
+                        <item guid="7256f781-e229-4686-9cab-716fc5bb435e" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(write_cause_code_data) == &quot;True&quot; and str(ls_criteria_data_error) == &quot;False&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="17a55b1d-440d-42b5-b411-4d42e61fa917" action="comment" useFieldsInCommand="false">
+                                <item guid="c9f3be0f-979f-44e7-ad04-2856884f5184" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="35ea345b-0860-4501-817c-53b6b0ff49d8" action="call" useFieldsInCommand="false">
+                                <item guid="81f49172-1967-4aaa-b5b2-7cccc6d02a1b" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#write_landslide_extracted_cause_code_data -failure_originator [failure_originators_list] -results_payload_uri_list [results_payload_uri_list]</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="d1b7b334-97a8-4dba-81d4-88cc123b5fa8" action="comment" useFieldsInCommand="false">
+                                <item guid="72d67457-93c4-405e-887c-51da24000dfb" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -793,12 +787,12 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="f859cf00-c225-4639-9d42-4271afec6740" action="comment" useFieldsInCommand="false">
+                <item guid="bfa4e21a-34c7-4e89-92f7-a2cfe6d9cd76" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Display end of instance info</body>
                     </command>
                     <nestedSteps>
-                        <item guid="26499ee9-038d-425a-9b02-a3869f8677fc" action="eval" useFieldsInCommand="false">
+                        <item guid="879e6a0c-22f6-44e0-922c-b18b997ce96b" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>print(info(&apos;testCaseName&apos;, &apos;main&apos;))</body>
                             </command>
@@ -821,50 +815,50 @@ Performance Counters:
                             </postProcessing>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="affe06a6-93f4-4668-a9d4-d9d6832632ec" action="comment" useFieldsInCommand="false">
+                        <item guid="203b3253-a520-4836-afb1-1a1519d5bb74" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Report the RID information Or the error that came back from &apos;execute_dish_landslide_procedure&apos;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="0240ac67-37ad-4546-a6d8-88b1308b8d48" action="if" useFieldsInCommand="false">
+                        <item guid="d45325ba-eae5-4138-99bc-bc94cbdad34d" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>errorsAndWarnings:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="dbac600f-5019-437b-a024-a4b3dcda13f3" action="comment" useFieldsInCommand="false">
+                                <item guid="e0af1870-f2dc-43d5-8573-efeec2bc69e9" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>If we&apos;re here the exec_ls_testdata contains the errorsAndWarnings data</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="84823a02-6a3e-489e-a639-cb5996ebb4e5" action="eval" useFieldsInCommand="false">
+                                <item guid="61fbb979-7b36-43c2-9f15-286450445d06" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>exec_ls_testdata</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="78d2efb4-793f-4fe0-9d02-cb7540c75527" action="comment" useFieldsInCommand="false">
+                                <item guid="e32f1daa-d03f-4cc8-88da-d3314b212967" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="3e896472-549d-424e-a3df-1a6ef9b4bb47" action="else" useFieldsInCommand="false">
+                        <item guid="55153847-b8a8-4957-b787-3c05ddbba64d" action="else" useFieldsInCommand="false">
                             <nestedSteps>
-                                <item guid="2835aa30-afa9-498d-af33-f287c23048f2" action="comment" useFieldsInCommand="false">
+                                <item guid="59cfb6d3-c563-459d-82ec-216f32e84288" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Display the RIDs for this instance</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="67b5f607-9ceb-49fd-be70-c409be664f0b" action="eval" useFieldsInCommand="false">
+                                <item guid="03b961a4-5e66-4eb8-987b-4b6936902b32" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>rid_msg = &quot;Landslide Running IDs: &quot; + str(running_id)</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="ddbd5151-13f2-47b0-8dd1-f3c7de15fab9" action="eval" useFieldsInCommand="false">
+                                <item guid="af498f43-9cf7-4150-b3b1-49f17f1ae8e6" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>print(rid_msg)</body>
                                     </command>
@@ -887,7 +881,7 @@ Performance Counters:
                                     </postProcessing>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="45ba89a7-4c15-49f1-982b-6eef1cd25def" action="comment" useFieldsInCommand="false">
+                                <item guid="f1f79073-6076-4a9d-a722-13bba92d892e" action="comment" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -896,17 +890,17 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="d943ad6b-c05d-4e73-8ac4-b44ff500d0c3" action="comment" useFieldsInCommand="false">
+                <item guid="aa60fc14-74ae-45fe-a5f6-f7ad091fcc38" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Show charts</body>
                     </command>
                     <nestedSteps>
-                        <item guid="8b454185-942a-41be-a44e-33482a44e835" action="if" useFieldsInCommand="false">
+                        <item guid="90581ad0-f058-4730-b89f-ac8e7e8e85c0" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>show_charts:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="57a5940a-82ec-4826-867f-c06e7a3474e4" action="call" useFieldsInCommand="false">
+                                <item guid="22e53b79-bfaf-44be-a9f4-ede3742e484f" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#build_charts -reportData [result_list]</body>
                                     </command>
@@ -918,17 +912,17 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="a2bca6b2-f6cd-4a91-ba2a-51f6560e8594" action="comment" useFieldsInCommand="false">
+                <item guid="b9caae63-4f58-4860-bca2-0b51470b0127" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Call post_instance_processor - Always called</body>
                     </command>
                     <nestedSteps>
-                        <item guid="cf16009c-d316-452a-843c-b8e28e0293ad" action="if" useFieldsInCommand="false">
+                        <item guid="5afde4e4-c67d-41f3-8bd8-c04a44cf9bf2" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>str(ls_criteria_data_error) == &quot;False&quot;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="020d3822-6257-419e-a916-ab7ff3449d87" action="call" useFieldsInCommand="false">
+                                <item guid="a2da0537-4cd3-45d6-9b7c-a148a5972b79" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#post_instance_processing -instance_id [tc_id] -project_id [project_id] -running_id [running_id]</body>
                                     </command>
@@ -937,18 +931,18 @@ Performance Counters:
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="5ece947e-91be-425c-b325-fc78b27f5e4f" action="if" useFieldsInCommand="false">
+                        <item guid="6e6372a4-c70b-414a-89aa-0f2148d61d2a" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>param(&apos;TMD_Name/process_manager/nf_interaction_post&apos;) == True:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="5e3061ef-70a6-4ec5-b1a3-1f005ca28bfd" action="comment" useFieldsInCommand="false">
+                                <item guid="b2bb6172-5d80-4438-8de4-70452679774f" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Routine is just a stub; Awaiting requirements and process definition to continue/complete.</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="112d4e62-7fb6-439e-98ae-9a0bdfa3fad1" action="call" useFieldsInCommand="false">
+                                <item guid="d1457e40-a49b-45fe-8875-e141e97b6cf4" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>restoreSubUDM()</body>
                                     </command>
@@ -960,12 +954,12 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="64b094b2-d09d-4453-b0f8-73b5648cde3e" action="comment" useFieldsInCommand="false">
+                <item guid="8a498c23-88a7-490b-9033-204952adc648" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Close the Landslide session opened via &apos;test_instance_init&apos;</body>
                     </command>
                     <nestedSteps>
-                        <item guid="a92ea759-46dc-4c4c-9315-8675594bc056" action="call" useFieldsInCommand="false">
+                        <item guid="f11384f1-196f-4f66-987a-67f348a553ca" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_close_landslide -session s1</body>
                             </command>
@@ -974,19 +968,19 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="91957187-8947-471c-afb7-2f26d4b02053" action="comment" useFieldsInCommand="false">
+                <item guid="e5f77c30-2b3a-4136-ac08-ac8ab07460d0" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
             </steps>
         </item>
         <item name="saveSubUDM" isPublic="true">
             <steps>
-                <item guid="e8abccc2-a172-41a1-bfc7-26cb0cb37b81" action="if" useFieldsInCommand="false">
+                <item guid="81da1306-aa2d-44d2-b4c3-e096026938b7" action="if" useFieldsInCommand="false">
                     <command>
                         <body>param(&apos;UDM/hostname&apos;) != &quot;&quot;:</body>
                     </command>
                     <nestedSteps>
-                        <item guid="5bfdf544-04cd-4faf-a9ca-3d48acdc525d" action="eval" useFieldsInCommand="false">
+                        <item guid="b133004f-e62e-4aeb-a41e-925192649511" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>ipAddr = param(&apos;UDM/hostname&apos;)</body>
                             </command>
@@ -995,9 +989,9 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="6a2cab61-fc9e-46aa-81a5-9231b9fd863c" action="else" useFieldsInCommand="false">
+                <item guid="d27a666f-d81a-4ac1-9835-9a2973a50d4c" action="else" useFieldsInCommand="false">
                     <nestedSteps>
-                        <item guid="6ac4f4bb-e0d8-408c-9494-538327f0fc71" action="eval" useFieldsInCommand="false">
+                        <item guid="24f1ad98-311d-49da-b863-fdc15d038479" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>ipAddr = param(&apos;UDM/ip_address&apos;)</body>
                             </command>
@@ -1006,14 +1000,14 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="9da284a8-373a-4b5f-9e85-e03fadec6f94" action="eval" useFieldsInCommand="false">
+                <item guid="757b233e-1d51-4c58-99f1-ac309b44bd00" action="eval" useFieldsInCommand="false">
                     <command>
                         <body>supi = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
-                <item guid="529389ad-f84e-4e25-a105-4c20d49bf66a" action="message" useFieldsInCommand="false">
+                <item guid="c519c3c3-40fd-46c7-af61-d07aa6816471" action="message" useFieldsInCommand="false">
                     <command>
                         <body>Information:Saving sub [supi] on UDM for later recovery</body>
                     </command>
@@ -1022,7 +1016,35 @@ Performance Counters:
                     </applicationProperties>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
-                <item guid="3af82b74-b26b-42da-9878-2562ec8a239b" action="open" session="UDM" useFieldsInCommand="false">
+                <item guid="76bb1111-0695-471f-ba80-049f6161c0ae" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_port = param(&apos;UDM/ldap_port&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="55799f67-abe0-4703-8aa0-e8b5e9c5de4a" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_password = param(&apos;UDM/ldap_password&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="0dce3a23-6392-490b-8825-366b0657a450" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_cn = param(&apos;UDM/ldap_cn&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="eff56a2f-451a-47b3-a0e6-69650e317659" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_ip = param(&apos;UDM/ldap_ip&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="9caa78e1-d25d-466b-8d16-048f90baf0ed" action="open" session="UDM">
                     <command>
                         <body>project://di_[param(&apos;UDM/make&apos;)]/session_profiles/UDM.ffsp</body>
                     </command>
@@ -1030,22 +1052,20 @@ Performance Counters:
                         <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                         <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
                             <ipAddress inherit="false">[ipAddr]</ipAddress>
-                            <user inherit="false">[param(&apos;UDM/username&apos;)]</user>
-                            <password inherit="false" masked="false">[param(&apos;UDM/password&apos;)]</password>
                         </sessionProperties>
                         <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                     </applicationProperties>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
                 </item>
-                <item guid="5538e8fb-4329-46b9-be58-c6ea65015839" action="save_supi" session="UDM" useFieldsInCommand="false">
+                <item guid="40ec6cef-5a9d-4142-a5b9-a6a6bbd4cdc6" action="save_supi" session="UDM" useFieldsInCommand="false">
                     <command>
-                        <body>-ldap_ip ip_addr -ldap_cn param(&apos;UDM/ldap_cn&apos;) -ldap_password param(&apos;UDM/ldap_password&apos;) -ldap_port param(&apos;UDM/ldap_port&apos;) -supi supi</body>
+                        <body>-ldap_ip $ldap_ip -ldap_cn $ldap_cn -ldap_password $ldap_password -ldap_port $ldap_port -supi $supi</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
                 </item>
-                <item guid="84258ad9-eb67-42c9-af3e-1cee601fb406" action="close" session="UDM">
+                <item guid="2a36a6c4-69f2-411e-bcf5-2c707c0c9305" action="close" session="UDM">
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
@@ -1053,84 +1073,508 @@ Performance Counters:
         </item>
         <item name="deleteSubUDM" isPublic="true">
             <steps>
-                <item guid="566acf11-ff38-43b5-ad3b-59c0611d835c" action="if" useFieldsInCommand="false">
+                <item guid="667b49c1-6208-42eb-8d02-55ac5d27c2c2" action="eval" useFieldsInCommand="false">
                     <command>
-                        <body>param(&apos;UDM/hostname&apos;) != &quot;&quot;:</body>
+                        <body>sub = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="dcf72f00-b23a-49fc-af98-47e09d333934" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Verify PDU session in SMF</body>
                     </command>
                     <nestedSteps>
-                        <item guid="1c7d223c-ce51-4a71-b921-aac8846fcb96" action="eval" useFieldsInCommand="false">
+                        <item guid="a428f1e0-8112-401b-8c0d-6a9676e56d6f" action="if" useFieldsInCommand="false">
                             <command>
-                                <body>ipAddr = param(&apos;UDM/hostname&apos;)</body>
+                                <body>param(&apos;SMF/hostname&apos;) != &quot;&quot;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="3474e402-c461-4547-843d-2ad0ceabe1a1" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ipAddr = param(&apos;SMF/hostname&apos;)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="30aecf89-6a5d-4336-8706-1f21ee4cad9c" action="else" useFieldsInCommand="false">
+                            <nestedSteps>
+                                <item guid="c728569c-e54c-4c16-9059-8ffb7979300b" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ipAddr = param(&apos;SMF/ip_address&apos;)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="36a8ab6f-1308-420c-aa8c-183b28638636" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:Verifying subscriber [sub] has at least one PDU registered in the SMF</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Verifying subscriber [sub] has at least one PDU registered in the SMF</message>
+                            </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="eec3ae4c-12d0-4de6-ae7e-ba08a014247d" action="open" session="SMF">
+                            <command>
+                                <body>project://di_[param(&apos;SMF/make&apos;)]/session_profiles/SMF.ffsp</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                                <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
+                                    <ipAddress inherit="false">[ipAddr]</ipAddress>
+                                    <port inherit="false">[param(&apos;SMF/ssh_port&apos;)]</port>
+                                    <user inherit="false">[param(&apos;SMF/username&apos;)]</user>
+                                    <password inherit="false" masked="false">[param(&apos;SMF/password&apos;)]</password>
+                                </sessionProperties>
+                                <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
+                        </item>
+                        <item guid="22a83f62-1103-40ff-9c9a-3db3346c684d" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>value = []</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="8c161a89-ad49-4a1c-b909-d52f0060ffa0" action="get_subscriber_pdus" session="SMF" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/pdus/item</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>len(value) &gt; 0</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>PDU(s) up in SMF found PDU(s): [str(value)]</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>PDUs not up yet waiting 5 sec and trying again.</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>PDUs did not come up, aborting SMF interaction.</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="ExitProcedure">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                                    </item>
+                                </item>
+                                <item name="OnNoMatchesFound">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                            <message>PDUs not up yet waiting 5 sec and trying again.</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="RepeatStep">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="4c60f7b3-ffd0-44f0-80de-8fa8eb26c8d9" action="else" useFieldsInCommand="false">
+                <item guid="8840ce73-22a4-46ed-9e4e-ce4ffe5131ec" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Verify UE in Idle mode</body>
+                    </command>
                     <nestedSteps>
-                        <item guid="4049cc78-b758-4dd6-b032-902e5b9bcdb4" action="eval" useFieldsInCommand="false">
+                        <item guid="fac5e789-0475-4d04-a0d8-960a0b660839" action="open" session="AMF">
                             <command>
-                                <body>ipAddr = param(&apos;UDM/ip_address&apos;)</body>
+                                <body>project://di_[param(&apos;AMF/make&apos;)]/session_profiles/AMF.ffsp</body>
                             </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                                <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
+                                    <ipAddress inherit="false">[ipAddr]</ipAddress>
+                                    <user inherit="false">[param(&apos;AMF/username&apos;)]</user>
+                                    <password inherit="false" masked="false">[param(&apos;AMF/password&apos;)]</password>
+                                </sessionProperties>
+                                <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="465c5bb4-ddd0-499b-9bc2-5d372c7155d6" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:Verifying UE in IDLE mode</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Verifying UE in IDLE mode</message>
+                            </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="b3573d8f-5539-4f03-953d-0194dc6a48a8" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>amfCmState()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>str(value) == &quot;IDLE&quot;</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>AMF confirms that subscriber [sub] CM State is IDLE</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>UE has not reached IDLE state</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="15" delayBetweenRepeats="3.0"/>
+                                                    </item>
+                                                    <item actionId="SkipRemainingRules">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>amfRmState()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>str(value) == &quot;REGISTERED&quot;</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>AMF confirms that subscriber [sub] RM State is REGISTERED</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="FailTest">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>AMF says that subscriber [sub] CM State is not REGISTERED (but should be)</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>Exiting w/out deleting subscriber</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="ExitProcedure">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>Timeout waiting for UE to reach IDLE state</message>
+                                        </actionProperties>
+                                    </item>
+                                </item>
+                                <item name="OnQueryExtractorInvalidQuery">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                            <message>UE has not reached IDLE</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="RepeatStep">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
+                                    </item>
+                                </item>
+                                <item name="OnResponseMappingIssue">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                            <message>UE has not reached IDLE</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="RepeatStep">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
+                                    </item>
+                                    <item actionId="SkipRemainingRules">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="90767697-f3e4-42fc-be07-e94623546ab5" action="close" session="AMF" useFieldsInCommand="false">
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="b7b168a9-aa5e-4dce-8fdd-ed056827467b" action="eval" useFieldsInCommand="false">
+                <item guid="3317bf58-8b83-42a7-875a-c67226f2763d" action="comment" useFieldsInCommand="false">
                     <command>
-                        <body>supi = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
+                        <body>Delete sub from UDM</body>
                     </command>
+                    <nestedSteps>
+                        <item guid="0cc73bd3-0533-40be-9694-fad893905f02" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>param(&apos;UDM/hostname&apos;) != &quot;&quot;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="08a8d9ae-243b-49cf-a757-5f7f395723b9" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ipAddr = param(&apos;UDM/hostname&apos;)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="5b8a6e5a-b588-4545-b894-8db47d7c2e15" action="else" useFieldsInCommand="false">
+                            <nestedSteps>
+                                <item guid="0a1398e3-20a3-421d-8c3a-89eab4240e36" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ipAddr = param(&apos;UDM/ip_address&apos;)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="9f91c1dc-91f0-4834-bdb1-2facee0aaa25" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:Deleting sub [sub] from UDM</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Deleting sub [sub] from UDM</message>
+                            </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="681ddfc2-0f82-42b3-9ad5-7d152c24204f" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ldap_port = param(&apos;UDM/ldap_port&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="4554a366-4317-40b6-9e03-a583049451ae" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ldap_password = param(&apos;UDM/ldap_password&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="64b07ca2-90e6-4139-bce4-0b7a845585a5" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ldap_cn = param(&apos;UDM/ldap_cn&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="b0904d56-9d84-40b8-ad9c-bc8974b7b451" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ldap_ip = param(&apos;UDM/ldap_ip&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="7f5974e7-cb13-4455-8af0-9dc45a96a7f6" action="open" session="UDM">
+                            <command>
+                                <body>project://di_[param(&apos;UDM/make&apos;)]/session_profiles/UDM.ffsp</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                                <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
+                                    <ipAddress inherit="false">[ipAddr]</ipAddress>
+                                </sessionProperties>
+                                <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
+                        </item>
+                        <item guid="9b577d86-e10b-4354-9495-262f3f4df801" action="delete_supi" session="UDM" useFieldsInCommand="false">
+                            <command>
+                                <body>-ldap_ip $ldap_ip -ldap_cn $ldap_cn -ldap_password $ldap_password -ldap_port $ldap_port -supi $sub</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
+                        </item>
+                        <item guid="871fa288-67d0-4635-87c2-2515e3335bd9" action="close" session="UDM">
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                    </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
-                <item guid="588e7f61-fa06-4ad6-b0f0-ed9491b1ad55" action="message" useFieldsInCommand="false">
+                <item guid="b4c86d6b-6d46-488e-be06-2ee5b61e3998" action="comment" useFieldsInCommand="false">
                     <command>
-                        <body>Information:Deleting sub [supi] from UDM</body>
+                        <body>Verify PDU removed from SMF</body>
                     </command>
-                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                        <message inherit="false">Deleting sub [supi] from UDM</message>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="1e023ea1-70ed-4701-bea0-42b540da568d" action="open" session="UDM">
-                    <command>
-                        <body>project://di_[param(&apos;UDM/make&apos;)]/session_profiles/UDM.ffsp</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
-                        <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                        <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
-                            <ipAddress inherit="false">[ipAddr]</ipAddress>
-                            <user inherit="false">[param(&apos;UDM/username&apos;)]</user>
-                            <password inherit="false" masked="false">[param(&apos;UDM/password&apos;)]</password>
-                        </sessionProperties>
-                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
-                </item>
-                <item guid="b7c6a63f-0bac-43eb-9f0b-d32a4731d600" action="delete_supi" session="UDM" skip="true" useFieldsInCommand="false">
-                    <command>
-                        <body>-ldap_ip ip_addr -ldap_cn param(&apos;UDM/ldap_cn&apos;) -ldap_password param(&apos;UDM/ldap_password&apos;) -ldap_port param(&apos;UDM/ldap_port&apos;) -supi supi</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
-                </item>
-                <item guid="304beb53-50a5-4bfa-add4-8b4b998a9881" action="close" session="UDM">
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                    <nestedSteps>
+                        <item guid="28e7b66d-1bc6-4ec7-b940-710154294836" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>value = []</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="68200d34-fefd-4391-86d6-52065ecb7176" action="get_subscriber_pdus" session="SMF" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/pdus/item</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>len(value) == 0</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>PDU(s) sucessfully deleted from SMF for subscriber [sub]</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>PDUs not yet removed, waiting 3 sec and trying again.</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="5" delayBetweenRepeats="3.0"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>PDUs not removed, aborting SMF interaction.</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="ExitProcedure">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                                    </item>
+                                </item>
+                                <item name="OnQueryExtractorInvalidQuery">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                            <message>PDU(s) sucessfully deleted from SMF for subscriber [sub]</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                </item>
+                                <item name="OnNoMatchesFound">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                            <message>PDU(s) sucessfully deleted from SMF for subscriber [sub]</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
+                        </item>
+                        <item guid="f43f59da-690f-46f8-bb59-46185e0e6a77" action="close" session="SMF">
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
             </steps>
         </item>
         <item name="restoreSubUDM" isPublic="true">
             <steps>
-                <item guid="4c4a633a-ffd5-4962-b7d9-66508cb15a25" action="if" useFieldsInCommand="false">
+                <item guid="99715b4d-5ba1-4a79-848e-4e690439db01" action="if" useFieldsInCommand="false">
                     <command>
                         <body>param(&apos;UDM/hostname&apos;) != &quot;&quot;:</body>
                     </command>
                     <nestedSteps>
-                        <item guid="6ff310ef-8af3-43f3-87c7-b48886bab3be" action="eval" useFieldsInCommand="false">
+                        <item guid="46ec19f4-6341-4ff7-beea-b579979c183d" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>ipAddr = param(&apos;UDM/hostname&apos;)</body>
                             </command>
@@ -1139,9 +1583,9 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="399a23e8-b6e5-4653-9510-d015f31e14bb" action="else" useFieldsInCommand="false">
+                <item guid="ce74ce23-a71d-4cf6-82a1-2be05c2630af" action="else" useFieldsInCommand="false">
                     <nestedSteps>
-                        <item guid="1108fc03-d015-40c5-ae8b-9cf7889da641" action="eval" useFieldsInCommand="false">
+                        <item guid="2fe0fb1f-0afd-4d23-9095-84dc8c03c34e" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>ipAddr = param(&apos;UDM/ip_address&apos;)</body>
                             </command>
@@ -1150,14 +1594,14 @@ Performance Counters:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="a7e5cba8-94e8-461b-94bc-6e8669676c62" action="eval" useFieldsInCommand="false">
+                <item guid="dd509d31-703e-4704-876b-7eb28d8d6547" action="eval" useFieldsInCommand="false">
                     <command>
                         <body>supi = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
-                <item guid="45d73b16-8e56-44d6-a9f2-46a60ada1fa0" action="message" useFieldsInCommand="false">
+                <item guid="89b6dc2e-564c-4670-8e90-4681b8d93d75" action="message" useFieldsInCommand="false">
                     <command>
                         <body>Information:Recovering saved sub [supi] on UDM</body>
                     </command>
@@ -1166,7 +1610,35 @@ Performance Counters:
                     </applicationProperties>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
-                <item guid="bb568bc6-afcd-4269-b9ef-b7d47d1900f9" action="open" session="UDM">
+                <item guid="5ee6384c-b3fa-4ed4-a23a-207829ed1050" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_port = param(&apos;UDM/ldap_port&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="6b5df0dd-1dfd-414e-9b18-3d1e658aebf6" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_password = param(&apos;UDM/ldap_password&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="469c5d8f-03e7-4792-a416-312fbad3959c" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_cn = param(&apos;UDM/ldap_cn&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="41e9e711-dd7d-48e0-af6e-8d19753821ff" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_ip = param(&apos;UDM/ldap_ip&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="9771a69e-cdcc-48d7-a41d-527a7d9f479d" action="open" session="UDM">
                     <command>
                         <body>project://di_[param(&apos;UDM/make&apos;)]/session_profiles/UDM.ffsp</body>
                     </command>
@@ -1174,22 +1646,20 @@ Performance Counters:
                         <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                         <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
                             <ipAddress inherit="false">[ipAddr]</ipAddress>
-                            <user inherit="false">[param(&apos;UDM/username&apos;)]</user>
-                            <password inherit="false" masked="false">[param(&apos;UDM/password&apos;)]</password>
                         </sessionProperties>
                         <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                     </applicationProperties>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
                 </item>
-                <item guid="40e408d4-7689-43fa-bdfe-94bfeefcef8f" action="restore_supi" session="UDM" useFieldsInCommand="false">
+                <item guid="006dd923-d569-4fb7-b965-6b8f0dacecf3" action="restore_supi" session="UDM" useFieldsInCommand="false">
                     <command>
-                        <body>-ldap_ip ip_addr -ldap_cn param(&apos;UDM/ldap_cn&apos;) -ldap_password param(&apos;UDM/ldap_password&apos;) -ldap_port param(&apos;UDM/ldap_port&apos;) -supi supi</body>
+                        <body>-ldap_ip $ldap_ip -ldap_cn $ldap_cn -ldap_password $ldap_password -ldap_port $ldap_port -supi $supi</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
                 </item>
-                <item guid="0a0be19b-7d71-4cfd-9899-0bcc6b21d234" action="close" session="UDM">
+                <item guid="d306e6d9-2842-4e13-a6d1-950dbb5a899d" action="close" session="UDM">
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
