@@ -1079,99 +1079,338 @@ Performance Counters:
         </item>
         <item name="deleteSubUDM" isPublic="true">
             <steps>
-                <item guid="566acf11-ff38-43b5-ad3b-59c0611d835c" action="if" useFieldsInCommand="false">
+                <item guid="adcc8e0c-6477-4f96-9739-44d6eb6cec0a" action="comment" useFieldsInCommand="false">
                     <command>
-                        <body>param(&apos;UDM/hostname&apos;) != &quot;&quot;:</body>
+                        <body>Verify PDU session in SMF</body>
                     </command>
                     <nestedSteps>
-                        <item guid="1c7d223c-ce51-4a71-b921-aac8846fcb96" action="eval" useFieldsInCommand="false">
+                        <item guid="56050571-3b1b-4e04-a8f6-689b577f4c80" action="if" useFieldsInCommand="false">
                             <command>
-                                <body>ipAddr = param(&apos;UDM/hostname&apos;)</body>
+                                <body>param(&apos;SMF/hostname&apos;) != &quot;&quot;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="a7cce031-f099-47b7-b2fc-686357999f3d" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ipAddr = param(&apos;SMF/hostname&apos;)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="3e1385bd-bf18-4198-90e5-2bf575c5a72c" action="else" useFieldsInCommand="false">
+                            <nestedSteps>
+                                <item guid="e9ac8ddf-d79b-4903-9ee3-114fdb65bced" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ipAddr = param(&apos;SMF/ip_address&apos;)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="037b5191-6d45-4ebe-be9e-faba6762f9d4" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:Verifying subscriber [sub] has at least one PDU registered in the SMF</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Verifying subscriber [sub] has at least one PDU registered in the SMF</message>
+                            </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="27d8c1a0-fb79-4f1d-be6d-3b8976e6425e" action="open" session="SMF">
+                            <command>
+                                <body>project://di_[param(&apos;SMF/make&apos;)]/session_profiles/SMF.ffsp</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                                <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
+                                    <ipAddress inherit="false">[ipAddr]</ipAddress>
+                                    <port inherit="false">[param(&apos;SMF/ssh_port&apos;)]</port>
+                                    <user inherit="false">[param(&apos;SMF/username&apos;)]</user>
+                                    <password inherit="false" masked="false">[param(&apos;SMF/password&apos;)]</password>
+                                </sessionProperties>
+                                <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
+                        </item>
+                        <item guid="f967db0c-abc1-484d-b438-21b07d5d0e1f" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>value = []</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="1c71cff1-3db4-41e0-a47b-38da38140463" action="get_subscriber_pdus" session="SMF" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/pdus/item</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>len(value) &gt; 0</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>PDU(s) up in SMF found PDU(s): [str(value)]</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>PDUs not up yet waiting 5 sec and trying again.</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>PDUs did not come up, aborting SMF interaction.</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="ExitProcedure">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                                    </item>
+                                </item>
+                                <item name="OnNoMatchesFound">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                            <message>PDUs not up yet waiting 5 sec and trying again.</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="RepeatStep">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="4c60f7b3-ffd0-44f0-80de-8fa8eb26c8d9" action="else" useFieldsInCommand="false">
+                <item guid="1b998f6c-1a28-4393-8dfb-2fdce764e9ac" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Delete sub from UDM</body>
+                    </command>
                     <nestedSteps>
-                        <item guid="4049cc78-b758-4dd6-b032-902e5b9bcdb4" action="eval" useFieldsInCommand="false">
+                        <item guid="566acf11-ff38-43b5-ad3b-59c0611d835c" action="if" useFieldsInCommand="false">
                             <command>
-                                <body>ipAddr = param(&apos;UDM/ip_address&apos;)</body>
+                                <body>param(&apos;UDM/hostname&apos;) != &quot;&quot;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="1c7d223c-ce51-4a71-b921-aac8846fcb96" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ipAddr = param(&apos;UDM/hostname&apos;)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="4c60f7b3-ffd0-44f0-80de-8fa8eb26c8d9" action="else" useFieldsInCommand="false">
+                            <nestedSteps>
+                                <item guid="4049cc78-b758-4dd6-b032-902e5b9bcdb4" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ipAddr = param(&apos;UDM/ip_address&apos;)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="b7b168a9-aa5e-4dce-8fdd-ed056827467b" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>supi = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="588e7f61-fa06-4ad6-b0f0-ed9491b1ad55" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:Deleting sub [supi] from UDM</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Deleting sub [supi] from UDM</message>
+                            </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="59225f56-cd94-4677-8796-efaddd6ffef1" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ldap_port = param(&apos;UDM/ldap_port&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="4e453738-94fa-4010-81ab-5695d11b6844" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ldap_password = param(&apos;UDM/ldap_password&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="d42ce24f-2515-4460-9154-db1a85ff4e49" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ldap_cn = param(&apos;UDM/ldap_cn&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="55dbc8db-b5a0-464c-9d17-395f1188f317" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ldap_ip = param(&apos;UDM/ldap_ip&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="1e023ea1-70ed-4701-bea0-42b540da568d" action="open" session="UDM">
+                            <command>
+                                <body>project://di_[param(&apos;UDM/make&apos;)]/session_profiles/UDM.ffsp</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                                <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
+                                    <ipAddress inherit="false">[ipAddr]</ipAddress>
+                                </sessionProperties>
+                                <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
+                        </item>
+                        <item guid="b7c6a63f-0bac-43eb-9f0b-d32a4731d600" action="delete_supi" session="UDM" useFieldsInCommand="false">
+                            <command>
+                                <body>-ldap_ip $ldap_ip -ldap_cn $ldap_cn -ldap_password $ldap_password -ldap_port $ldap_port -supi $supi</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
+                        </item>
+                        <item guid="304beb53-50a5-4bfa-add4-8b4b998a9881" action="close" session="UDM">
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="b7b168a9-aa5e-4dce-8fdd-ed056827467b" action="eval" useFieldsInCommand="false">
+                <item guid="9c44205c-1492-460e-991a-726c823c1c1f" action="comment" useFieldsInCommand="false">
                     <command>
-                        <body>supi = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
+                        <body>Verify PDU removed from SMF</body>
                     </command>
+                    <nestedSteps>
+                        <item guid="7d0e16c6-6942-4027-abfc-61d751fffdd7" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>value = []</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="a0972b34-5902-48ef-a955-e91e0fad4b1a" action="get_subscriber_pdus" session="SMF" useFieldsInCommand="false">
+                            <command>
+                                <body>-supi $sub</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/pdus/item</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>len(value) == 0</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>PDU(s) sucessfully deleted from SMF for subscriber [sub]</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>PDUs not yet removed, waiting 3 sec and trying again.</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="5" delayBetweenRepeats="3.0"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>PDUs not removed, aborting SMF interaction.</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="ExitProcedure">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                                    </item>
+                                </item>
+                                <item name="OnQueryExtractorInvalidQuery">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                            <message>PDU(s) sucessfully deleted from SMF for subscriber [sub]</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                </item>
+                                <item name="OnNoMatchesFound">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                            <message>PDU(s) sucessfully deleted from SMF for subscriber [sub]</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
+                        </item>
+                        <item guid="1a782092-e6ec-4a00-878b-d518f4e35b7f" action="close" session="SMF">
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                    </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="588e7f61-fa06-4ad6-b0f0-ed9491b1ad55" action="message" useFieldsInCommand="false">
-                    <command>
-                        <body>Information:Deleting sub [supi] from UDM</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                        <message inherit="false">Deleting sub [supi] from UDM</message>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="59225f56-cd94-4677-8796-efaddd6ffef1" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>ldap_port = param(&apos;UDM/ldap_port&apos;)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="4e453738-94fa-4010-81ab-5695d11b6844" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>ldap_password = param(&apos;UDM/ldap_password&apos;)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="d42ce24f-2515-4460-9154-db1a85ff4e49" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>ldap_cn = param(&apos;UDM/ldap_cn&apos;)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="55dbc8db-b5a0-464c-9d17-395f1188f317" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>ldap_ip = param(&apos;UDM/ldap_ip&apos;)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="1e023ea1-70ed-4701-bea0-42b540da568d" action="open" session="UDM">
-                    <command>
-                        <body>project://di_[param(&apos;UDM/make&apos;)]/session_profiles/UDM.ffsp</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
-                        <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                        <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
-                            <ipAddress inherit="false">[ipAddr]</ipAddress>
-                        </sessionProperties>
-                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
-                </item>
-                <item guid="b7c6a63f-0bac-43eb-9f0b-d32a4731d600" action="delete_supi" session="UDM" useFieldsInCommand="false">
-                    <command>
-                        <body>-ldap_ip $ldap_ip -ldap_cn $ldap_cn -ldap_password $ldap_password -ldap_port $ldap_port -supi $supi</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
-                </item>
-                <item guid="304beb53-50a5-4bfa-add4-8b4b998a9881" action="close" session="UDM">
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
             </steps>
         </item>
