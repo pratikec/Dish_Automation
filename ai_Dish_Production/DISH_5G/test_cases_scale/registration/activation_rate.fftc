@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<testCase version="9.0.4.202208111512">
+<testCase version="9.0.0.202205111908">
     <general>
         <language>Python</language>
     </general>
@@ -287,19 +287,6 @@
                                 <message inherit="false"> Session handle [session_hendle] exists</message>
                             </applicationProperties>
                         </item>
-                        <item guid="b4a51d25-28e1-4940-9eab-966303ef7b78" action="get_test_session_data" session="s1" useFieldsInCommand="false">
-                            <command>
-                                <body>-test_session_name [testName.replace(&apos; &apos;, &apos;+&apos;)] -library_id [library_id]</body>
-                            </command>
-                            <postProcessing>
-                                <storeResponseAt>test_session_json</storeResponseAt>
-                                <storeResponseText>true</storeResponseText>
-                            </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="83e83ce4-3639-4f1f-813a-a8fd39788043" action="exit" useFieldsInCommand="false">
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
@@ -458,7 +445,7 @@
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="8769d033-0151-4225-b6d1-91567e74435b" action="comment" useFieldsInCommand="false">
+                <item guid="8769d033-0151-4225-b6d1-91567e74435b" action="comment" skip="true" useFieldsInCommand="false">
                     <command>
                         <body>Read LS TS info and place it into the test_session (mostly starting IP)</body>
                     </command>
@@ -570,35 +557,42 @@
                         <body>Begin looping through all cell_data</body>
                     </command>
                     <nestedSteps>
-                        <item guid="bd41fa40-4eec-4a2e-b8e6-9c2a31c21a1e" action="eval" useFieldsInCommand="false">
+                        <item guid="bd41fa40-4eec-4a2e-b8e6-9c2a31c21a1e" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>gnb_idx = 0</body>
+                                <body>getParameterGroupDict(param_path=&quot;test_parameters&quot;)</body>
                             </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="99ab40ef-0fe8-4960-9b54-ac0094efc401" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>done = False</body>
-                            </command>
+                            <postProcessing>
+                                <storeResponseAt>test_parameters_dic</storeResponseAt>
+                                <storeResponseText>true</storeResponseText>
+                            </postProcessing>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="c4182a0a-60ae-419c-b5ef-de50bb340609" action="message" useFieldsInCommand="false">
                             <command>
-                                <body>Information:Beginning to test [len(cell_data.index)] GNB_IDs</body>
+                                <body>Information:Beginning activation rate [len(test_parameters_dic[&quot;iteration&quot;][&quot;item&quot;])] iteration</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                <message inherit="false">Beginning to test [len(cell_data.index)] GNB_IDs</message>
+                                <message inherit="false">Beginning activation rate [len(test_parameters_dic[&quot;iteration&quot;][&quot;item&quot;])] iteration</message>
                             </applicationProperties>
                         </item>
-                        <item guid="75527a73-a935-4b4f-8ec9-44658a31c96d" action="while" useFieldsInCommand="false">
+                        <item guid="a27bbf12-5d2d-4fe3-9729-cd8df53d7ae7" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>done == False:</body>
+                                <body>test_parameters_dic[&quot;iteration&quot;][&quot;item&quot;]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="75527a73-a935-4b4f-8ec9-44658a31c96d" action="for" useFieldsInCommand="false">
+                            <command>
+                                <body>iter_d in test_parameters_dic[&quot;iteration&quot;][&quot;item&quot;]:</body>
                             </command>
                             <nestedSteps>
                                 <item guid="07023812-bf77-44c6-bb61-33f08a038f19" action="eval" useFieldsInCommand="false">
                                     <command>
-                                        <body>supi_idx = 0</body>
+                                        <body>iter_d</body>
                                     </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="4b10d19d-4915-41b2-baea-5f76705d4b14" action="exit" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                                 <item guid="ad54e06d-f080-477c-8d8b-c883bfab63b9" action="eval" useFieldsInCommand="false">
@@ -1441,6 +1435,9 @@
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="365f2c40-9fdf-408d-b78a-7cb7457c5cd8" action="for" useFieldsInCommand="false">
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
