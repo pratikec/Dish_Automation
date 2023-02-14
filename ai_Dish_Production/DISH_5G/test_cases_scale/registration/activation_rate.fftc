@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<testCase version="9.0.0.202205111908">
+<testCase version="9.0.4.202208111512">
     <general>
         <language>Python</language>
     </general>
@@ -451,113 +451,6 @@
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="8769d033-0151-4225-b6d1-91567e74435b" action="comment" skip="true" useFieldsInCommand="false">
-                    <command>
-                        <body>Read LS TS info and place it into the test_session (mostly starting IP)</body>
-                    </command>
-                    <nestedSteps>
-                        <item guid="ef6de830-d093-4671-ae8f-5f3cf4a7356c" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>test_session_d = json.loads(test_session_json)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="d07b16ff-4bd5-4cda-9df2-f061c5cdaa37" action="call" useFieldsInCommand="false">
-                            <command>
-                                <body>getParameterGroupDict(param_path=&apos;ls_testServers&apos;)</body>
-                            </command>
-                            <postProcessing>
-                                <storeResponseAt>ls_servers_dict</storeResponseAt>
-                                <storeResponseText>true</storeResponseText>
-                            </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="3d469323-fd79-41bd-93fa-6de011402bb0" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>ls_servers_dict</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="81c7649b-1e3f-4022-b848-3d6b0895a912" action="for" useFieldsInCommand="false">
-                            <command>
-                                <body>ts_dict in ts_list_dict:</body>
-                            </command>
-                            <nestedSteps>
-                                <item guid="0e250b55-01e7-4141-9a4b-def48cb91939" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>ts_dict[&apos;tsName&apos;]</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="3ea99fdc-a456-4cbb-b1f1-e2575cbd4899" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>ts_dict[&apos;tsId&apos;]</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="f64bee9f-df95-415e-9512-4f42a9193614" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>loc = [d for d in ls_servers_dict[&apos;item&apos;] if d[&apos;TestServerName&apos;] == ts_dict[&apos;tsName&apos;]][0]</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="55688a85-ba93-4bb0-9f7a-c457df1b8aa3" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>loc</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="55afc8ed-7095-4a47-be64-92fcc7f6b227" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>phy_list = param(&apos;ls_testServers/item/parameters//phy&apos;)</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="72dcebb4-fe76-49b6-9cb7-c82a75e0cefa" action="Custom" session="s1">
-                                    <command>
-                                        <body>-requestMethod GET -dataType json -rawResponse true -url /testServers/[ts_id]</body>
-                                    </command>
-                                    <postProcessing>
-                                        <storeResponseAt>ts_json</storeResponseAt>
-                                        <storeResponseText>true</storeResponseText>
-                                    </postProcessing>
-                                    <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="Custom" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" rawResponse="true" rawResponse.inherit="false" url="/testServers/[ts_id]" url.inherit="false"/>
-                                </item>
-                                <item guid="93dbbead-d8ca-4554-a33c-55f15dbae597" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>ts_tmp_dict = json.loads(ts_json)</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="31eee913-109d-42d4-86a2-626461828038" action="for" useFieldsInCommand="false">
-                                    <command>
-                                        <body>phy in phy_list:</body>
-                                    </command>
-                                    <nestedSteps>
-                                        <item guid="99684aa2-abcd-420d-b033-39f63d24ce4b" action="comment" useFieldsInCommand="false">
-                                            <command>
-                                                <body>get phy parent in parameters</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="41aaa7ba-fdee-4c33-93ac-7913fbfcced1" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>param(&apos;ls_testServers/item/parameters&apos;)</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                    </nestedSteps>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                            </nestedSteps>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="7cfc317b-32a9-4506-90d4-8846cd2b6804" action="exit" useFieldsInCommand="false">
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
                 <item guid="7fa212b7-0f3e-404e-a41f-78732598b949" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Begin looping through all cell_data</body>
@@ -628,7 +521,7 @@
                             <nestedSteps>
                                 <item guid="438c043f-0836-4320-8081-8f4b4b0a738c" action="eval" useFieldsInCommand="false">
                                     <command>
-                                        <body>test_session_dic = json.loads[test_session_json]</body>
+                                        <body>test_session_dic = json.loads(test_session_json)</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
