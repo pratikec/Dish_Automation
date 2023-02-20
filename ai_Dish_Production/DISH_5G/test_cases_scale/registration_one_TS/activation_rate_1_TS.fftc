@@ -297,8 +297,22 @@
                     <nestedSteps>
                         <item guid="f081c151-9a15-4d05-a78d-8de41082a46a" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>testServerNames = param(&apos;ls_testServers/item/TestServerName&apos;)</body>
+                                <body>testServerNames = param(&apos;ls_testServers/item/TestServerName&apos;,[])</body>
                             </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="02b08477-dfc4-45f9-aad8-21ce4122033b" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>type(testServerNames) != list:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="88f95429-ff36-4ef0-99be-c5960dd6b2d4" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>testServerNames =[testServerNames]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="2b356323-c3a2-4f36-9169-cb1fd0da43fc" action="eval" useFieldsInCommand="false">
@@ -313,108 +327,53 @@
                             </postProcessing>
                             <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="ShowTestServers" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main"/>
                         </item>
-                        <item guid="a01c733d-0156-46ff-b13f-ab60ff140065" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>testServer_dict = json.loads(testServers)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
                         <item guid="af0c8410-4e68-42d7-83ae-73d66b1243d4" action="for" useFieldsInCommand="false">
                             <command>
                                 <body>ts in testServerNames:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="fb6472e7-7e49-4c3c-82a8-b79b67f792c4" action="if" useFieldsInCommand="false">
+                                <item guid="97b58fdf-d854-4724-8a89-6da7d12423f9" action="eval" useFieldsInCommand="false">
                                     <command>
-                                        <body>len([d for d in testServer_dict[&apos;testServers&apos;] if d[&apos;name&apos;] == ts]) == 1:</body>
+                                        <body>ts</body>
                                     </command>
-                                    <nestedSteps>
-                                        <item guid="bbf958a3-6116-46c5-8f12-fa4ba4edcd3c" action="message" useFieldsInCommand="false">
-                                            <command>
-                                                <body>Information: Test server id for [ts] is [ts_num]</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                <message inherit="false"> Test server id for [ts] is [ts_num]</message>
-                                            </applicationProperties>
-                                        </item>
-                                        <item guid="0cfde450-5de3-43df-8b97-17ac72cdcb6d" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>ts_list_dict.append({&apos;tsName&apos;:ts,&apos;tsId&apos;:int(ts_num)})</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                    </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="a27643c8-1d1f-4ad0-9f16-2525bde82379" action="else" useFieldsInCommand="false">
-                                    <nestedSteps>
-                                        <item guid="8afee51d-c6d7-4feb-b0a1-1afdeb65e2de" action="message" useFieldsInCommand="false">
-                                            <command>
-                                                <body>Error:Parameters referencing Test Server &apos;[ts]&apos; not found in target Landslide. Exiting.</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                <severity inherit="false">Error</severity>
-                                                <message inherit="false">Parameters referencing Test Server &apos;[ts]&apos; not found in target Landslide. Exiting.</message>
-                                            </applicationProperties>
-                                        </item>
-                                        <item guid="e52d52e1-417f-4418-a383-229527f39015" action="comment" useFieldsInCommand="false">
-                                            <command>
-                                                <body>Fail the test</body>
-                                            </command>
-                                            <postProcessing>
-                                                <analysisRules>
-                                                    <item>
-                                                        <extractorInfo extractorType="none">
-                                                            <extractorProperties type="com.fnfr.svt.documents.EmptyExtractorPropertyGroup"/>
-                                                        </extractorInfo>
-                                                        <processorInfo ruleType="assert">
-                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                                <expression>1 == 1</expression>
-                                                                <actionsWhenTrue>
-                                                                    <item actionId="FailTest">
-                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                    </item>
-                                                                </actionsWhenTrue>
-                                                            </ruleProperties>
-                                                        </processorInfo>
-                                                    </item>
-                                                </analysisRules>
-                                            </postProcessing>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="a76c4b91-2cc6-42cb-9d52-143441cd085e" action="close" session="s1">
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="44e1fee1-e032-45b0-8036-89435ad937ba" action="exit" useFieldsInCommand="false">
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                    </nestedSteps>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="ff1a9cfb-58c8-4520-8d8d-91e02ab3063e" action="eval" skip="true" useFieldsInCommand="false">
+                                <item guid="ff1a9cfb-58c8-4520-8d8d-91e02ab3063e" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>qury = &quot;Result/testServers//..[name=&apos;&quot;+ts+&quot;&apos;]/id&quot;</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="9dff103d-a6e2-4c4a-ba1d-074583fbddf5" action="eval" skip="true" useFieldsInCommand="false">
+                                <item guid="0fe6ae14-e83a-4af4-a6c7-919f3c6005fc" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>qury</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="9dff103d-a6e2-4c4a-ba1d-074583fbddf5" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>ts_num = query(&quot;testServers&quot;, qury)</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="11b98cc1-62ca-4add-ae21-92515ccfb14b" action="if" skip="true" useFieldsInCommand="false">
+                                <item guid="ce5b9849-25a4-4a8d-bdc3-a3619ce9016e" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ts_num</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="11b98cc1-62ca-4add-ae21-92515ccfb14b" action="if" useFieldsInCommand="false">
                                     <command>
                                         <body>ts_num == &apos;&apos;:</body>
                                     </command>
                                     <nestedSteps>
                                         <item guid="eccea434-5bbd-4dcd-bf3f-61eea50589c5" action="message" useFieldsInCommand="false">
                                             <command>
-                                                <body>Error:Parameters referencing Test Server &apos;[ts]&apos; not found in target Landslide. Exiting.</body>
+                                                <body>Error:Test Server &apos;[ts]&apos; not found in target Landslide. Exiting.</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
                                                 <severity inherit="false">Error</severity>
-                                                <message inherit="false">Parameters referencing Test Server &apos;[ts]&apos; not found in target Landslide. Exiting.</message>
+                                                <message inherit="false">Test Server &apos;[ts]&apos; not found in target Landslide. Exiting.</message>
                                             </applicationProperties>
                                         </item>
                                         <item guid="fcec5478-c4b5-43a1-bae1-d83493a61305" action="comment" useFieldsInCommand="false">
@@ -451,7 +410,7 @@
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="217225a3-cd4a-416c-a4e4-38338b3bdba2" action="message" skip="true" useFieldsInCommand="false">
+                                <item guid="217225a3-cd4a-416c-a4e4-38338b3bdba2" action="message" useFieldsInCommand="false">
                                     <command>
                                         <body>Information: Test server id for [ts] is [ts_num]</body>
                                     </command>
@@ -459,7 +418,7 @@
                                         <message inherit="false"> Test server id for [ts] is [ts_num]</message>
                                     </applicationProperties>
                                 </item>
-                                <item guid="5f164f12-e9ae-400f-ac62-61a66d5aef59" action="eval" skip="true" useFieldsInCommand="false">
+                                <item guid="5f164f12-e9ae-400f-ac62-61a66d5aef59" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>ts_list_dict.append({&apos;tsName&apos;:ts,&apos;tsId&apos;:int(ts_num)})</body>
                                     </command>
