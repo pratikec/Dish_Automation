@@ -182,13 +182,7 @@ Expected Result/Post Condition:
                                 </item>
                                 <item guid="59fd4953-b023-4dc2-bcfa-80c3877f98e2" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_network_functions.fftc#saveSubUDM()</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="20856491-996c-4dcb-a284-762ff4d8370c" action="call" useFieldsInCommand="false">
-                                    <command>
-                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_network_functions.fftc#deleteSubUDM()</body>
+                                        <body>saveSubUDMthenDelete()</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
@@ -947,7 +941,7 @@ Expected Result/Post Condition:
                                 </item>
                                 <item guid="270a1087-02bc-49e4-b1ab-8e48eed87677" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_network_functions.fftc#restoreSubUDM()</body>
+                                        <body>restoreSubUDM()</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
@@ -973,6 +967,227 @@ Expected Result/Post Condition:
                 </item>
                 <item guid="e2061f6c-c539-463d-b383-b50ebad40bc3" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+        </item>
+        <item name="saveSubUDMthenDelete" isPublic="true">
+            <steps>
+                <item guid="e99b73fb-9a92-4498-913f-935b6a8e8dd2" action="if" useFieldsInCommand="false">
+                    <command>
+                        <body>param(&apos;UDM/hostname&apos;) != &quot;&quot;:</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="ef19c102-b816-4553-9252-13af856d0ef4" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ipAddr = param(&apos;UDM/hostname&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="1a1d5c39-cb57-477a-9c55-0c4e944c775a" action="else" useFieldsInCommand="false">
+                    <nestedSteps>
+                        <item guid="301564be-28e6-42a1-abd2-db036ec53b28" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ipAddr = param(&apos;UDM/ip_address&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="46871769-47d5-4fa5-9fff-f7fc078afef5" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>supi = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="bcf35fe2-7c16-4e03-a2fb-4840f1cda019" action="message" useFieldsInCommand="false">
+                    <command>
+                        <body>Information:Saving sub [supi] on UDM for later recovery</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                        <message inherit="false">Saving sub [supi] on UDM for later recovery</message>
+                    </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="0bcab87c-531d-425e-a844-43e10648316a" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_port = param(&apos;UDM/ldap_port&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="76f8bcb5-01ac-40bc-baeb-068f41ef0b8e" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_password = param(&apos;UDM/ldap_password&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="f46cbd33-dc11-4674-93f9-077bbcb42daf" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_cn = param(&apos;UDM/ldap_cn&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="2b7c5645-d8ce-4ee0-a112-cd95de471ca6" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_ip = param(&apos;UDM/ldap_ip&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="62958f4c-2b00-4c97-bd8b-63dc7d4a10cd" action="open" session="UDM">
+                    <command>
+                        <body>project://di_[param(&apos;UDM/make&apos;)]/session_profiles/UDM.ffsp</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                        <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                        <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
+                            <ipAddress inherit="false">[ipAddr]</ipAddress>
+                        </sessionProperties>
+                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
+                </item>
+                <item guid="b73cecad-aa84-45a3-a617-7813149b96ca" action="message" useFieldsInCommand="false">
+                    <command>
+                        <body>Information:Saving sub [supi] on UDM for later recovery</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                        <message inherit="false">Saving sub [supi] on UDM for later recovery</message>
+                    </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="6ba76d27-96f6-4415-821a-11b9f7165b67" action="save_supi" session="UDM" useFieldsInCommand="false">
+                    <command>
+                        <body>-ldap_ip $ldap_ip -ldap_cn $ldap_cn -ldap_password $ldap_password -ldap_port $ldap_port -supi $supi</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
+                </item>
+                <item guid="6c4d4ad4-6d4e-49d3-8a2e-ef19f277177f" action="message" useFieldsInCommand="false">
+                    <command>
+                        <body>Information:Deleting sub [supi] on UDM</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                        <message inherit="false">Deleting sub [supi] on UDM</message>
+                    </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="2c58dae0-40a8-4d20-8068-4a55b8f01042" action="delete_supi" session="UDM" useFieldsInCommand="false">
+                    <command>
+                        <body>-ldap_ip $ldap_ip -ldap_cn $ldap_cn -ldap_password $ldap_password -ldap_port $ldap_port -supi $sub</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
+                </item>
+                <item guid="1fdbedfa-9faa-4fe7-b8e2-3bd35cbf837a" action="close" session="UDM">
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+            </steps>
+        </item>
+        <item name="restoreSubUDM" isPublic="true">
+            <steps>
+                <item guid="ab587441-898a-4e5e-a4ac-9c78dbfd3ff5" action="if" useFieldsInCommand="false">
+                    <command>
+                        <body>param(&apos;UDM/hostname&apos;) != &quot;&quot;:</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="738e8560-6ea1-4fce-9540-9cc3762bd724" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ipAddr = param(&apos;UDM/hostname&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="22989e72-0186-44cb-997a-4674e6108e61" action="else" useFieldsInCommand="false">
+                    <nestedSteps>
+                        <item guid="c94bc4b2-3f35-4d0f-b67d-ac63077ec11d" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ipAddr = param(&apos;UDM/ip_address&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="5c60bef2-ec41-4312-a17d-0a4ac3bc1c94" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>supi = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="51de4127-f767-4409-bf2a-d1beeae1bf02" action="message" useFieldsInCommand="false">
+                    <command>
+                        <body>Information:Recovering saved sub [supi] on UDM</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                        <message inherit="false">Recovering saved sub [supi] on UDM</message>
+                    </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="f3dfe564-8808-4bf2-a1f2-12c7d8196e8e" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_port = param(&apos;UDM/ldap_port&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="00ff1ea4-167d-42e0-89eb-b222508738c0" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_password = param(&apos;UDM/ldap_password&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="ecb2de32-e715-415d-9a0d-28df5fc21f08" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_cn = param(&apos;UDM/ldap_cn&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="9a2d6599-a138-42e0-b6de-6628c12cdc65" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ldap_ip = param(&apos;UDM/ldap_ip&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="612d2172-2e21-4745-8347-45aaa11cf5e7" action="open" session="UDM">
+                    <command>
+                        <body>project://di_[param(&apos;UDM/make&apos;)]/session_profiles/UDM.ffsp</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                        <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                        <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
+                            <ipAddress inherit="false">[ipAddr]</ipAddress>
+                        </sessionProperties>
+                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
+                </item>
+                <item guid="aa21ddbb-6461-449e-8ed1-b4038859d5cc" action="restore_supi" session="UDM" useFieldsInCommand="false">
+                    <command>
+                        <body>-ldap_ip $ldap_ip -ldap_cn $ldap_cn -ldap_password $ldap_password -ldap_port $ldap_port -supi $supi</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/UDM.ffsp"/>
+                </item>
+                <item guid="0fc75365-754d-474f-8eab-6dfe96f57a66" action="close" session="UDM">
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
             </steps>
         </item>
