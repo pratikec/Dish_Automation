@@ -502,10 +502,10 @@
                         </item>
                         <item guid="c4182a0a-60ae-419c-b5ef-de50bb340609" action="message" useFieldsInCommand="false">
                             <command>
-                                <body>Information:Beginning SIP registration rate iterations: [len(iterations)]</body>
+                                <body>Information:Beginning SIP registration rate iterations: [len(iterations)] with runtime of </body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                <message inherit="false">Beginning SIP registration rate iterations: [len(iterations)]</message>
+                                <message inherit="false">Beginning SIP registration rate iterations: [len(iterations)] with runtime of </message>
                             </applicationProperties>
                         </item>
                         <item guid="165e5175-4113-40d4-91de-f9bc69ffbb46" action="call" useFieldsInCommand="false">
@@ -567,10 +567,10 @@
                                 </item>
                                 <item guid="0b1837f2-bf49-4ed7-b821-629236164673" action="message" useFieldsInCommand="false">
                                     <command>
-                                        <body>Information:Iteration [i] with SIP reg rate [rate]</body>
+                                        <body>Information:Iteration [i+1] with SIP registration rate [rate]/sec</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                        <message inherit="false">Iteration [i] with SIP reg rate [rate]</message>
+                                        <message inherit="false">Iteration [i+1] with SIP registration rate [rate]/sec</message>
                                     </applicationProperties>
                                 </item>
                                 <item guid="f409c744-f4ab-4300-ba6f-a8ebc565bda3" action="comment" useFieldsInCommand="false">
@@ -688,10 +688,10 @@
                                     <nestedSteps>
                                         <item guid="d4d7c96a-71a3-4630-a70a-fe21f01b73c8" action="message" useFieldsInCommand="false">
                                             <command>
-                                                <body>Information:    Starting Test</body>
+                                                <body>Information:-Starting Test</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                <message inherit="false">    Starting Test</message>
+                                                <message inherit="false">-Starting Test</message>
                                             </applicationProperties>
                                         </item>
                                         <item guid="f2379a1e-87c5-4951-ba5c-0f1d673dcfaf" action="run_test_using_run_data" session="s1" useFieldsInCommand="false">
@@ -721,10 +721,10 @@
                                         </item>
                                         <item guid="f67ace33-8177-4d1a-9447-40c70875ce91" action="message" useFieldsInCommand="false">
                                             <command>
-                                                <body>Information:    Test Running, test ID = [running_test_id], SIP reg runtime [[param(&apos;test_parameters/RunTime&apos;)]]</body>
+                                                <body>Information:-Test Running, test ID = [running_test_id], SIP</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                <message inherit="false">    Test Running, test ID = [running_test_id], SIP reg runtime [[param(&apos;test_parameters/RunTime&apos;)]]</message>
+                                                <message inherit="false">-Test Running, test ID = [running_test_id], SIP</message>
                                             </applicationProperties>
                                         </item>
                                         <item guid="f69e9374-b43e-4740-bac1-5b3c9c5a2e3e" action="eval" useFieldsInCommand="false">
@@ -760,10 +760,10 @@
                                         </item>
                                         <item guid="29cc2295-5b45-4ba1-9187-2882285a208a" action="message" useFieldsInCommand="false">
                                             <command>
-                                                <body>Information:    Test [state]</body>
+                                                <body>Information:-Test [state]</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                <message inherit="false">    Test [state]</message>
+                                                <message inherit="false">-Test [state]</message>
                                             </applicationProperties>
                                         </item>
                                     </nestedSteps>
@@ -831,7 +831,13 @@
                                             <nestedSteps>
                                                 <item guid="6dd4db6c-a3d8-4410-bd54-9ddc5b75c953" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>100*(favorites_dict[&apos;Gm|Main::SIP Registration Setup Count&apos;]/(favorites_dict[&apos;Gm|Main::SIP Registration Failures&apos;]+favorites_dict[&apos;Gm|Main::SIP Registration Setup Count&apos;]))</body>
+                                                        <body>pct_good=100*(favorites_dict[&apos;Gm|Main::SIP Registration Setup Count&apos;]/(favorites_dict[&apos;Gm|Main::SIP Registration Failures&apos;]+favorites_dict[&apos;Gm|Main::SIP Registration Setup Count&apos;]))</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="39b2bd37-413a-4b06-957c-69ff3a253567" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>float(&apos;0.2f&apos; % pct_good)</body>
                                                     </command>
                                                     <postProcessing>
                                                         <analysisRules>
@@ -842,7 +848,7 @@
                                                                     </extractorProperties>
                                                                 </extractorInfo>
                                                                 <processorInfo ruleType="chart_as_xy">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingXYPropertyGroup" chartName="Success Rate Percentage" style="LINE" xAxisLabel="Rate (reg/sec)" yAxisLabel="Success (%)" yAxisMustIncludeZero="true" maxItemCount="[len(iterations)]" maxItemCount.sub="true" series="series1">
+                                                                    <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingXYPropertyGroup" chartName="Success Rate Percentage" style="LINE" xAxisLabel="Registration Rate (reg/sec)" yAxisLabel="Success (%)" yAxisMustIncludeZero="true" maxItemCount="[len(iterations)]" maxItemCount.sub="true" series="series1">
                                                                         <title>SIP Registration Success Rate</title>
                                                                         <xValue>rate</xValue>
                                                                         <yValue>value</yValue>
@@ -852,6 +858,14 @@
                                                         </analysisRules>
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="988741c1-ce1e-4bc9-b8c3-5269f9d9a229" action="message" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>Information:-Sucess: [pct_good]%</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                        <message inherit="false">-Sucess: [pct_good]%</message>
+                                                    </applicationProperties>
                                                 </item>
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
