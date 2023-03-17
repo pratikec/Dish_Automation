@@ -502,10 +502,10 @@
                         </item>
                         <item guid="c4182a0a-60ae-419c-b5ef-de50bb340609" action="message" useFieldsInCommand="false">
                             <command>
-                                <body>Information:Beginning SIP registration rate iterations: [len(iterations)] with runtime of </body>
+                                <body>Information:Beginning SIP registration test with [len(iterations)] iterations and a SIP run time of [param(&apos;test_parameters/RunTime&apos;)]</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                <message inherit="false">Beginning SIP registration rate iterations: [len(iterations)] with runtime of </message>
+                                <message inherit="false">Beginning SIP registration test with [len(iterations)] iterations and a SIP run time of [param(&apos;test_parameters/RunTime&apos;)]</message>
                             </applicationProperties>
                         </item>
                         <item guid="165e5175-4113-40d4-91de-f9bc69ffbb46" action="call" useFieldsInCommand="false">
@@ -533,6 +533,26 @@
                                 <body>global_param_dic</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="04277fdd-8ad3-4204-8d8b-c7647e59d40c" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>timeout = int(param(&apos;test_parameters/RunTime&apos;))+(4*(float(param(&apos;test_parameters/MaxSubs&apos;,param(&apos;global_overwrite_params/Sessions&apos;)))/int(param(&apos;global_overwrite_params/StartRate&apos;),500)))</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="71fe290a-3a64-4048-950f-91145255f594" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>timeout = int(timeout*param(&apos;timeout_multiplier&apos;,2))</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="d13508f9-ba0d-49ab-ad00-8369808b9185" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:Iteration timeout: [timeout]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Iteration timeout: [timeout]</message>
+                            </applicationProperties>
                         </item>
                         <item guid="34ca5a8f-9fc3-47e1-b5ba-11965d12303f" action="comment" useFieldsInCommand="false">
                             <command>
@@ -726,12 +746,6 @@
                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
                                                 <message inherit="false">-Test Running, test ID = [running_test_id], SIP</message>
                                             </applicationProperties>
-                                        </item>
-                                        <item guid="f69e9374-b43e-4740-bac1-5b3c9c5a2e3e" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>timeout = int(3*param(&apos;test_parameters/RunTime&apos;))</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
                                         <item guid="24b895a3-56db-48fc-8976-97277020cebf" action="waiting_for_test_get_expected_state" session="s1" useFieldsInCommand="false">
                                             <command>
