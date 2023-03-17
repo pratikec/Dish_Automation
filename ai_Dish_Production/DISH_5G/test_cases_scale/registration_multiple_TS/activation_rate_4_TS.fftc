@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<testCase version="9.0.4.202208111512">
+<testCase version="9.0.0.202205111908">
     <general>
         <language>Python</language>
     </general>
@@ -478,6 +478,174 @@
                             <command>
                                 <body>ts_count = int(ts_count)</body>
                             </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="ab9c344c-e549-4087-a33c-ecb6cc894468" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Update base config json with starting IP info</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="b91d5a7c-16e5-4ae0-bcb5-cb9061e3d41c" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>test_session_d = json.loads(test_session_json)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="8c75ce7f-7626-44f5-acf5-70d0791bb1c7" action="call" useFieldsInCommand="false">
+                            <command>
+                                <body>getParameterGroupDict(param_path=&apos;ls_testServers&apos;)</body>
+                            </command>
+                            <postProcessing>
+                                <storeResponseAt>param_servers_dict</storeResponseAt>
+                                <storeResponseText>true</storeResponseText>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="491d5d82-abea-4b84-bbc5-029612e39a97" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>param_servers_dict</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="ad634e38-d0c5-4d91-9c0a-df8289b91e3e" action="for" useFieldsInCommand="false">
+                            <command>
+                                <body>ts_dict in ts_list_dict:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="6bec2712-efce-479c-90e6-244a72bde524" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ts_dict[&apos;tsName&apos;]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="93a14591-38b0-452b-a4a8-7845ac61c611" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ts_dict[&apos;tsId&apos;]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="8899ef34-f0ee-4b6b-8018-3c8cabc1529c" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ts_d = [d for d in param_servers_dict[&apos;ls_testServers&apos;] if d[&apos;TestServerName&apos;] == ts_dict[&apos;tsName&apos;]][0]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="a3f49ad3-955a-46c1-a2e2-f014a6012c1b" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ts_d</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="ec4df13a-907b-47b4-bdfe-31bda4c9ff87" action="Custom" session="s1">
+                                    <command>
+                                        <body>-requestMethod GET -dataType json -rawResponse true -url &quot;/testServers/[ts_dict[&apos;tsId&apos;]]&quot;</body>
+                                    </command>
+                                    <postProcessing>
+                                        <storeResponseAt>ts_json</storeResponseAt>
+                                        <storeResponseText>true</storeResponseText>
+                                    </postProcessing>
+                                    <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="Custom" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" rawResponse="true" rawResponse.inherit="false" url="/testServers/[ts_dict[&apos;tsId&apos;]]" url.inherit="false"/>
+                                </item>
+                                <item guid="3f770cdf-ecf2-4fd7-b90b-dc009c23c1c4" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ls_ts_dict = json.loads(ts_json)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="169270b6-d34f-461b-896a-5ac0e9df18cb" action="for" useFieldsInCommand="false">
+                                    <command>
+                                        <body>loc in [&apos;GnbControlAddr&apos;,&apos;GnbUserAddr&apos;]:</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="d36e4931-0203-469c-abae-8d333a7796f3" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>phy = ts_d[&apos;parameters&apos;][loc][&apos;phy&apos;]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="7afb7475-84e8-4d70-b85f-6b3704a81e4a" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>phy</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="5d0b67e7-d85e-4534-b2a6-bc47c5726011" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>ts_list_dict</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="cef99fc1-cc8e-42ed-8e74-463399839b2b" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>ls_ts_d = [d for d in ls_ts_dict[&apos;ethInfos&apos;] if d[&apos;name&apos;] == ts_d[&apos;parameters&apos;][loc][&apos;phy&apos;]][0]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="4d9f0b52-65ca-4a08-8880-62a7f0523f1f" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>ts_dict[loc] = {}</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="f10256ec-ca94-4c66-9db0-e1e8d11f55ec" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>ts_dict[loc][&apos;ip&apos;] = ls_ts_d[&apos;base&apos;]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="e7366d36-7a86-4756-9071-3ad2dbd123ef" action="eval" skip="true" useFieldsInCommand="false">
+                                            <command>
+                                                <body>ts_dict[loc][&apos;mask&apos;] = ls_ts_d[&apos;mask&apos;]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="ad9dfcd5-4aaa-4c9b-8a95-246a3d27eb65" action="if" useFieldsInCommand="false">
+                                    <command>
+                                        <body>ls_ts_dict[&quot;runningLicense&quot;] == &quot;AWS Virtual XXL HP&quot;:</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="b03e66fa-bd05-4d11-8f25-73290bcf95b9" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>ts_dict[&apos;tsMaxRate&apos;] = 3000</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="9f564118-730f-4829-b211-390d80d62470" action="else" useFieldsInCommand="false">
+                                    <nestedSteps>
+                                        <item guid="ef3088d6-8811-4bf5-8074-82f6d701e094" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>If running License is not XXL then use the activation rate euqal to 1000 </body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="c86889d8-0660-48d8-a9fe-5878798060df" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>ts_dict[&apos;tsMaxRate&apos;] = 1000</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="e5804a0c-604e-4273-aa97-7dbddb63a231" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ts_list_dict</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="29c41445-7fe0-46db-a867-fc09de3120a5" action="exit" useFieldsInCommand="false">
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
