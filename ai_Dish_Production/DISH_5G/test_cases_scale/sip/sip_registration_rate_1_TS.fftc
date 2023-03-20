@@ -502,10 +502,10 @@
                         </item>
                         <item guid="c4182a0a-60ae-419c-b5ef-de50bb340609" action="message" useFieldsInCommand="false">
                             <command>
-                                <body>Information:Beginning SIP registration test with [len(iterations)] iterations and a SIP run time of [param(&apos;test_parameters/RunTime&apos;)]</body>
+                                <body>Information:Beginning SIP registration test with [len(iterations)] iterations</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                <message inherit="false">Beginning SIP registration test with [len(iterations)] iterations and a SIP run time of [param(&apos;test_parameters/RunTime&apos;)]</message>
+                                <message inherit="false">Beginning SIP registration test with [len(iterations)] iterations</message>
                             </applicationProperties>
                         </item>
                         <item guid="165e5175-4113-40d4-91de-f9bc69ffbb46" action="call" useFieldsInCommand="false">
@@ -531,18 +531,6 @@
                         <item guid="77be0985-8371-48d5-a563-a06080b31afc" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>global_param_dic</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="04277fdd-8ad3-4204-8d8b-c7647e59d40c" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>timeout = int(param(&apos;test_parameters/RunTime&apos;))+(4*(float(param(&apos;test_parameters/MaxSubs&apos;,param(&apos;global_overwrite_params/Sessions&apos;)))/int(param(&apos;global_overwrite_params/StartRate&apos;,500))))</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="71fe290a-3a64-4048-950f-91145255f594" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>timeout = int(timeout*param(&apos;timeout_multiplier&apos;,2))</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -612,9 +600,27 @@
                                         <body>Configure runtime</body>
                                     </command>
                                     <nestedSteps>
+                                        <item guid="eb90e17e-7853-4e2b-9e4d-f2921de1649c" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>runtime = int(float(param(&apos;test_parameters/MaxSubs&apos;,param(&apos;global_overwrite_params/Sessions&apos;)))/rate) +10</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="7170ec53-9306-4ba8-9955-aedeb306c0f6" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>timeout = runtime+(4*(float(param(&apos;test_parameters/MaxSubs&apos;,param(&apos;global_overwrite_params/Sessions&apos;)))/int(param(&apos;global_overwrite_params/StartRate&apos;,500))))</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="9330c548-cfe8-42df-98e5-b5bad2ab3b31" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>timeout = int(timeout*param(&apos;timeout_multiplier&apos;,2))</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
                                         <item guid="033fffd2-0b2f-4a6f-a943-f3cf1f4b3c1c" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>test_session_dic[&quot;steps&quot;][2][&quot;delaySec&quot;] = param(&apos;test_parameters/RunTime&apos;)</body>
+                                                <body>test_session_dic[&quot;steps&quot;][2][&quot;delaySec&quot;] = runtime</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
