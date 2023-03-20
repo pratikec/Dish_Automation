@@ -772,6 +772,24 @@
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
+                                <item guid="bb8d1284-0578-4f2b-8700-208030eac08b" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>automation_list=[]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="d564cbf3-dbfc-443a-a6f5-8d4d32dfeb7c" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>TS_Index=0</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="df99b4b7-4094-433a-a4be-64505ac06e0e" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>SUPI = int(param(&apos;test_parameters/SUPI_start&apos;))</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
                                 <item guid="8c2a6162-ce92-48cc-9089-2e366fb91272" action="for" useFieldsInCommand="false">
                                     <command>
                                         <body>j in range(0, len(ts_list_dict)):</body>
@@ -855,7 +873,36 @@
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="b99c6ab1-c05b-4f2a-b175-3dcbc46b94cb" action="if" useFieldsInCommand="false">
+                                        <item guid="38d39a57-ddfe-41aa-b620-e482790e9fec" action="if" useFieldsInCommand="false">
+                                            <command>
+                                                <body>remain_rate==0:</body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="428181d9-8c7d-4eac-95ca-5e22df86da75" action="comment" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>Insert automation step at begining to stop test server</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="556d78bd-5a9f-4d55-b906-11ed9d0a8ece" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>automation_list.insert(0,{&quot;delaySec&quot;: 0,&quot;predecessorState&quot;: &quot;&quot;,&quot;predecessorTcIndex&quot;: -1,&quot;predecessorTsIndex&quot;: -1,&quot;tcActivity&quot;: &quot;Stop&quot;,&quot;tcIndex&quot;: 0,&quot;tsIndex&quot;: TS_Index})</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="1325ba05-0135-4924-b484-94508dd81867" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>TS_Index+=1</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="c2b5e02f-2d1b-475e-b8f9-7e5befd130e4" action="break" useFieldsInCommand="false">
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="b99c6ab1-c05b-4f2a-b175-3dcbc46b94cb" action="elif" useFieldsInCommand="false">
                                             <command>
                                                 <body>remain_rate&gt;ts_list_dict[j][&quot;tsMaxRate&quot;]:</body>
                                             </command>
@@ -895,6 +942,12 @@
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
+                                                <item guid="eebb9283-8040-4b45-bb96-1a429b47621c" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>remain_rate=0</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
@@ -910,16 +963,86 @@
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="a279a780-cb01-40f7-9886-ac8233d33eb1" action="eval" useFieldsInCommand="false">
+                                        <item guid="6059634b-392b-4c54-a8a9-6ea13e99d94e" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>json.dumps(test_session_dic)</body>
+                                                <body>test_session_dic[&quot;tsGroups&quot;][j][&quot;testCases&quot;][0][&quot;parameters&quot;][&quot;UeNas5gMmSupi&quot;]=SUPI</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="616ddd13-95e8-47ba-97f0-46dc97800b03" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>SUPI+=this_rate</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="4d756a70-3bcf-424f-aada-ef5a3e21445d" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>Insert Automation Steps</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="97948245-da09-4735-9f1c-44f5a6c0402d" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>automation_list.insert(4*TS_Index,{&quot;delaySec&quot;: 0,&quot;predecessorState&quot;: &quot;&quot;,&quot;predecessorTcIndex&quot;: -1,&quot;predecessorTsIndex&quot;: -1,&quot;tcActivity&quot;: &quot;Cleanup&quot;,&quot;tcIndex&quot;: 0,&quot;tsIndex&quot;: TS_Index})</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="98357558-77c1-4fc7-b429-2b405a01fe11" action="if" useFieldsInCommand="false">
+                                            <command>
+                                                <body>TS_Index==0:</body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="daa47129-0305-41e4-b9f3-8e06db08f86d" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>automation_list.insert(3*TS_Index,{&quot;delaySec&quot;: 10,&quot;predecessorState&quot;: &quot;&quot;,&quot;predecessorTcIndex&quot;: -1,&quot;predecessorTsIndex&quot;: -1,&quot;tcActivity&quot;: &quot;Stop&quot;,&quot;tcIndex&quot;: 0,&quot;tsIndex&quot;: TS_Index})</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="b7c5158a-d92b-42ba-8162-3adb2233ac91" action="else" useFieldsInCommand="false">
+                                            <nestedSteps>
+                                                <item guid="d1fe4e33-845e-4e3e-a87c-cc771db6e517" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>automation_list.insert(3*TS_Index,{&quot;delaySec&quot;: 0,&quot;predecessorState&quot;: &quot;&quot;,&quot;predecessorTcIndex&quot;: -1,&quot;predecessorTsIndex&quot;: -1,&quot;tcActivity&quot;: &quot;Stop&quot;,&quot;tcIndex&quot;: 0,&quot;tsIndex&quot;: TS_Index})</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="cc122eca-3c70-45f6-86d8-de616ab0feeb" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>automation_list.insert(2*TS_Index,{&quot;delaySec&quot;: 0,&quot;predecessorState&quot;: &quot;&quot;,&quot;predecessorTcIndex&quot;: -1,&quot;predecessorTsIndex&quot;: -1,&quot;tcActivity&quot;: &quot;Start&quot;,&quot;tcIndex&quot;: 0,&quot;tsIndex&quot;: TS_Index})</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="e6afbd38-27a0-4f6f-a0a3-c3e86a6a1680" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>automation_list.insert(TS_Index,{&quot;delaySec&quot;: 0,&quot;predecessorState&quot;: &quot;&quot;,&quot;predecessorTcIndex&quot;: -1,&quot;predecessorTsIndex&quot;: -1,&quot;tcActivity&quot;: &quot;Init&quot;,&quot;tcIndex&quot;: 0,&quot;tsIndex&quot;: TS_Index})</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="6a4fa0cc-4914-459f-b41a-a323f5aad2b9" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>TS_Index+=1</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="9dcd5d80-6648-45f4-88e1-1f815f105c02" action="exit" useFieldsInCommand="false">
+                                <item guid="8788e8eb-ce65-4942-b15a-791fb25f6f5f" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>test_session_dic[&quot;steps&quot;] = automation_list</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="1ededacd-4497-4bdb-8560-760a6a529d63" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>json.dumps(test_session_dic)</body>
+                                    </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -1278,6 +1401,9 @@
                                             <applicationProperties type="com.fnfr.itest.platform2.shared.documents.ntaf.NtafTransferableDocumentObject" action="Custom" subharness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harness="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" harnessName="http://spirent.com/NTAF/harness/iTest/LandslideRest/Main" requestMethod="DELETE" requestMethod.inherit="false" rawResponse="true" rawResponse.inherit="false" url="[tas_api_url]/runningTests/[running_test_id]" url.inherit="false"/>
                                         </item>
                                     </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="a8cf7d6c-8ec2-4b72-9d2f-850b34778ec4" action="exit" useFieldsInCommand="false">
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
