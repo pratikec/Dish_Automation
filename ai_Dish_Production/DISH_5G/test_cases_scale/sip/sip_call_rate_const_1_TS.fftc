@@ -911,66 +911,147 @@
                                                 <body>Do graph</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="6dd4db6c-a3d8-4410-bd54-9ddc5b75c953" action="eval" useFieldsInCommand="false">
+                                                <item guid="2b3dbf0e-c07d-41f5-a99d-f73ac0d59c94" action="if" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>pct_good=100*(favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;]/favorites_dict[&apos;Gm|Main::SIP Call Attempts&apos;])</body>
+                                                        <body>favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;]+favorites_dict[&apos;Gm|Main::SIP Call Failures&apos;] == 0:</body>
                                                     </command>
+                                                    <nestedSteps>
+                                                        <item guid="98dc0922-4b1a-4348-80b4-fc67b61661e8" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>pct_good = 0</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="fb53db80-c614-4515-b2ae-52f7c6a23c2d" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>float(&apos;%0.2f&apos; % pct_good)</body>
+                                                            </command>
+                                                            <postProcessing>
+                                                                <analysisRules>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>responseLine()</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="chart_as_xy">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingXYPropertyGroup" chartName="Success Call Rate" style="LINE" xAxisLabel="Call Rate (calls/sec)" yAxisLabel="Success (%)" yAxisMustIncludeZero="true" maxItemCount="[len(iterations)]" maxItemCount.sub="true" series="series1">
+                                                                                <title>SIP Call Success Rate</title>
+                                                                                <xValue>rate</xValue>
+                                                                                <yValue>value</yValue>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                </analysisRules>
+                                                            </postProcessing>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="180bfe39-229f-4187-92af-3ab08f926711" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>float(&apos;%0.2f&apos; % pct_good)</body>
+                                                            </command>
+                                                            <postProcessing>
+                                                                <analysisRules>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>responseLine()</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="chart_as_bar">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingBarPropertyGroup" stacked="true" xAxisLabel="SIP Call Rate" yAxisLabel="Success Percentage" category="[rate]/s" series="Reg Fail" rotate="false">
+                                                                                <title>SIP Call Success</title>
+                                                                                <expression>value</expression>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                </analysisRules>
+                                                            </postProcessing>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="34973e9b-072a-4d7d-a684-7ab336b99caf" action="message" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Error:Registration Failure</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                                <severity inherit="false">Error</severity>
+                                                                <message inherit="false">Registration Failure</message>
+                                                            </applicationProperties>
+                                                        </item>
+                                                    </nestedSteps>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="39b2bd37-413a-4b06-957c-69ff3a253567" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>float(&apos;%0.2f&apos; % pct_good)</body>
-                                                    </command>
-                                                    <postProcessing>
-                                                        <analysisRules>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>responseLine()</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="chart_as_xy">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingXYPropertyGroup" chartName="Success Call Rate" style="LINE" xAxisLabel="Call Rate (calls/sec)" yAxisLabel="Success (%)" yAxisMustIncludeZero="true" maxItemCount="[len(iterations)]" maxItemCount.sub="true" series="series1">
-                                                                        <title>SIP Call Success Rate</title>
-                                                                        <xValue>rate</xValue>
-                                                                        <yValue>value</yValue>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                        </analysisRules>
-                                                    </postProcessing>
+                                                <item guid="85c14ed2-6eac-49fe-a2e0-3b3508850480" action="else" useFieldsInCommand="false">
+                                                    <nestedSteps>
+                                                        <item guid="3a309fea-4e40-456c-9ebb-c082ac55aacc" action="comment" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Insert steps here for when expression is false</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="4fc55c1c-f0a7-4350-9155-90aa470fd3c5" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>pct_good=100*(favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;]/(favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;]+favorites_dict[&apos;Gm|Main::SIP Call Failures&apos;]))</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="c1fdb5ff-bf31-4f63-a0e8-cea33543c794" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>float(&apos;%0.2f&apos; % pct_good)</body>
+                                                            </command>
+                                                            <postProcessing>
+                                                                <analysisRules>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>responseLine()</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="chart_as_xy">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingXYPropertyGroup" chartName="Success Call Rate" style="LINE" xAxisLabel="Call Rate (calls/sec)" yAxisLabel="Success (%)" yAxisMustIncludeZero="true" maxItemCount="[len(iterations)]" maxItemCount.sub="true" series="series1">
+                                                                                <title>SIP Call Success Rate</title>
+                                                                                <xValue>rate</xValue>
+                                                                                <yValue>value</yValue>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                </analysisRules>
+                                                            </postProcessing>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="99359b65-f5ca-469c-9831-bb8c03705150" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>float(&apos;%0.2f&apos; % pct_good)</body>
+                                                            </command>
+                                                            <postProcessing>
+                                                                <analysisRules>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="query">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                                <query>responseLine()</query>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="chart_as_bar">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingBarPropertyGroup" xAxisLabel="SIP Call Rate" yAxisLabel="Success Percentage" category="[rate]/s" series="[rate]/s" rotate="false">
+                                                                                <title>SIP Call Success</title>
+                                                                                <expression>value</expression>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                </analysisRules>
+                                                            </postProcessing>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="988741c1-ce1e-4bc9-b8c3-5269f9d9a229" action="message" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Information:-Sucess: [pct_good]%</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                                <message inherit="false">-Sucess: [pct_good]%</message>
+                                                            </applicationProperties>
+                                                        </item>
+                                                    </nestedSteps>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="67442fd2-b8a6-4814-a4f6-50df151043a0" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>float(&apos;%0.2f&apos; % pct_good)</body>
-                                                    </command>
-                                                    <postProcessing>
-                                                        <analysisRules>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>responseLine()</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="chart_as_bar">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingBarPropertyGroup" stacked="true" xAxisLabel="SIP Call Rate" yAxisLabel="Success Percentage" category="[rate]/s" series="[rate]/s" rotate="false">
-                                                                        <title>SIP Call Success</title>
-                                                                        <expression>value</expression>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                        </analysisRules>
-                                                    </postProcessing>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="988741c1-ce1e-4bc9-b8c3-5269f9d9a229" action="message" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>Information:-Sucess: [pct_good]%</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                        <message inherit="false">-Sucess: [pct_good]%</message>
-                                                    </applicationProperties>
                                                 </item>
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
