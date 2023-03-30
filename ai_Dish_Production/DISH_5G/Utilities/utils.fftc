@@ -1,10 +1,21 @@
 <?xml version="1.0"?>
-<testCase version="8.6.0.202108181042" entryPoint="add_topology_artifactLink">
+<testCase version="9.0.4.202208111512" entryPoint="add_topology_artifactLink">
     <general>
         <isProcedureLibrary>true</isProcedureLibrary>
         <language>Python</language>
     </general>
     <procedures>
+        <item name="main">
+            <description>The entry point to the test case</description>
+            <steps>
+                <item guid="abd0c9f6-05b3-4e5c-bda7-fe34cd1b2351" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>nothing here</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+        </item>
         <item name="add_topology_artifactLink" isPublic="true">
             <steps>
                 <item guid="e72575a1-b621-4a3d-90e4-289e6b71db70" action="eval" useFieldsInCommand="false">
@@ -864,6 +875,129 @@
             </arguments>
             <response>{}</response>
         </item>
+        <item name="expected_ts_count" isPublic="true">
+            <steps>
+                <item guid="680304b8-9e35-4ea2-97cd-8b818818b385" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>b2b_expected_ts_count = number_of_testsession</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="e155cef8-e914-46d8-8675-2328fe0383a6" action="if" useFieldsInCommand="false">
+                    <command>
+                        <body>is_b2b == &quot;true&quot;:</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="10bdbb53-65ca-422a-beb1-ad022a07f4f1" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>int(tsgroup_count) &lt; b2b_expected_ts_count:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="ebf3795f-9511-4e90-8014-b00629466d0c" action="message" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Error:Not enough TS to run this test: Expected [b2b_expected_ts_count], Actual [tsgroup_count]</body>
+                                    </command>
+                                    <postProcessing>
+                                        <analysisRules>
+                                            <item>
+                                                <extractorInfo extractorType="none">
+                                                    <extractorProperties type="com.fnfr.svt.documents.EmptyExtractorPropertyGroup"/>
+                                                </extractorInfo>
+                                                <processorInfo ruleType="assert">
+                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                        <expression>True</expression>
+                                                        <actionsWhenTrue>
+                                                            <item actionId="FailTest">
+                                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                            </item>
+                                                        </actionsWhenTrue>
+                                                    </ruleProperties>
+                                                </processorInfo>
+                                            </item>
+                                        </analysisRules>
+                                    </postProcessing>
+                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                        <severity inherit="false">Error</severity>
+                                        <message inherit="false">Not enough TS to run this test: Expected [b2b_expected_ts_count], Actual [tsgroup_count]</message>
+                                    </applicationProperties>
+                                </item>
+                                <item guid="0ada4649-d8bf-42e8-b0ec-34977c499767" action="exit" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="753d6048-3f29-455d-b230-cd8891e80aa0" action="else" useFieldsInCommand="false">
+                    <nestedSteps>
+                        <item guid="c8c857da-c8fd-443e-8507-781f77c8fa68" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>e2e_expected_ts_count = b2b_expected_ts_count - 1</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="e61485d9-64f9-4204-b794-4702f42951e4" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>int(tsgroup_count) &lt; (e2e_expected_ts_count ):</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="3eb8d3b0-1240-427d-b01c-71912d14a724" action="message" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Error:Not enough TS to run this test: Expected [e2e_expected_ts_count], Actual [tsgroup_count]</body>
+                                    </command>
+                                    <postProcessing>
+                                        <analysisRules>
+                                            <item>
+                                                <extractorInfo extractorType="none">
+                                                    <extractorProperties type="com.fnfr.svt.documents.EmptyExtractorPropertyGroup"/>
+                                                </extractorInfo>
+                                                <processorInfo ruleType="assert">
+                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                        <expression>True</expression>
+                                                        <actionsWhenTrue>
+                                                            <item actionId="FailTest">
+                                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                            </item>
+                                                        </actionsWhenTrue>
+                                                    </ruleProperties>
+                                                </processorInfo>
+                                            </item>
+                                        </analysisRules>
+                                    </postProcessing>
+                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                        <severity inherit="false">Error</severity>
+                                        <message inherit="false">Not enough TS to run this test: Expected [e2e_expected_ts_count], Actual [tsgroup_count]</message>
+                                    </applicationProperties>
+                                </item>
+                                <item guid="77696ddf-b477-4933-86e0-174a2e32320b" action="exit" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+            <arguments>
+                <item name="number_of_testsession">
+                    <description>Number of expected TSs for b2b</description>
+                    <isMandatory>true</isMandatory>
+                </item>
+                <item name="tsgroup_count">
+                    <description>Actual TS Group Count</description>
+                    <isMandatory>true</isMandatory>
+                </item>
+                <item name="is_b2b">
+                    <description>B2B check</description>
+                    <defaultValue>true</defaultValue>
+                    <isMandatory>true</isMandatory>
+                </item>
+            </arguments>
+            <response>{}</response>
+        </item>
         <item name="get_SUT_cpu_memory_utilization" isPublic="true">
             <steps>
                 <item guid="24c4561b-7e3b-495d-b505-dc0d73985883" action="comment" useFieldsInCommand="false">
@@ -1188,7 +1322,7 @@
                                     <ipAddress inherit="false">[ts_ip_address]</ipAddress>
                                     <port inherit="false">[ssh_port]</port>
                                     <user inherit="false">cfguser</user>
-                                    <password inherit="false">bFFdd7YWC4Y=</password>
+                                    <password inherit="false" masked="true">bFFdd7YWC4Y=</password>
                                 </sessionProperties>
                                 <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
@@ -1403,7 +1537,7 @@
                                     <ipAddress inherit="false">[ts_ip_address]</ipAddress>
                                     <port inherit="false">[ssh_port]</port>
                                     <user inherit="false">cfguser</user>
-                                    <password inherit="false">bFFdd7YWC4Y=</password>
+                                    <password inherit="false" masked="true">bFFdd7YWC4Y=</password>
                                 </sessionProperties>
                                 <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
@@ -1594,6 +1728,50 @@
             </arguments>
             <response>{}</response>
         </item>
+        <item name="incrIP" isPublic="true">
+            <steps>
+                <item guid="5368ca4d-04cf-447d-a665-b5d1ec30c3d2" action="call" useFieldsInCommand="false">
+                    <command>
+                        <body>ip2int(ip=ip)</body>
+                    </command>
+                    <postProcessing>
+                        <storeResponseAt>i</storeResponseAt>
+                        <storeResponseText>true</storeResponseText>
+                    </postProcessing>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="f66840a5-3d38-4e2a-8e58-d69f904f1683" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>j = i+int(integer)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="6f634983-8a14-429d-ad46-0b63a46307aa" action="call" useFieldsInCommand="false">
+                    <command>
+                        <body>int2ip(integer=j)</body>
+                    </command>
+                    <postProcessing>
+                        <storeResponseAt>ret</storeResponseAt>
+                        <storeResponseText>true</storeResponseText>
+                    </postProcessing>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="0a015660-c055-46c7-8db0-b1d1c21e4da8" action="return">
+                    <command>
+                        <body>[ret]</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+            <arguments>
+                <item name="ip">
+                    <isMandatory>true</isMandatory>
+                </item>
+                <item name="integer">
+                    <defaultValue>1</defaultValue>
+                </item>
+            </arguments>
+        </item>
         <item name="insert_devider_string" isPublic="true">
             <steps>
                 <item guid="071ffa53-3c76-473d-913c-4578bf0bd9a1" action="eval" useFieldsInCommand="false">
@@ -1618,6 +1796,84 @@
                 </item>
                 <item name="length">
                     <defaultValue>60</defaultValue>
+                    <isMandatory>true</isMandatory>
+                </item>
+            </arguments>
+        </item>
+        <item name="int2ip" isPublic="true">
+            <steps>
+                <item guid="730371f4-c297-4b72-8a84-df87ea8fbb39" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>i = int(integer)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="325e58ac-939d-4160-9618-6e614eeb52d9" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>a = i &gt;&gt; 24 &amp; 255</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="18c79a2e-7850-4608-8fc2-4ca55d4027e2" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>b = i &gt;&gt; 16 &amp; 255</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="5f9c2d7b-a2ed-48c6-a8b3-41aeff32ff70" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>c = i &gt;&gt; 8 &amp; 255</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="e680ed7f-d9bc-4419-93d1-6b74bca213a2" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>d = i &amp; 255</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="3bb0f20a-8d99-4900-8dcb-0c8ac19314b7" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ret =str(a)+&apos;.&apos;+str(b)+&apos;.&apos;+str(c)+&apos;.&apos;+str(d)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="655060ab-1a79-45a5-ae60-1742d32f29e2" action="return">
+                    <command>
+                        <body>[ret]</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+            <arguments>
+                <item name="integer">
+                    <isMandatory>true</isMandatory>
+                </item>
+            </arguments>
+        </item>
+        <item name="ip2int" isPublic="true">
+            <steps>
+                <item guid="aaaa17c9-b625-43b3-ba1b-082ee597cd04" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>i = ip.split(&apos;.&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="bb16185a-09fb-495d-a9f7-caa1767efe44" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ret = (int(i[0])&lt;&lt;24) + (int(i[1])&lt;&lt;16) +(int(i[2])&lt;&lt;8) + int(i[3])</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="e22d0d10-fa72-47a3-9c40-04698fe4e84f" action="return">
+                    <command>
+                        <body>[ret]</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+            <arguments>
+                <item name="ip">
                     <isMandatory>true</isMandatory>
                 </item>
             </arguments>
@@ -4612,129 +4868,6 @@ in which:
                     <isMandatory>true</isMandatory>
                 </item>
                 <item name="targeted_end_rate"/>
-            </arguments>
-            <response>{}</response>
-        </item>
-        <item name="expected_ts_count" isPublic="true">
-            <steps>
-                <item guid="680304b8-9e35-4ea2-97cd-8b818818b385" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>b2b_expected_ts_count = number_of_testsession</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="e155cef8-e914-46d8-8675-2328fe0383a6" action="if" useFieldsInCommand="false">
-                    <command>
-                        <body>is_b2b == &quot;true&quot;:</body>
-                    </command>
-                    <nestedSteps>
-                        <item guid="10bdbb53-65ca-422a-beb1-ad022a07f4f1" action="if" useFieldsInCommand="false">
-                            <command>
-                                <body>int(tsgroup_count) &lt; b2b_expected_ts_count:</body>
-                            </command>
-                            <nestedSteps>
-                                <item guid="ebf3795f-9511-4e90-8014-b00629466d0c" action="message" useFieldsInCommand="false">
-                                    <command>
-                                        <body>Error:Not enough TS to run this test: Expected [b2b_expected_ts_count], Actual [tsgroup_count]</body>
-                                    </command>
-                                    <postProcessing>
-                                        <analysisRules>
-                                            <item>
-                                                <extractorInfo extractorType="none">
-                                                    <extractorProperties type="com.fnfr.svt.documents.EmptyExtractorPropertyGroup"/>
-                                                </extractorInfo>
-                                                <processorInfo ruleType="assert">
-                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                        <expression>True</expression>
-                                                        <actionsWhenTrue>
-                                                            <item actionId="FailTest">
-                                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                            </item>
-                                                        </actionsWhenTrue>
-                                                    </ruleProperties>
-                                                </processorInfo>
-                                            </item>
-                                        </analysisRules>
-                                    </postProcessing>
-                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                        <severity inherit="false">Error</severity>
-                                        <message inherit="false">Not enough TS to run this test: Expected [b2b_expected_ts_count], Actual [tsgroup_count]</message>
-                                    </applicationProperties>
-                                </item>
-                                <item guid="0ada4649-d8bf-42e8-b0ec-34977c499767" action="exit" useFieldsInCommand="false">
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                            </nestedSteps>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="753d6048-3f29-455d-b230-cd8891e80aa0" action="else" useFieldsInCommand="false">
-                    <nestedSteps>
-                        <item guid="c8c857da-c8fd-443e-8507-781f77c8fa68" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>e2e_expected_ts_count = b2b_expected_ts_count - 1</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="e61485d9-64f9-4204-b794-4702f42951e4" action="if" useFieldsInCommand="false">
-                            <command>
-                                <body>int(tsgroup_count) &lt; (e2e_expected_ts_count ):</body>
-                            </command>
-                            <nestedSteps>
-                                <item guid="3eb8d3b0-1240-427d-b01c-71912d14a724" action="message" useFieldsInCommand="false">
-                                    <command>
-                                        <body>Error:Not enough TS to run this test: Expected [e2e_expected_ts_count], Actual [tsgroup_count]</body>
-                                    </command>
-                                    <postProcessing>
-                                        <analysisRules>
-                                            <item>
-                                                <extractorInfo extractorType="none">
-                                                    <extractorProperties type="com.fnfr.svt.documents.EmptyExtractorPropertyGroup"/>
-                                                </extractorInfo>
-                                                <processorInfo ruleType="assert">
-                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                        <expression>True</expression>
-                                                        <actionsWhenTrue>
-                                                            <item actionId="FailTest">
-                                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                            </item>
-                                                        </actionsWhenTrue>
-                                                    </ruleProperties>
-                                                </processorInfo>
-                                            </item>
-                                        </analysisRules>
-                                    </postProcessing>
-                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                        <severity inherit="false">Error</severity>
-                                        <message inherit="false">Not enough TS to run this test: Expected [e2e_expected_ts_count], Actual [tsgroup_count]</message>
-                                    </applicationProperties>
-                                </item>
-                                <item guid="77696ddf-b477-4933-86e0-174a2e32320b" action="exit" useFieldsInCommand="false">
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                            </nestedSteps>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-            </steps>
-            <arguments>
-                <item name="number_of_testsession">
-                    <description>Number of expected TSs for b2b</description>
-                    <isMandatory>true</isMandatory>
-                </item>
-                <item name="tsgroup_count">
-                    <description>Actual TS Group Count</description>
-                    <isMandatory>true</isMandatory>
-                </item>
-                <item name="is_b2b">
-                    <description>B2B check</description>
-                    <defaultValue>true</defaultValue>
-                    <isMandatory>true</isMandatory>
-                </item>
             </arguments>
             <response>{}</response>
         </item>
