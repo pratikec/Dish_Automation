@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<testCase version="8.6.2.202112190518">
+<testCase version="9.0.4.202208111512">
     <general>
         <documentation>5G_PC_087 SMF issues QoS policy - QoS Policy configured locally on SMF for UPF</documentation>
         <tags>5G_PC_087, Automation_Next_Gen_Framework</tags>
@@ -953,6 +953,147 @@ Expected Result/Post Condition:
                 </item>
                 <item guid="f29d6a2d-ba2c-49d4-8c64-7539400e8814" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+        </item>
+        <item name="getPolicyInfo" isPublic="true">
+            <steps>
+                <item guid="68d03849-f1df-424b-bf0f-7e9e0240c0dc" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>sub = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="2d2fb739-051f-4c41-9fdd-8efae2b6a2ab" action="if" useFieldsInCommand="false">
+                    <command>
+                        <body>param(&apos;SMF/hostname&apos;) != &quot;&quot;:</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="3b48aa85-7f4e-43d4-905c-47b56cc214ca" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ipAddr = param(&apos;SMF/hostname&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="cf3112ac-f61a-4f78-9a13-81501dcf5565" action="else" useFieldsInCommand="false">
+                    <nestedSteps>
+                        <item guid="28d42d86-e72a-408b-b6b4-a91f09d28b59" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ipAddr = param(&apos;SMF/ip_address&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="fc5100fc-cd4c-4529-8447-266ce77a3f88" action="message" useFieldsInCommand="false">
+                    <command>
+                        <body>Information:Verifying subscriber [sub] policy</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                        <message inherit="false">Verifying subscriber [sub] policy</message>
+                    </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="8235bac8-f49e-405b-a04f-2b32279e9ccb" action="open" session="SMF">
+                    <command>
+                        <body>project://di_[param(&apos;SMF/make&apos;)]/session_profiles/SMF.ffsp</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                        <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                        <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
+                            <ipAddress inherit="false">[ipAddr]</ipAddress>
+                            <port inherit="false">[param(&apos;SMF/ssh_port&apos;)]</port>
+                            <user inherit="false">[param(&apos;SMF/username&apos;)]</user>
+                            <password inherit="false" masked="false">[param(&apos;SMF/password&apos;)]</password>
+                        </sessionProperties>
+                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    </applicationProperties>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
+                </item>
+                <item guid="00ca2288-e926-4f4b-b476-851ca206e4cc" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>value = []</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="81598ff4-8a13-4434-93b3-387f892a220a" action="get_subscriber_policy_rule" session="SMF" useFieldsInCommand="false">
+                    <command>
+                        <body>-supi $sub</body>
+                    </command>
+                    <postProcessing>
+                        <analysisRules>
+                            <item>
+                                <extractorInfo extractorType="query">
+                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                        <query>mapped/Json/pdus/item</query>
+                                    </extractorProperties>
+                                </extractorInfo>
+                                <processorInfo ruleType="assert">
+                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                        <expression>len(value) &gt; 0</expression>
+                                        <actionsWhenTrue>
+                                            <item actionId="DeclareExecutionIssue">
+                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                    <message>PDU(s) up in SMF found PDU(s): [str(value)]</message>
+                                                </actionProperties>
+                                            </item>
+                                            <item actionId="PassTestIfNotAlreadyFailed">
+                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                            </item>
+                                        </actionsWhenTrue>
+                                        <actionsWhenFalse>
+                                            <item actionId="DeclareExecutionIssue">
+                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                    <message>PDUs not up yet waiting 5 sec and trying again.</message>
+                                                </actionProperties>
+                                            </item>
+                                            <item actionId="RepeatStep">
+                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
+                                            </item>
+                                        </actionsWhenFalse>
+                                    </ruleProperties>
+                                </processorInfo>
+                            </item>
+                        </analysisRules>
+                    </postProcessing>
+                    <eventHandlers>
+                        <item name="OnRepeatStepMaxCountExceeded">
+                            <item actionId="DeclareExecutionIssue">
+                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                    <message>PDUs did not come up, aborting SMF interaction.</message>
+                                </actionProperties>
+                            </item>
+                            <item actionId="FailTest">
+                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            </item>
+                            <item actionId="ExitProcedure">
+                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                            </item>
+                        </item>
+                        <item name="OnNoMatchesFound">
+                            <item actionId="DeclareExecutionIssue">
+                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                    <message>PDUs not up yet waiting 5 sec and trying again.</message>
+                                </actionProperties>
+                            </item>
+                            <item actionId="RepeatStep">
+                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
+                            </item>
+                        </item>
+                    </eventHandlers>
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
+                </item>
+                <item guid="cb4816ef-1dd8-434b-b738-9fd9a13a6cfc" action="close" session="SMF">
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
             </steps>
         </item>
