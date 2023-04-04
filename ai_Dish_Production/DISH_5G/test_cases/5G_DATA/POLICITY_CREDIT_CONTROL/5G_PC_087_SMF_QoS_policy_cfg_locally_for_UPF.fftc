@@ -965,29 +965,10 @@ Expected Result/Post Condition:
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                 </item>
-                <item guid="2d2fb739-051f-4c41-9fdd-8efae2b6a2ab" action="if" useFieldsInCommand="false">
+                <item guid="37add92b-80d8-41ab-aef7-7292f3d3d8e7" action="eval" useFieldsInCommand="false">
                     <command>
-                        <body>param(&apos;SMF/hostname&apos;) != &quot;&quot;:</body>
+                        <body>ipAddr = param(&apos;SMF/hostname&apos;,param(&apos;SMF/ip_address&apos;))</body>
                     </command>
-                    <nestedSteps>
-                        <item guid="3b48aa85-7f4e-43d4-905c-47b56cc214ca" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>ipAddr = param(&apos;SMF/hostname&apos;)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="cf3112ac-f61a-4f78-9a13-81501dcf5565" action="else" useFieldsInCommand="false">
-                    <nestedSteps>
-                        <item guid="28d42d86-e72a-408b-b6b4-a91f09d28b59" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>ipAddr = param(&apos;SMF/ip_address&apos;)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="fc5100fc-cd4c-4529-8447-266ce77a3f88" action="message" useFieldsInCommand="false">
@@ -1027,67 +1008,6 @@ Expected Result/Post Condition:
                     <command>
                         <body>-supi $sub</body>
                     </command>
-                    <postProcessing>
-                        <analysisRules>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>mapped/Json/pdus/item</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>len(value) &gt; 0</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>PDU(s) up in SMF found PDU(s): [str(value)]</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                                    <message>PDUs not up yet waiting 5 sec and trying again.</message>
-                                                </actionProperties>
-                                            </item>
-                                            <item actionId="RepeatStep">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                        </analysisRules>
-                    </postProcessing>
-                    <eventHandlers>
-                        <item name="OnRepeatStepMaxCountExceeded">
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                    <message>PDUs did not come up, aborting SMF interaction.</message>
-                                </actionProperties>
-                            </item>
-                            <item actionId="FailTest">
-                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            </item>
-                            <item actionId="ExitProcedure">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
-                            </item>
-                        </item>
-                        <item name="OnNoMatchesFound">
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                    <message>PDUs not up yet waiting 5 sec and trying again.</message>
-                                </actionProperties>
-                            </item>
-                            <item actionId="RepeatStep">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="3" delayBetweenRepeats="5.0"/>
-                            </item>
-                        </item>
-                    </eventHandlers>
                     <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/SMF.ffsp"/>
                 </item>
