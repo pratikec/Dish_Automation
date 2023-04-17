@@ -156,9 +156,19 @@
                                         <body>Put passed in phone number into the called phone number (not sure we need this)</body>
                                     </command>
                                     <nestedSteps>
+                                        <item guid="023e38ce-9861-430a-a0d3-e481b508c62d" action="call" useFieldsInCommand="false">
+                                            <command>
+                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#get_raw_phone_number -ims_sip_public_user [param(&apos;phone&apos;)]</body>
+                                            </command>
+                                            <postProcessing>
+                                                <storeResponseAt>orig_phone</storeResponseAt>
+                                                <storeResponseText>true</storeResponseText>
+                                            </postProcessing>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
                                         <item guid="6785b56d-0cb5-40e5-b480-a4de47c009a4" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>tc0_dict[&apos;UeSmsRecipAddrNum&apos;] = param(&apos;phone&apos;)</body>
+                                                <body>tc0_dict[&apos;UeSmsRecipAddrNum&apos;] = orig_phone</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
@@ -260,15 +270,35 @@
                                         <body>Put in the terminating side&apos;s phone number as the SIP endpoint</body>
                                     </command>
                                     <nestedSteps>
+                                        <item guid="cc088f50-508c-442c-8339-e5da54abbe14" action="call" useFieldsInCommand="false">
+                                            <command>
+                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#get_raw_phone_number -ims_sip_public_user [param(&apos;phone&apos;)]</body>
+                                            </command>
+                                            <postProcessing>
+                                                <storeResponseAt>orig_phone</storeResponseAt>
+                                                <storeResponseText>true</storeResponseText>
+                                            </postProcessing>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="6d2775fc-dda4-4524-8431-c5ee1e3ac570" action="call" useFieldsInCommand="false">
+                                            <command>
+                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#get_raw_phone_number -ims_sip_public_user [param(&apos;LS_Nodal_favorite_params/ts0/tc0/ImsSipSubsPublicUserName&apos;)]</body>
+                                            </command>
+                                            <postProcessing>
+                                                <storeResponseAt>term_phone</storeResponseAt>
+                                                <storeResponseText>true</storeResponseText>
+                                            </postProcessing>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
                                         <item guid="7f00fda2-213e-4957-9fea-d2978c30deb9" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>tc1_dict[&apos;UeSmsOrigAddrNum&apos;] = param(&apos;phone&apos;)</body>
+                                                <body>tc1_dict[&apos;UeSmsOrigAddrNum&apos;] = orig_phone</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
                                         <item guid="c47ae88c-0832-45da-bd7c-5bcfeb475363" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>tc1_dict[&apos;UeSmsRecipAddrNum&apos;] = param(&apos;LS_Nodal_favorite_params/ts0/tc0/ImsSipSubsPublicUserName&apos;)</body>
+                                                <body>tc1_dict[&apos;UeSmsRecipAddrNum&apos;] = term_phone</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
