@@ -544,38 +544,6 @@
                             <command>
                                 <body>Get runtime &amp; timeout</body>
                             </command>
-                            <nestedSteps>
-                                <item guid="27a69727-e88b-4d4e-a003-a2e324849334" action="comment" useFieldsInCommand="false">
-                                    <command>
-                                        <body>runtime = runtime + sub_count/sip_reg_rate +const</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="c27f15cf-e072-4824-aa8d-e97c2cf55874" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>runtime = param(&apos;RunTime&apos;)+int(float(param(&apos;SubCount&apos;,param(&apos;global_overwrite_params/Sessions&apos;)))/param(&apos;global_overwrite_params/UeRegRate&apos;,200)) +45</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="1718a6eb-eb3b-4054-b123-354e676e9539" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>runtime</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="7933b541-7ccf-4e77-b430-02c38bab826a" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>timeout = int(runtime*param(&apos;landslide/timeout_multiplier&apos;,2))</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="3d278ff9-7d49-4d91-9abf-6c421ab3beb2" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>timeout</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                            </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="95f0a5e7-a0eb-4c91-aea6-c007121f6d8e" action="comment" useFieldsInCommand="false">
@@ -679,9 +647,33 @@
                                 </item>
                                 <item guid="e8503066-5bf3-4781-ad74-0dfeefa3a1df" action="comment" useFieldsInCommand="false">
                                     <command>
-                                        <body>Configure runtime</body>
+                                        <body>Configure runtime and get timeout</body>
                                     </command>
                                     <nestedSteps>
+                                        <item guid="6bb0e277-8b12-40f8-a8ce-9ef4d19b4cc2" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>runtime = param(&apos;RunTime&apos;)+int(float(param(&apos;SubCount&apos;,param(&apos;global_overwrite_params/Sessions&apos;)))/rate) +45</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="762e1a81-a878-4e44-b290-83f688887a1a" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>runtime</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="2231e2fc-893b-4842-bbdb-667fb719be73" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>timeout = int(runtime*param(&apos;landslide/timeout_multiplier&apos;,2))</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="de4b43bd-7664-42bf-94b1-54508ca62a93" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>timeout</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
                                         <item guid="611f2b63-20be-411d-b4c6-901b124390dd" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>test_session_dic[&quot;steps&quot;][4][&quot;delaySec&quot;] = runtime</body>
@@ -844,6 +836,20 @@
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
+                                        <item guid="7b3d880c-8ab3-407b-9160-789aeb13b38d" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>Sip Reg Rate (same as rate)</body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="53cd8eb7-003b-41bb-bb55-338a06af00dd" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>test_session_dic[&quot;tsGroups&quot;][0][&quot;testCases&quot;][0][&quot;parameters&quot;][&apos;UeRegRate&apos;] = rate</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
                                         <item guid="5e35f5bd-c6fd-433c-889c-45900e426dec" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>json.dumps(test_session_dic)</body>
@@ -990,6 +996,12 @@
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
                                             </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="a0d5c7d4-c2de-4ec0-89b4-d662d97b2ab7" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>runtime = runtime + sub_count/sip_reg_rate +const</body>
+                                            </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
                                         <item guid="4928eb55-4c18-4d5a-939e-33114089efd2" action="comment" useFieldsInCommand="false">
