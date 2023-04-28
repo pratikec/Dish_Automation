@@ -3599,7 +3599,7 @@
                         </item>
                         <item guid="fbcf8244-53c9-4f91-bfb2-a2a312988cae" action="comment" useFieldsInCommand="false">
                             <command>
-                                <body>Set cmd_idle to 90% of the total of &apos;ls_delaySec&apos;, message, sleep and message</body>
+                                <body>Set cmd_idle to 50% of the total of &apos;ls_delaySec&apos;, message, sleep and message</body>
                             </command>
                             <nestedSteps>
                                 <item guid="775c32e7-7200-44a8-a8b0-492e66e8af97" action="eval" useFieldsInCommand="false">
@@ -3630,6 +3630,12 @@
                                         <message inherit="false">Have resumed Landslide state query; awaiting state: FINAL or COMPLETE</message>
                                     </applicationProperties>
                                 </item>
+                                <item guid="7ecd5185-ca46-4006-8f7c-3293cb321e55" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>timeout = int(ls_delaySec)*2</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -3645,7 +3651,7 @@
                                     <nestedSteps>
                                         <item guid="bec362c9-e381-43fe-99aa-c965fc8352bf" action="call" useFieldsInCommand="false">
                                             <command>
-                                                <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_wait_for_LS__expected_state -session s1 -running_test_id [running_id] -expected_state COMPLETE;FINAL -unexpected_states &quot;ERROR;COMPLETE_ERROR&quot; -time_out [ls_delaySec]</body>
+                                                <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_wait_for_LS__expected_state -session s1 -running_test_id [running_id] -expected_state COMPLETE;FINAL -unexpected_states &quot;ERROR;COMPLETE_ERROR&quot; -time_out [timeout]</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
