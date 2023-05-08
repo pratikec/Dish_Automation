@@ -546,7 +546,7 @@
                         </item>
                         <item guid="f617fcf0-d1b4-4e02-bda4-a9d64ace2bf8" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>csv_file.write(&apos;Iteration,Time,Reg Rate (regs/sec),Sub Count,5G Reg Attempted,5G Reg Rejected,PDU Accepts,PDU Rejects,SIP Registrations Success,SIP Registrations Failures,SIP Reg Time Avg (ms),SIP Reg Time Min (ms),SIP Reg Time Max (ms)\\n&apos;)</body>
+                                <body>csv_file.write(&apos;Iteration,Time,Reg Rate (regs/sec),Sub Count,5G Reg Attempted,5G Reg Rejected,PDU Accepts,PDU Rejects,SIP Registrations Success,SIP Registrations Failures,SIP Registrations Retries,SIP Reg Time Avg (ms),SIP Reg Time Min (ms),SIP Reg Time Max (ms)\\n&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -1073,7 +1073,7 @@
                                             <nestedSteps>
                                                 <item guid="2b2855f4-3b0f-4ff1-aa08-a2cd82d0c2fb" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;Gm|Main&apos;, item_list=[&apos;SIP Average Registration Setup (micro-sec)&apos;,&apos;SIP Minimum Registration Setup (micro-sec)&apos;,&apos;SIP Maximum Registration Setup (micro-sec)&apos;,&apos;SIP Registration Setup Count&apos;])</body>
+                                                        <body>getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;Gm|Main&apos;, item_list=[&apos;SIP Average Registration Setup (micro-sec)&apos;,&apos;SIP Minimum Registration Setup (micro-sec)&apos;,&apos;SIP Maximum Registration Setup (micro-sec)&apos;,&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;])</body>
                                                     </command>
                                                     <postProcessing>
                                                         <storeResponseAt>gm_dict</storeResponseAt>
@@ -1108,10 +1108,18 @@
                                                         <body>conver float to int</body>
                                                     </command>
                                                     <nestedSteps>
-                                                        <item guid="c49b0104-6c36-4ac2-a5e2-02921e3379cb" action="eval" useFieldsInCommand="false">
+                                                        <item guid="79400edd-2e67-41bd-90f9-6a083acbc319" action="for" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>gm_dict[&apos;SIP Registration Setup Count&apos;] = int(float(gm_dict[&apos;SIP Registration Setup Count&apos;]))</body>
+                                                                <body>item in [&apos;SIP Maximum Registration Setup (micro-sec)&apos;,&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;]:</body>
                                                             </command>
+                                                            <nestedSteps>
+                                                                <item guid="9417941b-022a-4fae-aaff-64557704cb1f" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>gm_dict[item] = int(float(gm_dict[item]))</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                            </nestedSteps>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                     </nestedSteps>
@@ -1265,7 +1273,7 @@
                                             <nestedSteps>
                                                 <item guid="a4de467a-bd51-4293-aa97-0a8d51e79d1d" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>tlist = [str(i+1),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;]),str(mm_dict[&apos;Registration Completes&apos;]),str(mm_dict[&apos;Registration Rejects&apos;]),str(sm_dict[&apos;Pdu Establishment Accepts&apos;]),str(sm_dict[&apos;Pdu Establishment Rejects&apos;]),str(gm_dict[&apos;SIP Registration Setup Count&apos;]),str(int(global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;])-gm_dict[&apos;SIP Registration Setup Count&apos;]),str(gm_dict[&apos;SIP Average Registration Setup (micro-sec)&apos;]),str(gm_dict[&apos;SIP Minimum Registration Setup (micro-sec)&apos;]),str(gm_dict[&apos;SIP Maximum Registration Setup (micro-sec)&apos;])]</body>
+                                                        <body>tlist = [str(i+1),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;]),str(mm_dict[&apos;Registration Completes&apos;]),str(mm_dict[&apos;Registration Rejects&apos;]),str(sm_dict[&apos;Pdu Establishment Accepts&apos;]),str(sm_dict[&apos;Pdu Establishment Rejects&apos;]),str(gm_dict[&apos;SIP Registration Setup Count&apos;]),str(gm_dict[&apos;SIP Registration Failures&apos;]),str(gm_dict[&apos;SIP Registration Retries&apos;]),str(gm_dict[&apos;SIP Average Registration Setup (micro-sec)&apos;]),str(gm_dict[&apos;SIP Minimum Registration Setup (micro-sec)&apos;]),str(gm_dict[&apos;SIP Maximum Registration Setup (micro-sec)&apos;])]</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
