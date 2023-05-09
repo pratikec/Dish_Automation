@@ -160,6 +160,108 @@ Expected Result/Post Condition:
                     <command>
                         <body>##### Modify JSON in string format before passing to Landslide #####</body>
                     </command>
+                    <nestedSteps>
+                        <item guid="91f2211b-34d2-442e-b46c-ed00f0cdef32" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>Convert json list to dict</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="a9dac309-c658-4c77-b1b2-6a3b658e14bd" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>import json</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="d6ffa912-3c70-48ad-879d-153e27bfd767" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>import re</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="4128515b-8662-4c87-ab12-84a90b375d92" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>temp_dict = json.loads(run_data_list[0])</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="e6d33007-67e6-4802-80e8-fd16d192e808" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>Modify tc0 - Test contains 2 gNB controllers.... We need just an updated Cell ID</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="5dc37d9b-fdb4-4fea-b2c1-61228288fe17" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>tc0_dict = {}</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="68f36406-66fa-4962-a0d2-140f65879bf9" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>tc0_dict[&apos;MobGnbId&apos;] = str(int(param(&apos;LS_Nodal_favorite_params/ts0/tc0/MobGnbId&apos;)) +100)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="0e026ef4-9728-4657-a6de-741d9005551b" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>Add dictionary to run data</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="54936206-5149-4720-b243-c42d2c143ed8" action="call" useFieldsInCommand="false">
+                                    <command>
+                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#update_run_data_parameters -run_data_list [run_data_list] -add_dict [tc0_dict]</body>
+                                    </command>
+                                    <postProcessing>
+                                        <storeResponseAt>run_data_list</storeResponseAt>
+                                        <storeResponseText>true</storeResponseText>
+                                    </postProcessing>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="e3ade5bf-ec1b-4fcc-b9b8-e877efa1ee2a" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>run_data_list</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="03bbf2a9-6354-4724-8d82-442a26678e90" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>##### Message all updated Sub_1 Non-default values #####</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="68b9aeea-91ea-4922-b9cc-1b962bfd255c" action="call" useFieldsInCommand="false">
+                                    <command>
+                                        <body>project://ai_LS_5G/utility_library/utils.fftc#insert_devider_string -length 135</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="345ca076-90ad-4e7d-a235-605690bfaa02" action="message" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Information:The Following values have been modified from the assigned Sub_1 default values</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                        <message inherit="false">The Following values have been modified from the assigned Sub_1 default values</message>
+                                    </applicationProperties>
+                                </item>
+                                <item guid="dd7a87af-366e-43ee-895f-3facb5442e98" action="message" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Information:LS_Nodal_favorite_params:ts0:tc0 [tc0_dict]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                        <message inherit="false">LS_Nodal_favorite_params:ts0:tc0 [tc0_dict]</message>
+                                    </applicationProperties>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="a572eea4-6240-4258-bb00-21fbc594687c" action="comment" useFieldsInCommand="false">
