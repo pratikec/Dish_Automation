@@ -552,7 +552,7 @@
                         </item>
                         <item guid="5f7d7aa6-04a0-448a-befa-e06f6b68c60b" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>csv_file.write(&apos;Iteration,Time,Reg Rate (regs/sec),Sub Count,5G Reg Attempted,5G Reg Rejected,PDU Accepts,PDU Rejects,SIP Registrations Success,SIP Registrations Failures,SIP Registrations Retries,SMS Messages Sent, SMS Messages Received\\n&apos;)</body>
+                                <body>csv_file.write(&apos;Iteration,Time,Reg Rate (regs/sec),Sub Count,5G Reg Attempted,5G Reg Rejected,PDU Accepts,PDU Rejects,SIP Registrations Success,SIP Registrations Failures,SIP Registrations Retries,SMS Messages Sent, SMS Message Sent Ack, SMS Messages Received, SMS Message Received Ack\\n&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -1304,7 +1304,7 @@
                                         <body>Get Results</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="ce9ba1fe-eb30-4d6d-a4c5-fb8c65a9e63a" action="Custom" session="s1">
+                                        <item guid="ce9ba1fe-eb30-4d6d-a4c5-fb8c65a9e63a" action="Custom" session="s1" skip="true">
                                             <command>
                                                 <body>-requestMethod GET -dataType json -rawResponse true -url [tas_api_url]/runningTests/[running_test_id]/measurements/favorites</body>
                                             </command>
@@ -1498,7 +1498,7 @@
                                             <nestedSteps>
                                                 <item guid="1e6c88d2-4220-4138-bb17-6e9294780ba2" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>project://ai_Dish_Production/DISH_5G/test_cases_scale/procedures/scale_procedures.fftc#getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;Gm|Main&apos;, item_list=[&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;])</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/test_cases_scale/procedures/scale_procedures.fftc#getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;Gm|Main&apos;, item_list=[&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;,&apos;RP-MO-DATA Packets Sent&apos;,&apos;RP-ACK Packets Rcvd&apos;,&apos;RP-MT-DATA Packets Rcvd&apos;,&apos;RP-ACK Packets Sent&apos;])</body>
                                                     </command>
                                                     <postProcessing>
                                                         <storeResponseAt>gm_dict</storeResponseAt>
@@ -1513,7 +1513,7 @@
                                                     <nestedSteps>
                                                         <item guid="91b16803-a074-4f41-a2b3-fe48bb708a06" action="for" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>item in [&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;]:</body>
+                                                                <body>item in [&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;,&apos;RP-MO-DATA Packets Sent&apos;,&apos;RP-ACK Packets Rcvd&apos;,&apos;RP-MT-DATA Packets Rcvd&apos;,&apos;RP-ACK Packets Sent&apos;]:</body>
                                                             </command>
                                                             <nestedSteps>
                                                                 <item guid="cc1befb2-54fe-440e-a0c7-a0a195f83630" action="eval" useFieldsInCommand="false">
@@ -1537,7 +1537,7 @@
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="047538a9-863a-4957-955c-98c26e7b2060" action="comment" useFieldsInCommand="false">
+                                        <item guid="047538a9-863a-4957-955c-98c26e7b2060" action="comment" skip="true" useFieldsInCommand="false">
                                             <command>
                                                 <body>clean favorites to make them useful</body>
                                             </command>
@@ -1589,7 +1589,7 @@
                                                     <nestedSteps>
                                                         <item guid="e5a8d79e-9f09-4b7a-ba4f-02d56508696c" action="if" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>favorites_dict[&apos;ts0::tc0::Gm|SMS::RP-MO-DATA Packets Sent&apos;] == 0:</body>
+                                                                <body>gm_dict[&apos;RP-MO-DATA Packets Sent&apos;] == 0:</body>
                                                             </command>
                                                             <nestedSteps>
                                                                 <item guid="e0ef8071-bb5d-4995-a00a-b94c183795f8" action="eval" useFieldsInCommand="false">
@@ -1614,7 +1614,7 @@
                                                             <nestedSteps>
                                                                 <item guid="ea8c95b9-3565-4492-80dc-3cf26a5dc4a0" action="eval" useFieldsInCommand="false">
                                                                     <command>
-                                                                        <body>pct_good=100*(favorites_dict[&apos;ts0::tc1::Gm|SMS::RP-MT-DATA Packets Rcvd&apos;]/favorites_dict[&apos;ts0::tc0::Gm|SMS::RP-MO-DATA Packets Sent&apos;])</body>
+                                                                        <body>pct_good=100*(gm_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]/gm_dict[&apos;RP-MO-DATA Packets Sent&apos;])</body>
                                                                     </command>
                                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                                 </item>
@@ -1623,17 +1623,9 @@
                                                         </item>
                                                         <item guid="8dca2d33-a9a2-431a-8e24-b9ec1649517d" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>total_reg = favorites_dict[&apos;Gm|Main::SIP Registration Setup Count&apos;]+favorites_dict[&apos;Gm|Main::SIP Registration Failures&apos;]</body>
+                                                                <body>total_reg = gm_dict[&apos;SIP Registration Setup Count&apos;]+gm_dict[&apos;SIP Registration Failures&apos;]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                        <item guid="1e0f6b4d-f091-462c-949a-427fa57e23e1" action="message" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>Information:--SMS Sucess: [pct_good]%</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SMS Sucess: [pct_good]%</message>
-                                                            </applicationProperties>
                                                         </item>
                                                         <item guid="e03f4883-68cf-4ad6-8eaa-c5a94a604d42" action="message" useFieldsInCommand="false">
                                                             <command>
@@ -1646,42 +1638,50 @@
                                                         </item>
                                                         <item guid="0c2aa8bf-d855-4db1-9c1c-b797be7695dd" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP Registrations Success = [favorites_dict[&apos;Gm|Main::SIP Registration Setup Count&apos;]]</body>
+                                                                <body>Information:--SIP Registrations Success = [gm_dict[&apos;SIP Registration Setup Count&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
                                                                 <severity inherit="false" defaultValue=""/>
-                                                                <message inherit="false">--SIP Registrations Success = [favorites_dict[&apos;Gm|Main::SIP Registration Setup Count&apos;]]</message>
+                                                                <message inherit="false">--SIP Registrations Success = [gm_dict[&apos;SIP Registration Setup Count&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="761a0696-978e-4e73-8839-00e06dc5e5c0" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP Registration failures = [favorites_dict[&apos;Gm|Main::SIP Registration Failures&apos;]]</body>
+                                                                <body>Information:--SIP Registration failures = [gm_dict[&apos;SIP Registration Failures&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
                                                                 <severity inherit="false" defaultValue=""/>
-                                                                <message inherit="false">--SIP Registration failures = [favorites_dict[&apos;Gm|Main::SIP Registration Failures&apos;]]</message>
+                                                                <message inherit="false">--SIP Registration failures = [gm_dict[&apos;SIP Registration Failures&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="303f4a22-02b9-41ba-935c-21a044817df5" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>fail_count = favorites_dict[&apos;ts0::tc0::Gm|SMS::RP-MO-DATA Packets Sent&apos;]-favorites_dict[&apos;ts0::tc1::Gm|SMS::RP-MT-DATA Packets Rcvd&apos;]</body>
+                                                                <body>fail_count = gm_dict[&apos;RP-MO-DATA Packets Sent&apos;]-gm_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="d420c84a-591f-45fe-8034-600d4063e5da" action="message" useFieldsInCommand="false">
+                                                        <item guid="1e0f6b4d-f091-462c-949a-427fa57e23e1" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP SMS Sent = [favorites_dict[&apos;ts0::tc0::Gm|SMS::RP-MO-DATA Packets Sent&apos;]]</body>
+                                                                <body>Information:--SMS Sucess: [pct_good]%</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP SMS Sent = [favorites_dict[&apos;ts0::tc0::Gm|SMS::RP-MO-DATA Packets Sent&apos;]]</message>
+                                                                <message inherit="false">--SMS Sucess: [pct_good]%</message>
+                                                            </applicationProperties>
+                                                        </item>
+                                                        <item guid="d420c84a-591f-45fe-8034-600d4063e5da" action="message" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Information:--SIP SMS Sent = [gm_dict[&apos;RP-MO-DATA Packets Sent&apos;]]</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                                <message inherit="false">--SIP SMS Sent = [gm_dict[&apos;RP-MO-DATA Packets Sent&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="8470c7d3-ba85-4d81-bbcc-367776a74318" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP SMS Received = [favorites_dict[&apos;ts0::tc1::Gm|SMS::RP-MT-DATA Packets Rcvd&apos;]]</body>
+                                                                <body>Information:--SIP SMS Received = [gm_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP SMS Received = [favorites_dict[&apos;ts0::tc1::Gm|SMS::RP-MT-DATA Packets Rcvd&apos;]]</message>
+                                                                <message inherit="false">--SIP SMS Received = [gm_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="7c1c1ada-b26e-43e9-a07b-d3b876b9c468" action="message" useFieldsInCommand="false">
@@ -1733,7 +1733,7 @@
                                                     <nestedSteps>
                                                         <item guid="993810e3-90ad-4be1-9293-218ae81accf0" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>favorites_dict[&apos;ts0::tc0::Gm|SMS::RP-MO-DATA Packets Sent&apos;]</body>
+                                                                <body>gm_dict[&apos;RP-MO-DATA Packets Sent&apos;]</body>
                                                             </command>
                                                             <postProcessing>
                                                                 <analysisRules>
@@ -1764,7 +1764,7 @@
                                                     <nestedSteps>
                                                         <item guid="045fa304-79cb-4efc-9e26-e8d5ab9258f1" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>tlist = [str(i+1),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;]),str(mm_dict[&apos;Registration Completes&apos;]),str(mm_dict[&apos;Registration Rejects&apos;]),str(sm_dict[&apos;Pdu Establishment Accepts&apos;]),str(sm_dict[&apos;Pdu Establishment Rejects&apos;]),str(gm_dict[&apos;SIP Registration Setup Count&apos;]),str(gm_dict[&apos;SIP Registration Failures&apos;]), str(gm_dict[&apos;SIP Registration Retries&apos;]),str(favorites_dict[&apos;ts0::tc0::Gm|SMS::RP-MO-DATA Packets Sent&apos;]),str(favorites_dict[&apos;ts0::tc1::Gm|SMS::RP-MT-DATA Packets Rcvd&apos;])]</body>
+                                                                <body>tlist = [str(i+1),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;]),str(mm_dict[&apos;Registration Completes&apos;]),str(mm_dict[&apos;Registration Rejects&apos;]),str(sm_dict[&apos;Pdu Establishment Accepts&apos;]),str(sm_dict[&apos;Pdu Establishment Rejects&apos;]),str(gm_dict[&apos;SIP Registration Setup Count&apos;]),str(gm_dict[&apos;SIP Registration Failures&apos;]), str(gm_dict[&apos;SIP Registration Retries&apos;]),str(gm_dict[&apos;RP-MO-DATA Packets Sent&apos;]),str(gm_dict[&apos;RP-ACK Packets Rcvd&apos;]),str(gm_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]),str(gm_dict[&apos;RP-ACK Packets Sent&apos;])]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
