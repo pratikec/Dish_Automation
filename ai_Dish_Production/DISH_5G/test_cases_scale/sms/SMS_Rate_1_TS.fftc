@@ -1498,10 +1498,20 @@
                                             <nestedSteps>
                                                 <item guid="1e6c88d2-4220-4138-bb17-6e9294780ba2" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>project://ai_Dish_Production/DISH_5G/test_cases_scale/procedures/scale_procedures.fftc#getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;Gm|Main&apos;, item_list=[&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;,&apos;RP-MO-DATA Packets Sent&apos;,&apos;RP-ACK Packets Rcvd&apos;,&apos;RP-MT-DATA Packets Rcvd&apos;,&apos;RP-ACK Packets Sent&apos;])</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/test_cases_scale/procedures/scale_procedures.fftc#getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;Gm|Main&apos;, item_list=[&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;])</body>
                                                     </command>
                                                     <postProcessing>
                                                         <storeResponseAt>gm_dict</storeResponseAt>
+                                                        <storeResponseText>true</storeResponseText>
+                                                    </postProcessing>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="f0422bde-4ffe-499c-94ec-6882cf6b9367" action="call" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>project://ai_Dish_Production/DISH_5G/test_cases_scale/procedures/scale_procedures.fftc#getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;Gm|SMS&apos;, item_list=[&apos;RP-MO-DATA Packets Sent&apos;,&apos;RP-ACK Packets Rcvd&apos;,&apos;RP-MT-DATA Packets Rcvd&apos;,&apos;RP-ACK Packets Sent&apos;])</body>
+                                                    </command>
+                                                    <postProcessing>
+                                                        <storeResponseAt>sms_dict</storeResponseAt>
                                                         <storeResponseText>true</storeResponseText>
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
@@ -1513,12 +1523,26 @@
                                                     <nestedSteps>
                                                         <item guid="91b16803-a074-4f41-a2b3-fe48bb708a06" action="for" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>item in [&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;,&apos;RP-MO-DATA Packets Sent&apos;,&apos;RP-ACK Packets Rcvd&apos;,&apos;RP-MT-DATA Packets Rcvd&apos;,&apos;RP-ACK Packets Sent&apos;]:</body>
+                                                                <body>item in [&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;]:</body>
                                                             </command>
                                                             <nestedSteps>
                                                                 <item guid="cc1befb2-54fe-440e-a0c7-a0a195f83630" action="eval" useFieldsInCommand="false">
                                                                     <command>
                                                                         <body>gm_dict[item] = int(float(gm_dict[item]))</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                            </nestedSteps>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="1d8c323e-c822-4cbb-b9d2-6f102670933a" action="for" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>item in [&apos;RP-MO-DATA Packets Sent&apos;,&apos;RP-ACK Packets Rcvd&apos;,&apos;RP-MT-DATA Packets Rcvd&apos;,&apos;RP-ACK Packets Sent&apos;]:</body>
+                                                            </command>
+                                                            <nestedSteps>
+                                                                <item guid="177cdd45-cbc8-4404-8a0d-da482246e515" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>sms_dict[item] = int(float(sms_dict[item]))</body>
                                                                     </command>
                                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                                 </item>
@@ -1531,6 +1555,12 @@
                                                 <item guid="a832b399-be99-406a-92f0-08e3adafba7e" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>json.dumps(gm_dict)</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="7c50cd78-2cb9-4265-a9e5-3ab766d10b5b" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>json.dumps(sms_dict)</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
@@ -1589,7 +1619,7 @@
                                                     <nestedSteps>
                                                         <item guid="e5a8d79e-9f09-4b7a-ba4f-02d56508696c" action="if" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>gm_dict[&apos;RP-MO-DATA Packets Sent&apos;] == 0:</body>
+                                                                <body>sms_dict[&apos;RP-MO-DATA Packets Sent&apos;] == 0:</body>
                                                             </command>
                                                             <nestedSteps>
                                                                 <item guid="e0ef8071-bb5d-4995-a00a-b94c183795f8" action="eval" useFieldsInCommand="false">
@@ -1614,7 +1644,7 @@
                                                             <nestedSteps>
                                                                 <item guid="ea8c95b9-3565-4492-80dc-3cf26a5dc4a0" action="eval" useFieldsInCommand="false">
                                                                     <command>
-                                                                        <body>pct_good=100*(gm_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]/gm_dict[&apos;RP-MO-DATA Packets Sent&apos;])</body>
+                                                                        <body>pct_good=100*(sms_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]/sms_dict[&apos;RP-MO-DATA Packets Sent&apos;])</body>
                                                                     </command>
                                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                                 </item>
@@ -1656,7 +1686,7 @@
                                                         </item>
                                                         <item guid="303f4a22-02b9-41ba-935c-21a044817df5" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>fail_count = gm_dict[&apos;RP-MO-DATA Packets Sent&apos;]-gm_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]</body>
+                                                                <body>fail_count = sms_dict[&apos;RP-MO-DATA Packets Sent&apos;]-sms_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
@@ -1670,18 +1700,18 @@
                                                         </item>
                                                         <item guid="d420c84a-591f-45fe-8034-600d4063e5da" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP SMS Sent = [gm_dict[&apos;RP-MO-DATA Packets Sent&apos;]]</body>
+                                                                <body>Information:--SIP SMS Sent = [sms_dict[&apos;RP-MO-DATA Packets Sent&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP SMS Sent = [gm_dict[&apos;RP-MO-DATA Packets Sent&apos;]]</message>
+                                                                <message inherit="false">--SIP SMS Sent = [sms_dict[&apos;RP-MO-DATA Packets Sent&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="8470c7d3-ba85-4d81-bbcc-367776a74318" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP SMS Received = [gm_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]]</body>
+                                                                <body>Information:--SIP SMS Received = [sms_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP SMS Received = [gm_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]]</message>
+                                                                <message inherit="false">--SIP SMS Received = [sms_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="7c1c1ada-b26e-43e9-a07b-d3b876b9c468" action="message" useFieldsInCommand="false">
@@ -1733,7 +1763,7 @@
                                                     <nestedSteps>
                                                         <item guid="993810e3-90ad-4be1-9293-218ae81accf0" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>gm_dict[&apos;RP-MO-DATA Packets Sent&apos;]</body>
+                                                                <body>sms_dict[&apos;RP-MO-DATA Packets Sent&apos;]</body>
                                                             </command>
                                                             <postProcessing>
                                                                 <analysisRules>
@@ -1764,7 +1794,7 @@
                                                     <nestedSteps>
                                                         <item guid="045fa304-79cb-4efc-9e26-e8d5ab9258f1" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>tlist = [str(i+1),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;]),str(mm_dict[&apos;Registration Completes&apos;]),str(mm_dict[&apos;Registration Rejects&apos;]),str(sm_dict[&apos;Pdu Establishment Accepts&apos;]),str(sm_dict[&apos;Pdu Establishment Rejects&apos;]),str(gm_dict[&apos;SIP Registration Setup Count&apos;]),str(gm_dict[&apos;SIP Registration Failures&apos;]), str(gm_dict[&apos;SIP Registration Retries&apos;]),str(gm_dict[&apos;RP-MO-DATA Packets Sent&apos;]),str(gm_dict[&apos;RP-ACK Packets Rcvd&apos;]),str(gm_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]),str(gm_dict[&apos;RP-ACK Packets Sent&apos;])]</body>
+                                                                <body>tlist = [str(i+1),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;]),str(mm_dict[&apos;Registration Completes&apos;]),str(mm_dict[&apos;Registration Rejects&apos;]),str(sm_dict[&apos;Pdu Establishment Accepts&apos;]),str(sm_dict[&apos;Pdu Establishment Rejects&apos;]),str(gm_dict[&apos;SIP Registration Setup Count&apos;]),str(gm_dict[&apos;SIP Registration Failures&apos;]), str(gm_dict[&apos;SIP Registration Retries&apos;]),str(sms_dict[&apos;RP-MO-DATA Packets Sent&apos;]),str(sms_dict[&apos;RP-ACK Packets Rcvd&apos;]),str(sms_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]),str(sms_dict[&apos;RP-ACK Packets Sent&apos;])]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
@@ -1903,125 +1933,6 @@
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="5644fef1-4dd2-4048-8942-0ecbbbc459d8" action="close" session="s1">
-                    <nestedSteps>
-                        <item guid="a2849d8e-4b1e-446f-83aa-76144a682df8" action="comment" skip="true" useFieldsInCommand="false">
-                            <command>
-                                <body>Report results</body>
-                            </command>
-                            <nestedSteps>
-                                <item guid="ba04e7b1-00df-4353-8ec4-78e5b3cb6cf0" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>remove_tc_pf</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="4d73490c-c79e-4dcc-8194-c5714001fafe" action="for" useFieldsInCommand="false">
-                                    <command>
-                                        <body>res_dict in check_results_list:</body>
-                                    </command>
-                                    <nestedSteps>
-                                        <item guid="6c23f393-743a-49a8-ac84-4916c9e31a43" action="message" useFieldsInCommand="false">
-                                            <command>
-                                                <body>Information:    Results for GNB ID [res_dict[&apos;gnb_id&apos;]] SUPI [res_dict[&apos;supi&apos;]]</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                <message inherit="false">    Results for GNB ID [res_dict[&apos;gnb_id&apos;]] SUPI [res_dict[&apos;supi&apos;]]</message>
-                                            </applicationProperties>
-                                        </item>
-                                        <item guid="fa5b2e49-bf0b-44aa-b89c-8c59cda7abab" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>overall = &quot;PASS&quot;</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="89295a20-6428-473b-901f-8280d9fa1009" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>[d for d in pass_fail_dict[&apos;criteria&apos;] if res_dict[&apos;search&apos;] in d[&apos;description&apos;]]</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="df80125c-467d-440a-b8c8-1c9f9a350cd8" action="for" useFieldsInCommand="false">
-                                            <command>
-                                                <body>criteria_dict in [d for d in pass_fail_dict[&apos;criteria&apos;] if res_dict[&apos;search&apos;] in d[&apos;description&apos;]]:</body>
-                                            </command>
-                                            <nestedSteps>
-                                                <item guid="3a42598f-3b1b-49b4-8365-4fd445add990" action="if" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>res_dict[&apos;search&apos;] in criteria_dict[&apos;description&apos;]:</body>
-                                                    </command>
-                                                    <nestedSteps>
-                                                        <item guid="9a304ae7-cfdc-42bc-8f83-20df27f6f8b1" action="eval" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>criteria_dict[&apos;status&apos;]</body>
-                                                            </command>
-                                                            <postProcessing>
-                                                                <analysisRules>
-                                                                    <item>
-                                                                        <extractorInfo extractorType="contains">
-                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
-                                                                                <searchString>PASSED</searchString>
-                                                                            </extractorProperties>
-                                                                        </extractorInfo>
-                                                                        <processorInfo ruleType="assert">
-                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                                                <expression>value == 1</expression>
-                                                                                <actionsWhenTrue>
-                                                                                    <item actionId="DeclareExecutionIssue">
-                                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                                                            <message>      [criteria_dict[&apos;description&apos;]]</message>
-                                                                                        </actionProperties>
-                                                                                    </item>
-                                                                                    <item actionId="PassTestIfNotAlreadyFailed">
-                                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                                    </item>
-                                                                                </actionsWhenTrue>
-                                                                                <actionsWhenFalse>
-                                                                                    <item actionId="DeclareExecutionIssue">
-                                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                                                            <message>      [criteria_dict[&apos;description&apos;]]</message>
-                                                                                        </actionProperties>
-                                                                                    </item>
-                                                                                    <item actionId="Eval">
-                                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
-                                                                                            <statement>overall = &quot;FAIL&quot;</statement>
-                                                                                        </actionProperties>
-                                                                                    </item>
-                                                                                    <item actionId="FailTest">
-                                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                                    </item>
-                                                                                </actionsWhenFalse>
-                                                                            </ruleProperties>
-                                                                        </processorInfo>
-                                                                    </item>
-                                                                </analysisRules>
-                                                            </postProcessing>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                    </nestedSteps>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                            </nestedSteps>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="5adaba03-2c48-40ab-924b-f8a68b267871" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>res_file.write(str(res_dict[&apos;supi&apos;])+&apos;,&apos;+res_dict[&apos;gnb_id&apos;]+&apos;,&apos;+overall+&apos;,N/A\\n&apos;)</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="c02597a1-2f1b-4763-9583-3a1b98f2df17" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>res_file.flush()</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                    </nestedSteps>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                            </nestedSteps>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
             </steps>
