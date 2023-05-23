@@ -540,7 +540,13 @@
                         </item>
                         <item guid="4d280514-748c-4fc7-a4ba-2dc96d77a88a" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>csv_file.write(&apos;Iteration,Time,Call Rate (calls/sec),Call Time (s),Run Time (s),SIP Registrations Attempted,SIP Registrations Success,SIP Registrations Failures,SIP Calls Attempted,SIP Call Success,SIP Call Failure,SIP Call Success Pct.,SIP Average Call Setup (ms),SIP Minimum Call Setup (ms),SIP Maximum Call Setup (ms)\\n&apos;)</body>
+                                <body>csv_file.write(&apos;Iteration,Time,Call Rate (calls/sec),Call Time (s),Run Time (s),5G Reg Attempted,5G Reg Rejected,PDU Accepts,PDU Rejects,SIP Registrations Attempted,SIP Registrations Success,SIP Registrations Failures,SIP Calls Attempted,SIP Call Success,SIP Call Failure,SIP Call Success Pct.,SIP Average Call Setup (ms),SIP Minimum Call Setup (ms),SIP Maximum Call Setup (ms)\\n&apos;)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="f2593118-75ab-4217-b06a-f5469d7fcdcb" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>csv_file.write(&apos;Iteration,Time,SMS Tx Rate (msg/sec),Sub Count,5G Reg Attempted,5G Reg Rejected,PDU Accepts,PDU Rejects,SIP Registrations Success,SIP Registrations Failures,SIP Registrations Retries,SMS Messages Sent, SMS Message Sent Ack, SMS Messages Received, SMS Message Received Ack\\n&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -1031,90 +1037,58 @@
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="9e8ad6e1-711f-4446-ad73-78f89331593e" action="comment" useFieldsInCommand="false">
+                                        <item guid="55280d18-36d3-4cbf-a4d6-849e991a7202" action="comment" useFieldsInCommand="false">
                                             <command>
-                                                <body>Sum up and get average Average Call Setup</body>
+                                                <body>Get MM/SM reg counts from CSV </body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="345c9738-5937-4bd4-9757-8745eaf31aba" action="eval" useFieldsInCommand="false">
+                                                <item guid="f4873d0e-0623-4bc0-865c-12ad8283d3ad" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>results_dict[&apos;Gm|Main&apos;][&apos;headers&apos;]</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/test_cases_scale/procedures/scale_procedures.fftc#getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;MM&apos;, item_list=[&apos;Registration Completes&apos;,&apos;Registration Rejects&apos;])</body>
                                                     </command>
+                                                    <postProcessing>
+                                                        <storeResponseAt>mm_dict</storeResponseAt>
+                                                        <storeResponseText>true</storeResponseText>
+                                                    </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="0568d0c8-250c-45f8-b687-e711f29d559f" action="eval" useFieldsInCommand="false">
+                                                <item guid="4b5a4840-88dd-4c88-a198-e2e03583926c" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>indx = int([i for i, s in enumerate(results_dict[&apos;Gm|Main&apos;][&apos;headers&apos;]) if &apos;SIP Average Call Setup  (P-I)&apos; in s][0])</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/test_cases_scale/procedures/scale_procedures.fftc#getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;SM&apos;, item_list=[&apos;Pdu Establishment Accepts&apos;,&apos;Pdu Establishment Rejects&apos;])</body>
                                                     </command>
+                                                    <postProcessing>
+                                                        <storeResponseAt>sm_dict</storeResponseAt>
+                                                        <storeResponseText>true</storeResponseText>
+                                                    </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="649ac549-d9f2-4c46-af45-1ead146def86" action="eval" useFieldsInCommand="false">
+                                                <item guid="06e957a6-c497-4106-a15f-561875578599" action="comment" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>indx</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="9d469446-3a3e-4c8b-9872-ecb9c8f4c75c" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>type(indx)</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="8636a1ab-a271-4ec0-abe0-024d1b103658" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>keylist = [*results_dict[&apos;Gm|Main&apos;]]</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="b67eb221-a09c-4179-80e9-69558e9759f8" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>sum = 0</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="b9c7b907-b714-4d69-a900-48b4e9d472d8" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>i = 0</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="9ba07670-7e62-4b99-869f-2e8a2e463a9e" action="for" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>key in keylist[1:-1]:</body>
+                                                        <body>convert floats to int</body>
                                                     </command>
                                                     <nestedSteps>
-                                                        <item guid="1bc21bcb-53ba-494f-858d-f5c2e82b82de" action="eval" useFieldsInCommand="false">
+                                                        <item guid="a2238376-4a1f-4216-910e-1c186de984b7" action="for" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>key</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                        <item guid="66d5dbd5-4c21-4d20-9cb7-6ce873988faf" action="eval" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>results_dict[&apos;Gm|Main&apos;][key][indx]</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                        <item guid="b55b4bab-9f37-4d40-bfc6-a158a975506a" action="if" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>float(results_dict[&apos;Gm|Main&apos;][key][indx]) &gt; 0:</body>
+                                                                <body>item in [&apos;Registration Completes&apos;,&apos;Registration Rejects&apos;]:</body>
                                                             </command>
                                                             <nestedSteps>
-                                                                <item guid="8fe9de7b-be5b-4e66-b003-3d3372a49f07" action="eval" useFieldsInCommand="false">
+                                                                <item guid="6f8576a1-f19c-4eba-8f21-211d0efe91b9" action="eval" useFieldsInCommand="false">
                                                                     <command>
-                                                                        <body>results_dict[&apos;Gm|Main&apos;][key][indx]</body>
+                                                                        <body>mm_dict[item] = int(float(mm_dict[item]))</body>
                                                                     </command>
                                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                                 </item>
-                                                                <item guid="991cff23-f45d-4ad7-bd37-15440ae9e10e" action="eval" useFieldsInCommand="false">
+                                                            </nestedSteps>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="dd0780ae-0359-4c10-b2cd-e1775e4416ba" action="for" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>item in [&apos;Pdu Establishment Accepts&apos;,&apos;Pdu Establishment Rejects&apos;]:</body>
+                                                            </command>
+                                                            <nestedSteps>
+                                                                <item guid="4a238e5f-423e-4df3-9224-eb09930c1fbc" action="eval" useFieldsInCommand="false">
                                                                     <command>
-                                                                        <body>sum+=float(results_dict[&apos;Gm|Main&apos;][key][indx])</body>
-                                                                    </command>
-                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                </item>
-                                                                <item guid="8c39d360-430c-42f2-ba1e-4b9642ef3601" action="eval" useFieldsInCommand="false">
-                                                                    <command>
-                                                                        <body>i = i + 1</body>
+                                                                        <body>sm_dict[item] = int(float(sm_dict[item]))</body>
                                                                     </command>
                                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                                 </item>
@@ -1124,40 +1098,61 @@
                                                     </nestedSteps>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="e643db34-5036-4d0f-a178-fdbfa359b2c5" action="if" useFieldsInCommand="false">
+                                                <item guid="e7f87de8-e67e-42b8-a59a-8be4188769fc" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>i &gt; 0:</body>
+                                                        <body>json.dumps(mm_dict)</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="14cd0bc5-fc82-4598-8a71-2ba9e1d4b7b3" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>json.dumps(sm_dict)</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="8535ae71-353d-43d8-8f0b-f13a6a9ffb09" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>Get SIP reg counts from CSV </body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="584eca54-dd82-4c3f-9ed4-5ae8de80ffec" action="call" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>project://ai_Dish_Production/DISH_5G/test_cases_scale/procedures/scale_procedures.fftc#getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;Gm|Main&apos;, item_list=[&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;,&apos;SIP Call Successes&apos;,&apos;SIP Call Failures&apos;,&apos;SIP Average Call Setup (micro-sec)&apos;,&apos;SIP Minimum Call Setup (micro-sec)&apos;,&apos;SIP Maximum Call Setup (micro-sec)&apos;])</body>
+                                                    </command>
+                                                    <postProcessing>
+                                                        <storeResponseAt>gm_dict</storeResponseAt>
+                                                        <storeResponseText>true</storeResponseText>
+                                                    </postProcessing>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="b600da3f-ef8d-4cc8-ac5a-84f90f1ca970" action="comment" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>convert floats to int</body>
                                                     </command>
                                                     <nestedSteps>
-                                                        <item guid="f6805af8-51f5-4b78-be1e-cea37dbfbb9f" action="eval" useFieldsInCommand="false">
+                                                        <item guid="eec0dbe9-71bf-4ffb-9ff4-1a1c984b2398" action="for" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>avg_call_setup = int(sum/(i*1000))</body>
+                                                                <body>item in [&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;,&apos;SIP Call Successes&apos;,&apos;SIP Call Failures&apos;,&apos;SIP Average Call Setup (micro-sec)&apos;,&apos;SIP Minimum Call Setup (micro-sec)&apos;,&apos;SIP Maximum Call Setup (micro-sec)&apos;]:</body>
                                                             </command>
+                                                            <nestedSteps>
+                                                                <item guid="18789a9e-0d38-4b5f-80a4-2bed3bf7b131" action="eval" useFieldsInCommand="false">
+                                                                    <command>
+                                                                        <body>gm_dict[item] = int(float(gm_dict[item]))</body>
+                                                                    </command>
+                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                </item>
+                                                            </nestedSteps>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                     </nestedSteps>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="39a4ff72-2db9-486e-b42f-393306ff6570" action="else" useFieldsInCommand="false">
-                                                    <nestedSteps>
-                                                        <item guid="815ab0ae-71ca-42c6-9897-08d35091eb56" action="eval" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>avg_call_setup = 0</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                    </nestedSteps>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="b75c2d3d-a82e-46b3-a9d2-74f26eb82d67" action="eval" useFieldsInCommand="false">
+                                                <item guid="11661aba-6514-4fb4-b774-b4c49b99b7b1" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>i</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="159c9c78-c636-4b9f-9756-eb365ed4187f" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>sum</body>
+                                                        <body>json.dumps(gm_dict)</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
@@ -1166,12 +1161,12 @@
                                         </item>
                                         <item guid="48a0bdde-d47b-4011-9135-29eb3e974bb0" action="comment" useFieldsInCommand="false">
                                             <command>
-                                                <body>Get Min/Max Call setups from CSV so they are a known unit (us)</body>
+                                                <body>For SIP reg count grab the count from the middle of the test because something FUNKY is happening with this count at the end of test</body>
                                             </command>
                                             <nestedSteps>
                                                 <item guid="d4db38b2-9e93-4781-9706-d32a4617e8a3" action="comment" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>get last key</body>
+                                                        <body>get middle number</body>
                                                     </command>
                                                     <nestedSteps>
                                                         <item guid="9e2f2e1e-2c60-4835-8710-4de3a5942440" action="eval" useFieldsInCommand="false">
@@ -1182,120 +1177,37 @@
                                                         </item>
                                                         <item guid="703ec59b-4a89-4bdb-9912-2f47cba39390" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>last_key = [*results_dict[&apos;Gm|Main&apos;]][-1]</body>
+                                                                <body>middle_num = int(int([*results_dict[&apos;Gm|Main&apos;]][-2])/2)</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="e1697eea-58d2-48fd-a5b2-138d96c750c5" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>middle_num</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                     </nestedSteps>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="24b8242a-9265-4e6c-be53-d29673877fe3" action="eval" useFieldsInCommand="false">
+                                                <item guid="2a65a58b-5b12-4122-9434-917cd80d6e09" action="comment" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>csv_dict = {}</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="4255cbb4-04cb-447f-a70e-f8581768c805" action="for" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>item in [&apos;SIP Minimum Call Setup (micro-sec)&apos;,&apos;SIP Maximum Call Setup (micro-sec)&apos;]:</body>
+                                                        <body>overwrite gm SIP Reg count from end w/ count from middle</body>
                                                     </command>
                                                     <nestedSteps>
-                                                        <item guid="489a68e7-92d5-421f-a1a3-fed5b905363d" action="comment" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>Insert steps here to be executed on each loop</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
                                                         <item guid="9f864674-b3c3-4733-b800-cbf6912ec976" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>indx = int([i for i, s in enumerate(results_dict[&apos;Gm|Main&apos;][&apos;headers&apos;]) if item in s][0])</body>
+                                                                <body>indx = int([i for i, s in enumerate(results_dict[&apos;Gm|Main&apos;][&apos;headers&apos;]) if &apos;SIP Registration Setup Count&apos; in s][0])</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                         <item guid="91f4716c-9486-4b85-a3cf-f1507f080223" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>csv_dict[item] = int(float(results_dict[&apos;Gm|Main&apos;][key][indx])/1000)</body>
+                                                                <body>gm_dict[&apos;SIP Registration Setup Count&apos;] = int(float(results_dict[&apos;Gm|Main&apos;][str(middle_num)][indx]))</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                     </nestedSteps>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                            </nestedSteps>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="047538a9-863a-4957-955c-98c26e7b2060" action="comment" useFieldsInCommand="false">
-                                            <command>
-                                                <body>clean favorites to make them useful</body>
-                                            </command>
-                                            <nestedSteps>
-                                                <item guid="4dde1450-d41d-4e6a-a993-abe244e76eef" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>favorites_dict_dum =  json.loads(favorites_measurements)</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="598739aa-cbd4-46ae-9f98-9e14bddc72b3" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>favorites_dict = {}</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="32544cef-5042-4606-abeb-06b85d74920e" action="for" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>d in favorites_dict_dum[&apos;favorites&apos;]:</body>
-                                                    </command>
-                                                    <nestedSteps>
-                                                        <item guid="79c509c1-4340-42f5-b331-ef7c9530c139" action="eval" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>key = list(d.keys())[0]</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                        <item guid="6acad07c-8504-4437-ac11-51962ea7f60c" action="eval" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>favorites_dict[key.strip()] = {}</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                        <item guid="d48171b0-1d4d-4e4e-9b91-60e3c46a6315" action="if" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>len(d[key].split(&apos; &apos;)) == 1:</body>
-                                                            </command>
-                                                            <nestedSteps>
-                                                                <item guid="c109d8fb-5f8f-4b7f-9e8d-da0d1d5a1445" action="eval" useFieldsInCommand="false">
-                                                                    <command>
-                                                                        <body>favorites_dict[key.strip()][&apos;value&apos;] = int(d[key])</body>
-                                                                    </command>
-                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                </item>
-                                                            </nestedSteps>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                        <item guid="67a9936e-bdd1-43a4-9a55-845bbe59f581" action="else" useFieldsInCommand="false">
-                                                            <nestedSteps>
-                                                                <item guid="720abe2a-87a9-41d5-b700-3d2fd629a7a9" action="eval" useFieldsInCommand="false">
-                                                                    <command>
-                                                                        <body>favorites_dict[key.strip()][&apos;value&apos;] = float(d[key].split(&apos; &apos;)[0])</body>
-                                                                    </command>
-                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                </item>
-                                                                <item guid="5f9ec124-ff87-40f0-918d-f72892341337" action="eval" useFieldsInCommand="false">
-                                                                    <command>
-                                                                        <body>favorites_dict[key.strip()][&apos;unit&apos;] = d[key].split(&apos; &apos;)[1]</body>
-                                                                    </command>
-                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                </item>
-                                                            </nestedSteps>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
-                                                    </nestedSteps>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="56d6feab-b0bb-42af-9914-f52abc761ee9" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>json.dumps(favorites_dict)</body>
-                                                    </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
                                             </nestedSteps>
@@ -1311,9 +1223,15 @@
                                                         <body>Output text</body>
                                                     </command>
                                                     <nestedSteps>
+                                                        <item guid="5bc4cc24-dbd4-4287-b6ff-36552a9a620f" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>total_calls= gm_dict[&apos;SIP Call Successes&apos;]+gm_dict[&apos;SIP Call Failures&apos;]</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
                                                         <item guid="7f95a576-b8d8-44d1-a36a-d750f4b5e547" action="if" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;][&apos;value&apos;]+favorites_dict[&apos;Gm|Main::SIP Call Failures&apos;][&apos;value&apos;] == 0:</body>
+                                                                <body>total_calls == 0:</body>
                                                             </command>
                                                             <nestedSteps>
                                                                 <item guid="86dd913f-a109-42ca-8e3a-8b93f798bb8b" action="eval" useFieldsInCommand="false">
@@ -1338,51 +1256,63 @@
                                                             <nestedSteps>
                                                                 <item guid="38615648-5de2-4ecb-9953-c6a92df2d64b" action="eval" useFieldsInCommand="false">
                                                                     <command>
-                                                                        <body>pct_good=100*(favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;][&apos;value&apos;]/(favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;][&apos;value&apos;]+favorites_dict[&apos;Gm|Main::SIP Call Failures&apos;][&apos;value&apos;]))</body>
+                                                                        <body>pct_good=100*(gm_dict[&apos;SIP Call Successes&apos;]/total_calls)</body>
                                                                     </command>
                                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                                 </item>
                                                             </nestedSteps>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="4832d6b6-7b28-45a5-965a-8194e0f20c11" action="eval" useFieldsInCommand="false">
+                                                        <item guid="f661ccc4-c4b7-4738-8839-5cfc85b5f860" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>total_reg = favorites_dict[&apos;Gm|Main::SIP Registration Setup Count&apos;][&apos;value&apos;]+favorites_dict[&apos;Gm|Main::SIP Registration Failures&apos;][&apos;value&apos;]</body>
+                                                                <body>total_reg = gm_dict[&apos;SIP Registration Setup Count&apos;]+gm_dict[&apos;SIP Registration Failures&apos;]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="f24680ab-e276-4217-9d15-62c75990d694" action="message" useFieldsInCommand="false">
+                                                        <item guid="c977e99c-9768-43da-9f7b-f609ceda897f" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP Registrations attempted = [total_reg]</body>
+                                                                <body>Information:--Subscribers = [global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
                                                                 <severity inherit="false" defaultValue=""/>
-                                                                <message inherit="false">--SIP Registrations attempted = [total_reg]</message>
+                                                                <message inherit="false">--Subscribers = [global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;]]</message>
+                                                            </applicationProperties>
+                                                        </item>
+                                                        <item guid="a5637171-4c8c-4295-9b1d-beed9795e395" action="message" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Information:--5G Registrations Success = [mm_dict[&apos;Registration Completes&apos;]]</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                                <severity inherit="false" defaultValue=""/>
+                                                                <message inherit="false">--5G Registrations Success = [mm_dict[&apos;Registration Completes&apos;]]</message>
+                                                            </applicationProperties>
+                                                        </item>
+                                                        <item guid="8a0bec1b-af7b-4366-b37d-437bb2bd4774" action="message" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>Information:--PDU Registrations Success = [sm_dict[&apos;Pdu Establishment Accepts&apos;]]</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                                <severity inherit="false" defaultValue=""/>
+                                                                <message inherit="false">--PDU Registrations Success = [sm_dict[&apos;Pdu Establishment Accepts&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="535afc5e-b02f-41a8-9acd-1a4de613b9ad" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP Registrations Success = [favorites_dict[&apos;Gm|Main::SIP Registration Setup Count&apos;][&apos;value&apos;]]</body>
+                                                                <body>Information:--SIP Registrations Success = [gm_dict[&apos;SIP Registration Setup Count&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
                                                                 <severity inherit="false" defaultValue=""/>
-                                                                <message inherit="false">--SIP Registrations Success = [favorites_dict[&apos;Gm|Main::SIP Registration Setup Count&apos;][&apos;value&apos;]]</message>
+                                                                <message inherit="false">--SIP Registrations Success = [gm_dict[&apos;SIP Registration Setup Count&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="74b769d8-c41f-4502-8c11-790d2c620e8e" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP Registration failures = [favorites_dict[&apos;Gm|Main::SIP Registration Failures&apos;][&apos;value&apos;]]</body>
+                                                                <body>Information:--SIP Registration failures = [gm_dict[&apos;SIP Registration Failures&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
                                                                 <severity inherit="false" defaultValue=""/>
-                                                                <message inherit="false">--SIP Registration failures = [favorites_dict[&apos;Gm|Main::SIP Registration Failures&apos;][&apos;value&apos;]]</message>
+                                                                <message inherit="false">--SIP Registration failures = [gm_dict[&apos;SIP Registration Failures&apos;]]</message>
                                                             </applicationProperties>
-                                                        </item>
-                                                        <item guid="49fe3a42-9211-4065-876d-7e4ee7569c47" action="eval" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>total_calls= int(favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;][&apos;value&apos;]+favorites_dict[&apos;Gm|Main::SIP Call Failures&apos;][&apos;value&apos;])</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                         <item guid="b728b882-aeec-4d77-8c79-03d3917b2af1" action="message" useFieldsInCommand="false">
                                                             <command>
@@ -1394,18 +1324,18 @@
                                                         </item>
                                                         <item guid="57278c96-52a3-4fef-992b-8343c6441cb9" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP Call Success = [favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;][&apos;value&apos;]]</body>
+                                                                <body>Information:--SIP Call Success = [gm_dict[&apos;SIP Call Successes&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP Call Success = [favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;][&apos;value&apos;]]</message>
+                                                                <message inherit="false">--SIP Call Success = [gm_dict[&apos;SIP Call Successes&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="2ddcea9f-7085-448a-a977-753e58a0bdcc" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP Call Failure = [favorites_dict[&apos;Gm|Main::SIP Call Failures&apos;][&apos;value&apos;]]</body>
+                                                                <body>Information:--SIP Call Failure = [gm_dict[&apos;SIP Call Failures&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP Call Failure = [favorites_dict[&apos;Gm|Main::SIP Call Failures&apos;][&apos;value&apos;]]</message>
+                                                                <message inherit="false">--SIP Call Failure = [gm_dict[&apos;SIP Call Failures&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="208c523d-5ac9-43e4-9b90-572383d6a8ca" action="message" useFieldsInCommand="false">
@@ -1418,26 +1348,26 @@
                                                         </item>
                                                         <item guid="153492ed-463f-4dad-86c5-4a40e1441b68" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP Average Call Setup = [avg_call_setup] ms</body>
+                                                                <body>Information:--SIP Average Call Setup = [gm_dict[&quot;SIP Average Call Setup (micro-sec)&quot;]] us</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP Average Call Setup = [avg_call_setup] ms</message>
+                                                                <message inherit="false">--SIP Average Call Setup = [gm_dict[&quot;SIP Average Call Setup (micro-sec)&quot;]] us</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="a241a0d0-b7d8-4b4f-961d-3165fbf6343b" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP Minimum Call Setup = [csv_dict[&quot;SIP Minimum Call Setup (micro-sec)&quot;]] ms</body>
+                                                                <body>Information:--SIP Minimum Call Setup = [gm_dict[&quot;SIP Minimum Call Setup (micro-sec)&quot;]] us</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP Minimum Call Setup = [csv_dict[&quot;SIP Minimum Call Setup (micro-sec)&quot;]] ms</message>
+                                                                <message inherit="false">--SIP Minimum Call Setup = [gm_dict[&quot;SIP Minimum Call Setup (micro-sec)&quot;]] us</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="d1a661ed-a0ed-408e-ae34-372c1ea76165" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP Maximum Call Setup = [csv_dict[&quot;SIP Maximum Call Setup (micro-sec)&quot;]] ms</body>
+                                                                <body>Information:--SIP Maximum Call Setup = [gm_dict[&quot;SIP Maximum Call Setup (micro-sec)&quot;]] us</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP Maximum Call Setup = [csv_dict[&quot;SIP Maximum Call Setup (micro-sec)&quot;]] ms</message>
+                                                                <message inherit="false">--SIP Maximum Call Setup = [gm_dict[&quot;SIP Maximum Call Setup (micro-sec)&quot;]] us</message>
                                                             </applicationProperties>
                                                         </item>
                                                     </nestedSteps>
@@ -1481,7 +1411,7 @@
                                                     <nestedSteps>
                                                         <item guid="fbf5dc6b-a8da-4b22-a2bf-cff063fed028" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>int(favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;][&apos;value&apos;]+favorites_dict[&apos;Gm|Main::SIP Call Failures&apos;][&apos;value&apos;])</body>
+                                                                <body>total_calls</body>
                                                             </command>
                                                             <postProcessing>
                                                                 <analysisRules>
@@ -1512,7 +1442,7 @@
                                                     <nestedSteps>
                                                         <item guid="7aa07157-d03f-4e37-9f6a-a6c90e9b7e24" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>int(favorites_dict[&apos;Gm|Main::SIP Call Failures&apos;][&apos;value&apos;])</body>
+                                                                <body>int(gm_dict[&apos;SIP Call Failures&apos;])</body>
                                                             </command>
                                                             <postProcessing>
                                                                 <analysisRules>
@@ -1543,7 +1473,7 @@
                                                     <nestedSteps>
                                                         <item guid="0c4e76ff-e03d-43c3-9501-daf59d87cdf3" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>int(avg_call_setup)</body>
+                                                                <body>gm_dict[&quot;SIP Average Call Setup (micro-sec)&quot;]</body>
                                                             </command>
                                                             <postProcessing>
                                                                 <analysisRules>
@@ -1574,7 +1504,7 @@
                                                     <nestedSteps>
                                                         <item guid="bcd18bc6-8936-4106-a35c-e39d29584e6f" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>tlist = [str(i+1),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(param(&apos;CallLength&apos;)),str(param(&apos;RunTime&apos;)),str(total_reg),str(favorites_dict[&apos;Gm|Main::SIP Registration Setup Count&apos;][&apos;value&apos;]),str(favorites_dict[&apos;Gm|Main::SIP Registration Failures&apos;][&apos;value&apos;]),str(total_calls),str(favorites_dict[&apos;Gm|Main::SIP Call Successes&apos;][&apos;value&apos;]),str(favorites_dict[&apos;Gm|Main::SIP Call Failures&apos;][&apos;value&apos;]),str(pct_good),str(avg_call_setup),str(csv_dict[&apos;SIP Minimum Call Setup (micro-sec)&apos;]),str(csv_dict[&apos;SIP Maximum Call Setup (micro-sec)&apos;])]</body>
+                                                                <body>tlist = [str(i+1),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(param(&apos;CallLength&apos;)),str(param(&apos;RunTime&apos;)),str(global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;]),str(mm_dict[&apos;Registration Completes&apos;]),str(mm_dict[&apos;Registration Rejects&apos;]),str(sm_dict[&apos;Pdu Establishment Accepts&apos;]),str(sm_dict[&apos;Pdu Establishment Rejects&apos;]),str(gm_dict[&apos;SIP Registration Setup Count&apos;]),str(gm_dict[&apos;SIP Registration Failures&apos;]), str(gm_dict[&apos;SIP Registration Retries&apos;]),str(total_calls),str(gm_dict[&apos;SIP Call Successes&apos;]),str(gm_dict[&apos;SIP Call Failures&apos;]),str(pct_good),str(gm_dict[&apos;SIP Average Call Setup (micro-sec)&apos;]),str(gm_dict[&apos;SIP Minimum Call Setup (micro-sec)&apos;]),str(gm_dict[&apos;SIP Maximum Call Setup (micro-sec)&apos;])]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
