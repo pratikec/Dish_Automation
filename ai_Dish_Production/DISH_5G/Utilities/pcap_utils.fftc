@@ -4977,7 +4977,13 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     <nestedSteps>
                         <item guid="899c9e85-cef8-4767-b48b-bf79027f5b90" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>pcap_file = results_root_url+info(&apos;testReportID&apos;)+&apos;.pcap&apos;</body>
+                                <body>pcap_file1 = results_root_url+info(&apos;testReportID&apos;)+&apos;_1.pcap&apos;</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="2b007c70-e9ce-49d7-b0c8-336106708278" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>pcap_file2 = results_root_url+info(&apos;testReportID&apos;)+&apos;_2.pcap&apos;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -4985,7 +4991,12 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                             <command>
                                 <body>[url]/radcom-api-ms/webApi/traces/[trace_id]/download-file</body>
                             </command>
-                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="[url]/radcom-api-ms/webApi/traces/[trace_id]/download-file" action.inherit="false" binaryResponseFile="[pcap_file]" binaryResponseFile.inherit="false"/>
+                            <postProcessing>
+                                <storeResponseAt>[pcap_file1]</storeResponseAt>
+                                <storeResponseText>true</storeResponseText>
+                                <appendRespToFile inherit="false">false</appendRespToFile>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="[url]/radcom-api-ms/webApi/traces/[trace_id]/download-file" action.inherit="false" binaryResponseFile="[pcap_file2]" binaryResponseFile.inherit="false"/>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
@@ -5005,6 +5016,15 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                                 <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                             </applicationProperties>
+                        </item>
+                        <item guid="57be1121-c322-4b40-9787-90d2498b85ee" action="command" session="cli">
+                            <command>
+                                <body>ls results_root_url</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="2368abed-2303-44c4-8b80-1ec314f42229" action="command" session="cli">
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="80c4767a-28aa-4dc9-97aa-44b04cd11ae9" action="eval" useFieldsInCommand="false">
                             <command>
