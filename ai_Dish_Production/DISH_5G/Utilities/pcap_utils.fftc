@@ -4995,8 +4995,10 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                                 <storeResponseText>true</storeResponseText>
                                 <responseFile inherit="false" sub="true">[pcap_file1]</responseFile>
                                 <appendRespToFile inherit="false">false</appendRespToFile>
+                                <appendCommand inherit="false">false</appendCommand>
+                                <appendTimestamp inherit="false">false</appendTimestamp>
                             </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="[url]/radcom-api-ms/webApi/traces/[trace_id]/download-file" action.inherit="false" binaryResponseFile="[pcap_file2]" binaryResponseFile.inherit="false"/>
+                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="[url]/radcom-api-ms/webApi/traces/[trace_id]/download-file" action.inherit="false"/>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
@@ -5042,48 +5044,6 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                         <item guid="f41888d7-53f6-48b6-8159-c2a8aede33af" action="command" session="cli">
                             <command>
                                 <body>run aws s3api put-object --bucket taas-infra-devcicd-test-artifacts --key [aws_dir_file]  --body [pcap_file1]</body>
-                            </command>
-                            <postProcessing>
-                                <analysisRules>
-                                    <item>
-                                        <extractorInfo extractorType="contains">
-                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
-                                                <searchString>exit code: 0</searchString>
-                                            </extractorProperties>
-                                        </extractorInfo>
-                                        <processorInfo ruleType="assert">
-                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                <expression>value == 1</expression>
-                                                <actionsWhenTrue>
-                                                    <item actionId="PassTestIfNotAlreadyFailed">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                            <message>Uploaded JSON file to S3</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                </actionsWhenTrue>
-                                                <actionsWhenFalse>
-                                                    <item actionId="FailTest">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                            <message>Failed to upload JSON file to S3</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                </actionsWhenFalse>
-                                            </ruleProperties>
-                                        </processorInfo>
-                                    </item>
-                                </analysisRules>
-                            </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="14f70a05-0aec-4593-ab2c-1bf11cde2320" action="command" session="cli">
-                            <command>
-                                <body>run aws s3api put-object --bucket taas-infra-devcicd-test-artifacts --key [aws_dir_file]  --body [pcap_file2]</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
