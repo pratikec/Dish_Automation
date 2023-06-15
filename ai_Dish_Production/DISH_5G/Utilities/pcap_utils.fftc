@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<testCase version="8.6.2.202112190518" entryPoint="query_request_response">
+<testCase version="9.1.0.202208171942" entryPoint="query_request_response">
     <general>
         <isProcedureLibrary>true</isProcedureLibrary>
         <language>Python</language>
@@ -4667,6 +4667,378 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
             </steps>
             <arguments>
                 <item name="tshark_filter"/>
+            </arguments>
+        </item>
+        <item name="radcom_capture_if_fail" isPublic="true">
+            <steps>
+                <item guid="21114bb0-04f3-4dc8-8624-4c3a12ed5a3f" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>url = &apos;https://&apos;+[param(&apos;RADCOM_ACE/hostname&apos;)]</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="bc1fd4f6-bcf2-4fca-a307-0167c77c7844" action="open" session="rad" useFieldsInCommand="false">
+                    <command>
+                        <body>project://di_Radcom/session_profiles/RADCOM_ACE.ffsp</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                        <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        <sessionProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulSessionProperties" url="[url]" url.inherit="false" version="2" version.inherit="false">
+                            <authentication transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.AuthenticationProperties" authenticationType.inherit="false"/>
+                            <httpHeader inherit="false" transferableToolId="com.fnfr.itest.applications.webservices.restful">
+                                <memberClasses>
+                                    <item>com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry</item>
+                                </memberClasses>
+                                <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="token" header.inherit="false" value="[param(&apos;RADCOM_ACE/token&apos;)]" value.inherit="false"/>
+                                <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="iv-user" header.inherit="false" value="[param(&apos;RADCOM_ACE/iv-user&apos;)]" value.inherit="false"/>
+                                <item transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.HTTPHeaderEntry" header="iv-group" header.inherit="false" value="[param(&apos;RADCOM_ACE/iv-group&apos;)]" value.inherit="false"/>
+                            </httpHeader>
+                        </sessionProperties>
+                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    </applicationProperties>
+                </item>
+                <item guid="84923db1-596b-4b5e-808e-468ac666fe0d" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Get the info about the TWO subscribers ... even if we are only using one.</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="1f15517b-a9d1-4fb8-9d35-f4c01292bcdd" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>SUPIs</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="5a60bc3a-8429-47d3-826a-5cf019ecbed3" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>supi_1 = [param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="985b020a-a4da-4270-9d57-6bc17c41e6a6" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>supi_1 = str(int(supi_1) +1)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="3eb18a92-b6ad-4cf3-8603-5bcd5664311f" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>Phone numbers in +1xxxxxxx format</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="1a543f6c-a691-45e3-81dd-cbbe085c2f56" action="call" useFieldsInCommand="false">
+                                    <command>
+                                        <body>project://ai_Dish_Prototype/DISH_5G/Utilities/dish_tc_utilities.fftc#get_raw_phone_number(ims_sip_public_user=[param(&apos;LS_Nodal_favorite_params/ts0/tc0/ImsSipSubsPublicUserName&apos;)])</body>
+                                    </command>
+                                    <postProcessing>
+                                        <analysisRules>
+                                            <item>
+                                                <extractorInfo extractorType="query">
+                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                        <query>responseLine()</query>
+                                                    </extractorProperties>
+                                                </extractorInfo>
+                                                <processorInfo ruleType="store">
+                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                        <storageLocation>phone_base</storageLocation>
+                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                    </ruleProperties>
+                                                </processorInfo>
+                                            </item>
+                                        </analysisRules>
+                                    </postProcessing>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="15ed2c70-214d-487a-b231-9dafd73adb66" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>phone_1 = &quot;+1&quot;+str(phone_base)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="d48aa3b1-7a1e-4f4e-98af-f521ade7ad46" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>phone_2 = &quot;+1&quot;+str(int(phone_base)+1)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="9f34011a-3cac-46d6-b2fe-73ab8b5171e9" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Create the temporary results directory</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="104591c6-21d3-41bc-a477-f91bb24e9c52" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>import tempfile</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="0804f858-d63f-462c-9db9-346db6be20d8" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>temp_dir = tempfile.TemporaryDirectory()</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="cb3601b5-add8-4f7f-a964-c565d7f52502" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>temp_dir.name</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="6db68243-be6d-4ff8-8c24-25f26858e0b0" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>results_root_url = temp_dir.name.replace(&apos;\\\\&apos;,&apos;/&apos;)+&apos;/&apos;</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="e7a0473c-ef65-429f-a4e5-3d7a1896a469" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>results_root_url</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="2ea38030-3c1a-4f71-b1c5-918b606cb649" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Start capture</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="0aa9ff5a-a5ea-46c0-969d-10846e49d763" action="POST" session="rad">
+                            <command>
+                                <body>[url]/radcom-api-ms/webApi/packet-traces/by-correlation-rule</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>responseLine()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>trace_id</storageLocation>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="[url]/radcom-api-ms/webApi/packet-traces/by-correlation-rule" action.inherit="false">
+                                <message inherit="false">{
+  &quot;traceName&quot;: &quot;Velocity-[info(&apos;testReportID&apos;)]&quot;,
+  &quot;timeFilter&quot;: {
+      &quot;absolute&quot;: {
+        &quot;endTime&quot;: &quot;[end_time]&quot;,
+        &quot;startTime&quot;: &quot;[start_time]&quot;
+      }
+    },
+    &quot;correlationRule&quot;: {
+       &quot;id&quot;: &quot;ALL_BY_SUBSCRIBER_ID_CALLED_NEW&quot;,
+        &quot;parameters&quot;:\\[
+         {
+           &quot;id&quot;: &quot;START_TIME&quot;,
+           &quot;value&quot;: &quot;[start_time]&quot;
+         },
+         {
+           &quot;id&quot;: &quot;CALLED_PARTY&quot;,&quot;value&quot;: &quot;[phone_1]&quot;
+         }
+       ]
+    },
+  &quot;sortPacketsByStartTime&quot;: &quot;True&quot;
+}</message>
+                            </applicationProperties>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="8aa9eddc-5291-4d23-9471-4d7a5c4b3f07" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Wait for complete timeout = 60s</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="f7e6fa4f-ef62-4901-8a11-b03b166669fe" action="POST" session="rad">
+                            <command>
+                                <body>[url]/radcom-api-ms/webApi/traces/get-traces-status</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/item/status</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>str(value) == &quot;Completed&quot;</expression>
+                                                <actionsWhenFalse>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
+                                                            <message>Checking for RADCOM capture current status [value]</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="RepeatStep">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="SkipRemainingRules">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/item/traceId</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>trace_id</storageLocation>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnRepeatStepMaxCountExceeded">
+                                    <item actionId="DeclareExecutionIssue">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                            <message>RADCOM capture failed to complete in 60s</message>
+                                        </actionProperties>
+                                    </item>
+                                    <item actionId="FailTest">
+                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </item>
+                                    <item actionId="ExitProcedure">
+                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExitProcedurePropertyGroup"/>
+                                    </item>
+                                </item>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" message="{&quot;traceIds&quot; : \\[ &quot;[trace_id]&quot; ]}" message.inherit="false" action="[url]/radcom-api-ms/webApi/traces/get-traces-status" action.inherit="false"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="43d0d118-a83d-49fb-9e2b-450f8d4ba1a3" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Download file</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="899c9e85-cef8-4767-b48b-bf79027f5b90" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>pcap_file = results_root_url+info(&apos;testReportID&apos;)+&apos;.pcap&apos;</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="3cd60dce-b1dd-41b9-845d-3dd59e36d20f" action="GET" session="rad">
+                            <command>
+                                <body>[url]/radcom-api-ms/webApi/traces/[trace_id]/download-file</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="[url]/radcom-api-ms/webApi/traces/[trace_id]/download-file" action.inherit="false" binaryResponseFile="[pcap_file]" binaryResponseFile.inherit="false"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="6b81a6f8-b1b2-4ab7-b27e-7632da32e077" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>copy file to S3 bucket = taas-infra-devcicd-test-artifacts key = landslide/probecaptures/&lt;reportId</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="4e12b558-dfeb-44aa-846b-129e4e4cb28a" action="open" session="cli">
+                            <command>
+                                <body>application:com.fnfr.svt.applications.process</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                <sessionProperties type="com.fnfr.svt.applications.process.ProcessSessionProperties"/>
+                                <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            </applicationProperties>
+                        </item>
+                        <item guid="80c4767a-28aa-4dc9-97aa-44b04cd11ae9" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>aws_dir_file = &apos;landslide/probecaptures/&apos;+info(&apos;testReportID&apos;)+&apos;.pcap&apos;</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="f41888d7-53f6-48b6-8159-c2a8aede33af" action="command" session="cli">
+                            <command>
+                                <body>run aws s3api put-object --bucket [param(&apos;s3_bucket&apos;)] --key [aws_dir_file]  --body [pcap_file]</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="contains">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
+                                                <searchString>exit code: 0</searchString>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>value == 1</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>Uploaded JSON file to S3</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="FailTest">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>Failed to upload JSON file to S3</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="2fc43f78-c992-4764-866b-91d57deaa789" action="close" session="cli" useFieldsInCommand="false">
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="c7e02bbc-2879-4581-a2e3-464e31776173" action="close" session="rad">
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+            <arguments>
+                <item name="end_time">
+                    <isMandatory>true</isMandatory>
+                </item>
+                <item name="start_time">
+                    <isMandatory>true</isMandatory>
+                </item>
             </arguments>
         </item>
     </procedures>
