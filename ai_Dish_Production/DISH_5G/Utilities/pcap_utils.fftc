@@ -4829,7 +4829,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                         </item>
                         <item guid="81f7f245-e374-4c9e-bec3-d629eb88a97c" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>trace_dict[&apos;traceName&apos;] = &apos;Velocity-&apos;+info(&apos;testReportID&apos;)</body>
+                                <body>trace_dict[&apos;traceName&apos;] = &apos;Velocity-&apos;+velocity(&apos;reportId&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -4977,13 +4977,13 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     <nestedSteps>
                         <item guid="899c9e85-cef8-4767-b48b-bf79027f5b90" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>pcap_file1 = results_root_url+info(&apos;testReportID&apos;)+&apos;_1.pcap&apos;</body>
+                                <body>pcap_file1 = results_root_url+velocity(&apos;reportId&apos;)+&apos;_1.pcap&apos;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="2b007c70-e9ce-49d7-b0c8-336106708278" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>pcap_file2 = results_root_url+info(&apos;testReportID&apos;)+&apos;_2.pcap&apos;</body>
+                                <body>pcap_file2 = results_root_url+velocity(&apos;reportId&apos;)+&apos;_2.pcap&apos;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -4992,8 +4992,8 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                                 <body>[url]/radcom-api-ms/webApi/traces/[trace_id]/download-file</body>
                             </command>
                             <postProcessing>
-                                <storeResponseAt>[pcap_file1]</storeResponseAt>
                                 <storeResponseText>true</storeResponseText>
+                                <responseFile inherit="false" sub="true">[pcap_file1]</responseFile>
                                 <appendRespToFile inherit="false">false</appendRespToFile>
                             </postProcessing>
                             <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="[url]/radcom-api-ms/webApi/traces/[trace_id]/download-file" action.inherit="false" binaryResponseFile="[pcap_file2]" binaryResponseFile.inherit="false"/>
@@ -5006,43 +5006,34 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                         <body>copy file to S3 bucket = taas-infra-devcicd-test-artifacts key = landslide/probecaptures/&lt;reportId</body>
                     </command>
                     <nestedSteps>
+                        <item guid="8d993a74-14f4-4cdf-a924-2b6be883e228" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:Temp Dir = [dir.name]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Temp Dir = [dir.name]</message>
+                            </applicationProperties>
+                        </item>
                         <item guid="4e12b558-dfeb-44aa-846b-129e4e4cb28a" action="open" session="cli">
                             <command>
-                                <body>application:com.fnfr.svt.applications.cmd</body>
+                                <body>application:com.fnfr.svt.applications.process</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
-                                <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties">
-                                    <promptProperties>
-                                        <stepPrompts>
-                                            <item name="prompt1" MatchMethod="WILDCARD">
-                                                <Content>*$</Content>
-                                            </item>
-                                        </stepPrompts>
-                                    </promptProperties>
-                                    <completionProperties>
-                                        <idleChannel inherit="false">1000</idleChannel>
-                                    </completionProperties>
-                                </stepProperties>
-                                <sessionProperties type="com.fnfr.svt.applications.cmd.CmdSessionProperties"/>
+                                <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                <sessionProperties type="com.fnfr.svt.applications.process.ProcessSessionProperties"/>
                                 <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                             </applicationProperties>
                         </item>
-                        <item guid="57be1121-c322-4b40-9787-90d2498b85ee" action="command" session="cli">
-                            <command>
-                                <body>ls [results_root_url]</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                        </item>
                         <item guid="80c4767a-28aa-4dc9-97aa-44b04cd11ae9" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>aws_dir_file = &apos;landslide/probecaptures/&apos;+info(&apos;testReportID&apos;)+&apos;.pcap&apos;</body>
+                                <body>aws_dir_file = &apos;landslide/probecaptures/&apos;+velocity(&apos;reportId&apos;)+&apos;.pcap&apos;</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="f41888d7-53f6-48b6-8159-c2a8aede33af" action="command" session="cli">
                             <command>
-                                <body>aws s3api put-object --bucket taas-infra-devcicd-test-artifacts --key [aws_dir_file]  --body [pcap_file]</body>
+                                <body>run aws s3api put-object --bucket taas-infra-devcicd-test-artifacts --key [aws_dir_file]  --body [pcap_file]</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
@@ -5080,10 +5071,10 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                                     </item>
                                 </analysisRules>
                             </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="2fc43f78-c992-4764-866b-91d57deaa789" action="close" session="cli" useFieldsInCommand="false">
-                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
