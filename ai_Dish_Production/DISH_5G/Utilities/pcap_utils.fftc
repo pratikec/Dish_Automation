@@ -5008,10 +5008,18 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     <nestedSteps>
                         <item guid="8d993a74-14f4-4cdf-a924-2b6be883e228" action="message" useFieldsInCommand="false">
                             <command>
-                                <body>Information:Temp Dir = [dir.name]</body>
+                                <body>Information:Temp Dir = [pcap_file1]</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                <message inherit="false">Temp Dir = [dir.name]</message>
+                                <message inherit="false">Temp Dir = [pcap_file1]</message>
+                            </applicationProperties>
+                        </item>
+                        <item guid="aa150c4b-28ff-4b09-aa52-64295616ded1" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:Temp Dir = [pcap_file2]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">Temp Dir = [pcap_file2]</message>
                             </applicationProperties>
                         </item>
                         <item guid="4e12b558-dfeb-44aa-846b-129e4e4cb28a" action="open" session="cli">
@@ -5033,7 +5041,49 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                         </item>
                         <item guid="f41888d7-53f6-48b6-8159-c2a8aede33af" action="command" session="cli">
                             <command>
-                                <body>run aws s3api put-object --bucket taas-infra-devcicd-test-artifacts --key [aws_dir_file]  --body [pcap_file]</body>
+                                <body>run aws s3api put-object --bucket taas-infra-devcicd-test-artifacts --key [aws_dir_file]  --body [pcap_file1]</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="contains">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
+                                                <searchString>exit code: 0</searchString>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>value == 1</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>Uploaded JSON file to S3</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="FailTest">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>Failed to upload JSON file to S3</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="14f70a05-0aec-4593-ab2c-1bf11cde2320" action="command" session="cli">
+                            <command>
+                                <body>run aws s3api put-object --bucket taas-infra-devcicd-test-artifacts --key [aws_dir_file]  --body [pcap_file2]</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
