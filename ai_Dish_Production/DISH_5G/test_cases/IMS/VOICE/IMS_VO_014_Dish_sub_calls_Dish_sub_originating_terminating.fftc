@@ -308,6 +308,77 @@ Expected Result/Post Condition:
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
+                        <item guid="f1312b91-3244-4626-9061-5e99a32920f0" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:start time = [start_time]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">start time = [start_time]</message>
+                            </applicationProperties>
+                        </item>
+                        <item guid="5209e31f-ed2f-420d-971b-12efc5e53cab" action="message" useFieldsInCommand="false">
+                            <command>
+                                <body>Information:end time = [end_time]</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                <message inherit="false">end time = [end_time]</message>
+                            </applicationProperties>
+                        </item>
+                        <item guid="929a798d-e5b5-4ffe-9ea6-419a83582b58" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>double check time</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="3159dd4c-48d5-47a4-a202-1e1707b5630c" action="open" session="tcl">
+                                    <command>
+                                        <body>application:com.fnfr.svt.applications.tclsh</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                        <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        <sessionProperties type="com.fnfr.svt.applications.tclsh.TclshSessionProperties"/>
+                                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </applicationProperties>
+                                </item>
+                                <item guid="923d9400-0c21-4175-903e-863f2ac1e311" action="command" session="tcl" useFieldsInCommand="false">
+                                    <command>
+                                        <body>exec date +%s%3N</body>
+                                    </command>
+                                    <postProcessing>
+                                        <analysisRules>
+                                            <item>
+                                                <extractorInfo extractorType="query">
+                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                        <query>responseLine()</query>
+                                                    </extractorProperties>
+                                                </extractorInfo>
+                                                <processorInfo ruleType="store">
+                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                        <storageLocation>end_time_2</storageLocation>
+                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                    </ruleProperties>
+                                                </processorInfo>
+                                            </item>
+                                        </analysisRules>
+                                    </postProcessing>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="5ae19c80-a45c-4830-9a71-ee1cf89b2f8d" action="close" session="tcl" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="fd3568a5-377a-4960-b01c-353da45d3120" action="message" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Information:end time shell = [end_time_2]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                        <message inherit="false">end time shell = [end_time_2]</message>
+                                    </applicationProperties>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="f80dd1a4-63e7-40ab-b599-cff4c83d20c6" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>Check &apos;exec_ls_test_data&apos; for logged failure in criteria validation; Act accordingly.... 2 or 3 items we can work with all others counts are bad</body>
