@@ -4985,12 +4985,6 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="d512a686-bcd2-45c4-b87c-6574c70d5d06" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>capture_json = &apos;{  &quot;traceName&quot;: &quot;Velocity-6526b221-9785-466a-a0b9-3cf52b581e83&quot;,  &quot;timeFilter&quot;: {    &quot;absolute&quot;: {      &quot;endTime&quot;: 1687206617954&quot;,      &quot;startTime&quot;: &quot;1687206546097&quot;    }  },  &quot;correlationRule&quot;: {    &quot;id&quot;: ALL_BY_SUBSCRIBER_ID_CALLED_NEW&quot;,    &quot;parameters&quot;: [      {        &quot;id&quot;: &quot;START_TIME&quot;,        &quot;value&quot;: 1687206546097&quot;     },      {        &quot;id&quot;: &quot;CALLED_PARTY&quot;,        &quot;value&quot;: &quot;+15059358658&quot;      }    ]  },  &quot;sortPacketsByStartTime&quot;: &quot;True&quot;}&apos;</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
@@ -5005,12 +4999,33 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
+                        <item guid="ef169d4a-76fa-4517-bd5c-0d2bbb713d01" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>previous_size = -1</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="09fb3ba6-c2c3-464d-8375-cfd060883233" action="do_capture" session="rad" useFieldsInCommand="false">
                             <command>
-                                <body>-url $url -capture_json $capture_json -pcap_file $pcap_file -timeout 600</body>
+                                <body>-url $url -capture_json $capture_json -pcap_file $pcap_file -timeout 600 -previous_size =$previous_size</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/size</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>new_size</storageLocation>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
                                     <item>
                                         <extractorInfo extractorType="query">
                                             <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
@@ -5019,11 +5034,11 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                                         </extractorInfo>
                                         <processorInfo ruleType="assert">
                                             <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                <expression>value == &apos;OK&apos;</expression>
+                                                <expression>value == &apos;OK&apos; &amp; int(previous_size) == int(new_size)</expression>
                                                 <actionsWhenTrue>
                                                     <item actionId="DeclareExecutionIssue">
                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                            <message>Capture Successful</message>
+                                                            <message>Capture Successful, file size [new_size]</message>
                                                         </actionProperties>
                                                     </item>
                                                     <item actionId="PassTestIfNotAlreadyFailed">
@@ -5033,7 +5048,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                                                 <actionsWhenFalse>
                                                     <item actionId="DeclareExecutionIssue">
                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                                            <message>Capture Failed, retry [i] of 30</message>
+                                                            <message>Capturing again to verify it is complete, retry [i] of 30, last file size [new_size]</message>
                                                         </actionProperties>
                                                     </item>
                                                     <item actionId="Eval">
@@ -5041,8 +5056,16 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                                                             <statement>i+=1</statement>
                                                         </actionProperties>
                                                     </item>
+                                                    <item actionId="Eval">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
+                                                            <statement>value</statement>
+                                                        </actionProperties>
+                                                    </item>
                                                     <item actionId="RepeatStep">
                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" delayBetweenRepeats="30.0"/>
+                                                    </item>
+                                                    <item actionId="SkipRemainingRules">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                     </item>
                                                 </actionsWhenFalse>
                                             </ruleProperties>
