@@ -423,6 +423,37 @@
                             </postProcessing>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
+                        <item guid="acaa3006-0ea5-4c86-a4eb-151d7bf4f370" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>import os</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="ce385ace-99f6-4035-b18a-85575c881ad2" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>os.stat(pcap_file).st_size</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>responseLine()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <query>size</query>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">true</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">false</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
@@ -441,7 +472,7 @@
                     <defaultValue>120</defaultValue>
                 </item>
             </arguments>
-            <response>{&quot;status&quot;:&quot;NOK&quot;}</response>
+            <response>{&quot;status&quot;:&quot;NOK&quot;,&quot;size&quot;:&quot;-1&quot;}</response>
         </item>
     </procedures>
 </testCase>
