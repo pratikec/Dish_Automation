@@ -162,6 +162,12 @@ Expected Result
                         <body>##### Perform Landslide Test Procedure #####</body>
                     </command>
                     <nestedSteps>
+                        <item guid="e47e84f4-df25-4d5a-80a8-296b0db77b02" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>start_time = int(round(time.time() * 1000))</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="1070c473-4a46-4e03-9f5f-88b2ae3af57c" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_execute_landslide_procedure -run_data_list [run_data_list]</body>
@@ -273,6 +279,12 @@ Expected Result
                                 <storeResponseAt>exec_ls_testdata</storeResponseAt>
                                 <storeResponseText>true</storeResponseText>
                             </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="201935d2-cb06-45e7-b298-42dff7d83b52" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>end_time = int(round(time.time() * 1000))</body>
+                            </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="f1c572bb-e12c-4d86-96ad-5941c536eca7" action="comment" useFieldsInCommand="false">
@@ -727,6 +739,28 @@ Expected Result
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                                 <item guid="cec7e1bb-56b4-4f32-bd92-7c0476a54841" action="comment" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="66cd6f5a-325e-4651-8a49-63aab3d8a7ce" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>IF test failing, do RADCOM capture</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="b5b1ccd6-8f35-4604-9c32-96ca108edeea" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>info(&apos;status&apos;) == &apos;Fail&apos;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="823731c1-dd0b-4dd0-a496-91e383cf4e64" action="call" useFieldsInCommand="false">
+                                    <command>
+                                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_if_fail -start_time [start_time] -end_time [end_time]</body>
+                                    </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
