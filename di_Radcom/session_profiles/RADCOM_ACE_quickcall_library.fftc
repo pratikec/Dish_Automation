@@ -457,6 +457,85 @@
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
+                <item guid="5a058e9a-0178-4f6e-91bb-833330ebc9f8" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Delete capture</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="79ac32b0-0fc0-4db7-8f50-e4db12a57a8f" action="DELETE" session="[session]">
+                            <command>
+                                <body>[url]/radcom-api-ms/webApi/traces/[trace_id]</body>
+                            </command>
+                            <postProcessing>
+                                <appendRespToFile inherit="false" defaultValue=""/>
+                                <appendCommand inherit="false" defaultValue=""/>
+                                <appendTimestamp inherit="false" defaultValue=""/>
+                            </postProcessing>
+                            <eventHandlers>
+                                <item name="OnQueryExtractorInvalidQuery"/>
+                                <item name="OnNoMatchesFound"/>
+                            </eventHandlers>
+                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="[url]/radcom-api-ms/webApi/traces/[trace_id]" action.inherit="false" binaryResponseFile="file:[pcap_file]" binaryResponseFile.inherit="false"/>
+                        </item>
+                        <item guid="f66e0573-81ba-46b6-b638-338d274bc827" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>print(&apos;OK&apos;)</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>responseLine()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <query>status</query>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">true</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">false</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="e6829a5e-1fd1-46de-bb83-068938a720d2" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>import os</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="c88718df-91bc-4bd6-85c7-cde6dea626d1" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>os.stat(pcap_file).st_size</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>responseLine()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <query>size</query>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">true</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">false</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
             </steps>
             <arguments>
                 <item name="url">
