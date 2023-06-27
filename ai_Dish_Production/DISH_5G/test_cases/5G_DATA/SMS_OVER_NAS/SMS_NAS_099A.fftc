@@ -892,24 +892,30 @@ Expected Result/Post Condition:
                         </item>
                         <item guid="999ad16a-e209-4bac-82e8-129d85811bd3" action="if" useFieldsInCommand="false">
                             <command>
-                                <body>status &lt; &apos;OKx&apos;:</body>
+                                <body>status == &apos;OK&apos;:</body>
                             </command>
                             <nestedSteps>
                                 <item guid="cdf84b83-40fd-41f1-a9e4-4514ef60d172" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#open_wireshark</body>
+                                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#wireshark_open</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="ce22c351-5b66-463f-80b3-5fd25159758e" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>filter = &apos;(http2.header.value == &quot;POST&quot;) &amp;&amp; (http2.header.value == &quot;/namf-comm/v1/ue-contexts/imsi-&apos;+param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)+&apos;/n1-n2-messages&quot;)&apos;</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                                 <item guid="b3fb7139-f279-4df6-bd2d-775afe5f33e0" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#query_load_defined_pcap(&apos;pcapAbsolutePath&apos;=file,&apos;display_filter&apos;=&apos;&apos;,&apos;optional_message&apos;=&apos;&apos;,&apos;open_session&apos;=False)</body>
+                                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#query_load_defined_pcap(&apos;pcapAbsolutePath&apos;=pcap_file,&apos;display_filter&apos;=filter,&apos;optional_message&apos;=&apos;N1-N2 Message Found for MO SUPI&apos;,&apos;open_session&apos;=False)</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                                 <item guid="540fdaa9-c18b-48c2-b154-0a478964fdb4" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#close_wireshark</body>
+                                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#wireshark_close</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
