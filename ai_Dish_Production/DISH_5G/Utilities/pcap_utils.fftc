@@ -5641,6 +5641,32 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
+                        <item guid="b22a8b21-2caa-4d72-a938-4043c9fd7bd0" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>print(pcap_file)</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>responseLine()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>var1</storageLocation>
+                                                <query>file</query>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">true</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">false</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="f2aaa462-576f-41f5-8dc9-64c0462e3a7e" action="do_capture" session="rad" useFieldsInCommand="false">
                             <command>
                                 <body>-url $url -capture_json $capture_json -pcap_file $pcap_file -timeout 600</body>
@@ -5704,19 +5730,9 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                                 <body>mess == &apos;&apos; and status == &apos;OK&apos;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="385428ff-0ece-42aa-88cb-d61445df42ff" action="json" useFieldsInCommand="false">
-                                    <command>
-                                        <body>action=&apos;setJsonValue&apos;, editResponseStructure=&apos;true&apos;, pathValue=&apos;{&quot;file&quot;:pcap_file}&apos;</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.execution.builtin.json.JsonPropertiesGroup">
-                                        <action inherit="false">setJsonValue</action>
-                                        <pathValue inherit="false">{&quot;file&quot;:pcap_file}</pathValue>
-                                        <editResponseStructure inherit="false">true</editResponseStructure>
-                                    </applicationProperties>
-                                </item>
                                 <item guid="1cc9e0cb-6e00-4d41-b936-6258715ca8f7" action="eval" useFieldsInCommand="false">
                                     <command>
-                                        <body>pcap_file</body>
+                                        <body>print(pcap_file)</body>
                                     </command>
                                     <postProcessing>
                                         <analysisRules>
