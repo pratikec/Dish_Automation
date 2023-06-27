@@ -5704,15 +5704,41 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                                 <body>mess == &apos;&apos; and status == &apos;OK&apos;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="385428ff-0ece-42aa-88cb-d61445df42ff" action="json" useFieldsInCommand="false">
+                                <item guid="385428ff-0ece-42aa-88cb-d61445df42ff" action="json" skip="true" useFieldsInCommand="false">
                                     <command>
-                                        <body>action=&apos;setJsonValue&apos;, editResponseStructure=&apos;true&apos;, pathValue=&apos;{&quot;file&quot;:&quot;[pcap_file]&quot;}&apos;</body>
+                                        <body>action=&apos;setJsonValue&apos;, editResponseStructure=&apos;true&apos;, pathValue=&apos;{&quot;file&quot;:pcap_file}&apos;</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.execution.builtin.json.JsonPropertiesGroup">
                                         <action inherit="false">setJsonValue</action>
-                                        <pathValue inherit="false">{&quot;file&quot;:&quot;[pcap_file]&quot;}</pathValue>
+                                        <pathValue inherit="false">{&quot;file&quot;:pcap_file}</pathValue>
                                         <editResponseStructure inherit="false">true</editResponseStructure>
                                     </applicationProperties>
+                                </item>
+                                <item guid="1cc9e0cb-6e00-4d41-b936-6258715ca8f7" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>pcap_file</body>
+                                    </command>
+                                    <postProcessing>
+                                        <analysisRules>
+                                            <item>
+                                                <extractorInfo extractorType="query">
+                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                        <query>responseLine()</query>
+                                                    </extractorProperties>
+                                                </extractorInfo>
+                                                <processorInfo ruleType="store">
+                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                        <storageLocation>var1</storageLocation>
+                                                        <query>file</query>
+                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">true</responseValue>
+                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                    </ruleProperties>
+                                                </processorInfo>
+                                            </item>
+                                        </analysisRules>
+                                    </postProcessing>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
