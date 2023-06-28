@@ -790,9 +790,41 @@ Expected Result/Post Condition:
                         <body>Do post test RADCOM validation</body>
                     </command>
                     <nestedSteps>
+                        <item guid="14df4bc5-9e42-4fd4-8f5a-87426bdabbae" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>Create the temporary results directory</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="0e363c1c-633f-4267-b668-a7f41fdbefb7" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>import tempfile</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="f11ef3cc-4187-4d4a-9601-0ec89e59e718" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>results_root_url = tempfile.TemporaryDirectory().name.replace(&apos;\\\\&apos;,&apos;/&apos;)+&apos;/&apos;</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="ab4e5a82-852d-4655-a36d-f01e679accfc" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>results_root_url</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="2579d7c2-5c62-437b-86e2-7f5da9adbf40" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>pcap_file = results_root_url+velocity(&apos;reportId&apos;)+&apos;.pcap&apos;</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="51b43755-ce4e-438e-9850-2018d38c8d79" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_with_wait -start_time [start_time] -end_time [end_time] -capture_type &apos;ECP_CP_by_IMSI&apos;</body>
+                                <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_with_wait -start_time [start_time] -end_time [end_time] -capture_type &apos;ECP_CP_by_IMSI&apos; -pcap_file [pcap_file]</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
