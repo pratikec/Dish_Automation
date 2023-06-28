@@ -4310,7 +4310,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     <nestedSteps>
                         <item guid="a9d1d7f9-6542-40d2-abb8-08f86d3b3472" action="if" useFieldsInCommand="false">
                             <command>
-                                <body>open_session:</body>
+                                <body>open_session == &quot;True&quot;:</body>
                             </command>
                             <nestedSteps>
                                 <item guid="1a866159-cc7d-4ad3-b7e5-f331397d7617" action="call" useFieldsInCommand="false">
@@ -4480,7 +4480,9 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                 <item name="tshark_filter"/>
                 <item name="display_filter"/>
                 <item name="optional_message"/>
-                <item name="open_session"/>
+                <item name="open_session">
+                    <defaultValue>True</defaultValue>
+                </item>
             </arguments>
         </item>
         <item name="SaveResult" isPublic="true">
@@ -5292,6 +5294,16 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                 </item>
             </arguments>
         </item>
+        <item name="dum" isPublic="true">
+            <steps>
+                <item guid="fe304f28-fb2e-42d6-ace3-dbddfa7146de" action="call" useFieldsInCommand="false">
+                    <command>
+                        <body>query_load_defined_pcap</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+        </item>
         <item name="radcom_capture_with_wait" isPublic="true" blockResponseType="JSON">
             <steps>
                 <item guid="c0599885-f28a-4ed7-a80e-854d5909203b" action="eval" useFieldsInCommand="false">
@@ -5717,18 +5729,6 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                                 <body>TEMP: copy file to S3 bucket = taas-test-artifacts key = Velocity_2/Temp&lt;reportId&gt;</body>
                             </command>
                             <nestedSteps>
-                                <item guid="c017a817-4bc9-4de1-8255-e7bf29e77662" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>pcap_file</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="dce7a1e2-3732-42c0-a95e-0d65ccb902f2" action="readFile" useFieldsInCommand="false">
-                                    <command>
-                                        <body>file:[pcap_file]</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.ReadFilePropertyGroup"/>
-                                </item>
                                 <item guid="5bd11ae5-7fac-4c30-a1a1-a4a926dca268" action="open" session="cli">
                                     <command>
                                         <body>application:com.fnfr.svt.applications.process</body>
