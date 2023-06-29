@@ -962,13 +962,25 @@ Expected Result/Post Condition:
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="cf322040-925f-45b1-9302-d3e6dfab1649" action="eval" useFieldsInCommand="false">
+                                                <item guid="cf322040-925f-45b1-9302-d3e6dfab1649" action="eval" skip="true" useFieldsInCommand="false">
                                                     <command>
                                                         <body>s1 = &apos;{&quot;smsPayload&quot;:{&quot;contentId&quot;:&quot;smsMsg&quot;},&quot;accessType&quot;:&quot;3GPP_ACCESS&quot;,&quot;gpsi&quot;:&quot;msisdn-&apos;+phone+&apos;&quot;,&quot;pei&quot;:&quot;imeisv-&apos;+param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)+&apos;00&quot;,&apos;.encode(&quot;utf-8&quot;).hex()</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="572e7224-764a-4411-a101-d315e738f81a" action="eval" useFieldsInCommand="false">
+                                                <item guid="572e7224-764a-4411-a101-d315e738f81a" action="eval" skip="true" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>bs1 = &quot;:&quot;.join(s1[i:i+2] for i in range(0, len(s1), 2))</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="be69c781-0741-422a-b1c0-4aed4cff3bd7" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>s1 = &apos;&quot;smsPayload&quot;:{&quot;contentId&quot;:&quot;smsMsg&quot;},&quot;accessType&quot;:&quot;3GPP_ACCESS&quot;,&quot;gpsi&quot;:&quot;msisdn-&apos;+phone+&apos;&quot;,&quot;pei&quot;:&quot;imeisv-&apos;+param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)+&apos;00&quot;&apos;.encode(&quot;utf-8&quot;).hex()</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="39fae542-39b4-4d14-b826-de31c924b3e4" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>bs1 = &quot;:&quot;.join(s1[i:i+2] for i in range(0, len(s1), 2))</body>
                                                     </command>
@@ -979,7 +991,7 @@ Expected Result/Post Condition:
                                         </item>
                                         <item guid="3d48aa2d-1fbd-4a59-b801-ea1d5657fa59" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.dstport == 8080) &amp;&amp; (tcp.payload contains &apos;+bs1+&apos;)&apos;,&apos;count&apos;:1,&apos;message&apos;:&apos;AMF forwards the SMS and SUPI over Nsmsf_SMService_UplinkSMS message to the serving SMSF&apos;})</body>
+                                                <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.dstport == 8080) &amp;&amp; (tcp.payload contains &apos;+bs1+&apos;)&apos;,&apos;count&apos;:2,&apos;message&apos;:&apos;AMF forwards the SMS and SUPI over Nsmsf_SMService_UplinkSMS message to the serving SMSF&apos;})</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
@@ -988,51 +1000,25 @@ Expected Result/Post Condition:
                                                 <body>create filter bytestring filter for SMSF ==&gt; AMF ack message</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="4ac07fdc-bcad-448e-b615-8feecbc9c01f" action="eval" useFieldsInCommand="false">
+                                                <item guid="a5a53f0f-232b-4871-ab7c-3147633a068d" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>s2 = &apos;,&quot;deliveryStatus&quot;:&quot;SMS_DELIVERY_PENDING&quot;}&apos;.encode(&quot;utf-8&quot;).hex()</body>
+                                                        <body>s3 = &apos;&quot;n1MessageContainer&quot;:{&quot;n1MessageClass&quot;:&quot;SMS&quot;,&quot;n1MessageContent&quot;&apos;.encode(&quot;utf-8&quot;).hex()</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="8ea21944-13cd-42f6-afff-e59a2dd06b35" action="eval" useFieldsInCommand="false">
+                                                <item guid="58862955-4630-40ed-8478-4d19222c33db" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>bs2 = &quot;:&quot;.join(s2[i:i+2] for i in range(0, len(s2), 2))</body>
+                                                        <body>s4 = &apos;&quot;lastMsgIndication&quot;:false&apos;.encode(&quot;utf-8&quot;).hex()</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                            </nestedSteps>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="ee76342d-fc9f-4f7b-a463-c2255d948ced" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.srcport == 8080) &amp;&amp; (tcp.flags.ack == 1) &amp;&amp; (tcp.payload contains &apos;+bs2+&apos;)&apos;,&apos;count&apos;:1,&apos;message&apos;:&apos;AMF forwards the SMS and SUPI over Nsmsf_SMService_UplinkSMS message to the serving SMSF&apos;})</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="2e272d4a-92cc-4a14-9c2f-232efb333e8f" action="comment" useFieldsInCommand="false">
-                                            <command>
-                                                <body>create filter bytestring filter for SMSF ==&gt; AMF ack message</body>
-                                            </command>
-                                            <nestedSteps>
-                                                <item guid="07766cc6-82fd-4bb3-96f4-da756685b39b" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>s3 = &apos;{&quot;n1MessageContainer&quot;:{&quot;n1MessageClass&quot;:&quot;SMS&quot;,&quot;n1MessageContent&quot;:&quot;}&apos;.encode(&quot;utf-8&quot;).hex()</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="39cdea96-b20b-4733-b161-114e468a222a" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>s4 = &apos;,&quot;lastMsgIndication&quot;:false}&apos;.encode(&quot;utf-8&quot;).hex()</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="d764adf7-992a-4f01-91ef-71744784c44d" action="eval" useFieldsInCommand="false">
+                                                <item guid="6effb907-4064-42aa-860d-dc21790e8101" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>bs3 = &quot;:&quot;.join(s3[i:i+2] for i in range(0, len(s3), 2))</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="2ebcc6ca-d299-4c7a-a56b-bcf02f5f97c8" action="eval" useFieldsInCommand="false">
+                                                <item guid="68b0f120-216a-49a1-a9b6-314ad32a3ed6" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>bs4 = &quot;:&quot;.join(s4[i:i+2] for i in range(0, len(s4), 2))</body>
                                                     </command>
@@ -1041,9 +1027,35 @@ Expected Result/Post Condition:
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="1a6ef029-b412-4d7f-ac1f-6effe373df0e" action="eval" useFieldsInCommand="false">
+                                        <item guid="fba63458-11ad-43ac-bcc2-4f4da3a8d5fd" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.srcport == 8080) &amp;&amp; (tcp.flags.ack == 1) &amp;&amp; (tcp.payload contains &apos;+bs3+&apos;) &amp;&amp; (tcp.payload contains &apos;+bs4+&apos;)&apos;,&apos;count&apos;:1,&apos;message&apos;:&apos;AMF forwards the SMS and SUPI over Nsmsf_SMService_UplinkSMS message to the serving SMSF&apos;})</body>
+                                                <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.dstport == 8080) &amp;&amp; (tcp.flags.ack == 1) &amp;&amp; (tcp.payload contains &apos;+bs3+&apos;) &amp;&amp; (tcp.payload contains &apos;+bs4+&apos;)&apos;,&apos;count&apos;:1,&apos;message&apos;:&apos;SMSF forward SMS ack over Namf_Communication_N1N2MessageTransfer message to AMF.F&apos;})</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="2e272d4a-92cc-4a14-9c2f-232efb333e8f" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>create filter bytestring filter for SMSF ==&gt; AMF ack message</body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="5a71cd7f-2c6c-4fe7-894e-a7b7b8a2a89e" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>s5 = &apos;,&quot;lastMsgIndication&quot;:true&apos;.encode(&quot;utf-8&quot;).hex()</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="a0d36f60-bbff-45bf-a51d-aa952cdf2de6" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>bs5 = &quot;:&quot;.join(s5[i:i+2] for i in range(0, len(s5), 2))</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="391a2506-5e76-4c04-b259-f82a129ad7f5" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.dstport == 8080) &amp;&amp; (tcp.flags.ack == 1) &amp;&amp; (tcp.payload contains &apos;+bs3+&apos;) &amp;&amp; (tcp.payload contains &apos;+bs5+&apos;)&apos;,&apos;count&apos;:1,&apos;message&apos;:&apos;Verify SMSF forwards the submit report over Namf_Communication_N1N2MessageTransfer message to AMF when SMS delivery is allowed&apos;})</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
