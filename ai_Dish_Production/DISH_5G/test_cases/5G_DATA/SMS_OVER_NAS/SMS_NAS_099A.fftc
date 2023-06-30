@@ -997,7 +997,7 @@ Expected Result/Post Condition:
                                         </item>
                                         <item guid="3d48aa2d-1fbd-4a59-b801-ea1d5657fa59" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.dstport == 8080) &amp;&amp; (tcp.payload contains &apos;+bs1+&apos;)&apos;,&apos;count&apos;:2,&apos;message&apos;:&apos;AMF forwards the SMS and SUPI over Nsmsf_SMService_UplinkSMS message to the serving SMSF&apos;})</body>
+                                                <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.dstport == 8080) &amp;&amp; (tcp.payload contains &apos;+bs1+&apos;)&apos;,&apos;count&apos;:3,&apos;message&apos;:&apos;AMF forwards the SMS and SUPI over Nsmsf_SMService_UplinkSMS message to the serving SMSF&apos;})</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
@@ -1538,10 +1538,29 @@ Expected Result/Post Condition:
                                 <body>info(&apos;status&apos;) == &apos;Fail&apos;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="bb60ffc9-b559-4511-8e28-8374f0f1d23d" action="call" useFieldsInCommand="false">
+                                <item guid="65389311-25f3-47fe-943e-dce22b7e44bd" action="if" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_if_fail -start_time [start_time] -end_time [end_time] -capture_type &apos;ECP_CP_by_IMSI&apos;</body>
+                                        <body>info(&apos;time&apos;) &lt; int(param(&apos;RADCOM_ACE/sleep_time&apos;)):</body>
                                     </command>
+                                    <nestedSteps>
+                                        <item guid="bb60ffc9-b559-4511-8e28-8374f0f1d23d" action="call" useFieldsInCommand="false">
+                                            <command>
+                                                <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_if_fail -start_time [start_time] -end_time [end_time] -capture_type &apos;ECP_CP_by_IMSI&apos;</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="178185fe-34bf-4917-9a9c-4f8a496daec0" action="else" useFieldsInCommand="false">
+                                    <nestedSteps>
+                                        <item guid="1a620eed-1c7e-46dc-a104-c29fb0aea366" action="call" useFieldsInCommand="false">
+                                            <command>
+                                                <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_if_fail -start_time [start_time] -end_time [end_time] -capture_type &apos;ECP_CP_by_IMSI&apos; -sleep_sec 0</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>

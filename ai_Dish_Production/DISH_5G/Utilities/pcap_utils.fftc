@@ -4862,18 +4862,37 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
         </item>
         <item name="radcom_capture_if_fail" isPublic="true">
             <steps>
-                <item guid="4e55f515-a5e3-4c06-a1dc-083cd13f3842" action="eval" useFieldsInCommand="false">
+                <item guid="3cda7574-c5d3-4808-8aa6-7443520233af" action="if" useFieldsInCommand="false">
                     <command>
-                        <body>sleep_time = int(param(&apos;RADCOM_ACE/sleep_time&apos;))*60</body>
+                        <body>sleep_sec == &apos;-1&apos;:</body>
                     </command>
+                    <nestedSteps>
+                        <item guid="4e55f515-a5e3-4c06-a1dc-083cd13f3842" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>sleep_time = int(param(&apos;RADCOM_ACE/sleep_time&apos;))</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="de016be1-bada-4e19-86cc-3fc99ea0dd0f" action="else" useFieldsInCommand="false">
+                    <nestedSteps>
+                        <item guid="7db180b5-5386-4b53-bf70-9fde22264490" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>sleep_time = int(sleep_sec)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="0c641e37-0308-4426-b7c9-ba1c52cf6409" action="message">
                     <command>
-                        <body>Information:Waiting [param(&apos;RADCOM_ACE/sleep_time&apos;)] minutes before attempting to do post-fail capture</body>
+                        <body>Information:Waiting [sleep_time] seconds before attempting to do post-fail capture</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                        <message inherit="false">Waiting [param(&apos;RADCOM_ACE/sleep_time&apos;)] minutes before attempting to do post-fail capture</message>
+                        <message inherit="false">Waiting [sleep_time] seconds before attempting to do post-fail capture</message>
                     </applicationProperties>
                 </item>
                 <item guid="1845daa0-bcf1-429b-ac37-76a44db5c77a" action="sleep">
@@ -5469,32 +5488,45 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                 <item name="capture_json">
                     <description>JSON string.  Ignores &quot;capture_type&quot; argument if set.</description>
                 </item>
-            </arguments>
-        </item>
-        <item name="dum" isPublic="true">
-            <steps>
-                <item guid="fe304f28-fb2e-42d6-ace3-dbddfa7146de" action="call" useFieldsInCommand="false">
-                    <command>
-                        <body>query_load_defined_pcap</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                <item name="sleep_sec">
+                    <description>Sleep time in seconds</description>
+                    <defaultValue>-1</defaultValue>
                 </item>
-            </steps>
+            </arguments>
         </item>
         <item name="radcom_capture_with_wait" isPublic="true" blockResponseType="JSON">
             <steps>
-                <item guid="c0599885-f28a-4ed7-a80e-854d5909203b" action="eval" useFieldsInCommand="false">
+                <item guid="991cc8fa-2f0d-4840-86bd-e2910a90b2fe" action="if" useFieldsInCommand="false">
                     <command>
-                        <body>sleep_time = int(param(&apos;RADCOM_ACE/sleep_time&apos;))*60</body>
+                        <body>sleep_sec == &apos;-1&apos;:</body>
                     </command>
+                    <nestedSteps>
+                        <item guid="aa7eb043-59a2-4a95-ba39-8b5fb67ca7df" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>sleep_time = int(param(&apos;RADCOM_ACE/sleep_time&apos;))</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="91324489-7c42-44b1-a895-0d4887ccd712" action="else" useFieldsInCommand="false">
+                    <nestedSteps>
+                        <item guid="ff499429-8e57-4e58-8ecc-d911d8e74e49" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>sleep_time = int(sleep_sec)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="8985ef28-5869-46a5-b4b0-cc3197d30585" action="message">
                     <command>
-                        <body>Information:Waiting [param(&apos;RADCOM_ACE/sleep_time&apos;)] minutes before attempting to do capture</body>
+                        <body>Information:Waiting [sleep_time] seconds before attempting to do capture</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                        <message inherit="false">Waiting [param(&apos;RADCOM_ACE/sleep_time&apos;)] minutes before attempting to do capture</message>
+                        <message inherit="false">Waiting [sleep_time] seconds before attempting to do capture</message>
                     </applicationProperties>
                 </item>
                 <item guid="9e8be4cc-d1bf-4ad7-9373-8c87193a561a" action="sleep">
@@ -5991,6 +6023,9 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                 </item>
                 <item name="capture_json">
                     <description>JSON string.  Ignores &quot;capture_type&quot; argument if set.</description>
+                </item>
+                <item name="sleep_sec">
+                    <defaultValue>-1</defaultValue>
                 </item>
             </arguments>
             <response>{&quot;status&quot;:&quot;NOK&quot;,&quot;pcap_file&quot;:&quot;dum&quot;,&quot;size&quot;:&quot;-1&quot;,&quot;message&quot;:null}</response>
