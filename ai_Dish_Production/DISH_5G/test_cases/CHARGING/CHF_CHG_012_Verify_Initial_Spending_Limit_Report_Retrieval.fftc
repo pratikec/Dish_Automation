@@ -455,6 +455,300 @@ Expected Result
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
+                <item guid="911f63ca-c61a-4655-90fb-ec323e1a3c17" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Post-test RADCOM validation</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="34838acf-0781-4dd4-b08a-65294a054dbc" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>Create the temporary results directory</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="307f8ad9-77fc-4be8-b657-6b8e229cad87" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>import tempfile</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="481086bd-c313-46fa-a871-a7c89f61b914" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>temp_dir = tempfile.TemporaryDirectory()</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="4650a3da-bf71-4f3f-a517-c538c26ddb0c" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>pcap_file = temp_dir.name.replace(&apos;\\\\&apos;,&apos;/&apos;)+&apos;/&apos;+velocity(&apos;reportId&apos;)+&apos;.pcap&apos;</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="8a0fe518-72be-4e50-9658-1db16e2e5d68" action="call" useFieldsInCommand="false">
+                            <command>
+                                <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_with_wait -start_time [start_time] -end_time [end_time] -capture_type &apos;ECP_CP_by_IMSI&apos; -pcap_file [pcap_file]</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/size</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>new_size</storageLocation>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/pcap_file</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>pcap_file</storageLocation>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/message</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>mess</storageLocation>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>mapped/Json/status</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>status</storageLocation>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                    <item>
+                                        <extractorInfo extractorType="none">
+                                            <extractorProperties type="com.fnfr.svt.documents.EmptyExtractorPropertyGroup"/>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>status == &apos;OK&apos;</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>Capture Successful, file size [new_size]</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="FailTest">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>[mess]</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="f27b7afd-7903-40b4-a13b-70b770c19621" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>status == &apos;OK&apos;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="20811dcd-99b3-4909-9145-196f5a654396" action="comment" useFieldsInCommand="false">
+                                    <command>
+                                        <body>create verification list dict</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="95cde7f1-f8fc-4ca8-ab21-1a68e6884f47" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>verify_list = []</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="102c0933-2e0c-475f-b3d1-20296c56f1dc" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>create filter bytestring filter for AMF ==&gt; SMSF message</body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="a7887fb0-e12b-4f5c-a590-0f7e33c82d6d" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>s1 = &apos;(json.value.number == 404) &amp;&amp; (json.value.string == ERROR_EQUIPMENT_UNKNOWN)&apos;</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="48fe7bb8-2e36-4cb3-802a-c6cb1bacd4b0" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>verify_list.append({&apos;filter&apos;:s1,&apos;count&apos;:1,&apos;message&apos;:&apos;5G-EIR responses 404 Not Found with &quot;ERROR_EQUIPMENT_UNKNOWN&quot;&apos;})</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="3c77a9d0-2569-4174-81bc-71e42486d16f" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>verify_list</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="1d732a70-abeb-4ca6-8182-aae9996a2282" action="open" session="wireshark">
+                                    <command>
+                                        <body>project://di_Wireshark/session_profiles/wireshark.ffsp</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                        <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        <sessionProperties type="com.fnfr.svt.applications.wireshark.WiresharkSessionProperties">
+                                            <sessionbuilderInitializeAction type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </sessionProperties>
+                                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </applicationProperties>
+                                </item>
+                                <item guid="9aa818bf-1509-4470-9f31-26b016544e32" action="command" session="wireshark">
+                                    <command>
+                                        <body>query load [pcap_file]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="ea8d7535-c510-4e75-b6d2-4abc6465c786" action="for" useFieldsInCommand="false">
+                                    <command>
+                                        <body>verify_dict in verify_list:</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="379cc174-466a-44fd-ae85-36bdd5790886" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>filter = verify_dict[&apos;filter&apos;]</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="c30ace0a-0754-4025-8dac-cb083222768d" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>filter</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="16faab65-51fc-4722-a2ed-585cb940258e" action="apply_filter_get_count" session="wireshark" useFieldsInCommand="false">
+                                            <command>
+                                                <body>-filter $filter</body>
+                                            </command>
+                                            <postProcessing>
+                                                <analysisRules>
+                                                    <item>
+                                                        <extractorInfo extractorType="query">
+                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                <query>count()</query>
+                                                            </extractorProperties>
+                                                        </extractorInfo>
+                                                        <processorInfo ruleType="store">
+                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                <storageLocation>count</storageLocation>
+                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                            </ruleProperties>
+                                                        </processorInfo>
+                                                    </item>
+                                                    <item>
+                                                        <extractorInfo extractorType="query">
+                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                <query>status()</query>
+                                                            </extractorProperties>
+                                                        </extractorInfo>
+                                                        <processorInfo ruleType="store">
+                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                <storageLocation>status</storageLocation>
+                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                            </ruleProperties>
+                                                        </processorInfo>
+                                                    </item>
+                                                    <item>
+                                                        <extractorInfo extractorType="none">
+                                                            <extractorProperties type="com.fnfr.svt.documents.EmptyExtractorPropertyGroup"/>
+                                                        </extractorInfo>
+                                                        <processorInfo ruleType="assert">
+                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                                <expression>int(count) == verify_dict[&apos;count&apos;] and status == &apos;OK&apos;</expression>
+                                                                <actionsWhenTrue>
+                                                                    <item actionId="DeclareExecutionIssue">
+                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                                            <message>Packet capture verified: [verify_dict[&apos;message&apos;]]</message>
+                                                                        </actionProperties>
+                                                                    </item>
+                                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                    </item>
+                                                                </actionsWhenTrue>
+                                                                <actionsWhenFalse>
+                                                                    <item actionId="DeclareExecutionIssue">
+                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                                            <message>Packet capture failed to verify: [verify_dict[&apos;message&apos;]]</message>
+                                                                        </actionProperties>
+                                                                    </item>
+                                                                    <item actionId="FailTest">
+                                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                    </item>
+                                                                </actionsWhenFalse>
+                                                            </ruleProperties>
+                                                        </processorInfo>
+                                                    </item>
+                                                </analysisRules>
+                                            </postProcessing>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="9f217781-79ec-45be-b9e9-c6fb0a93e97c" action="close" session="wireshark" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
                 <item guid="8662182a-e89b-4201-9120-cefb5ad1c332" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Check for additional Validation; Landslide Criteria Validation has been completed</body>
@@ -767,20 +1061,39 @@ Expected Result
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="d83362e3-ce60-4b76-8f5f-452df36ca4bb" action="comment" useFieldsInCommand="false">
+                <item guid="6c70d174-a4bf-4849-a57a-091368f3a352" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>IF test failing, do RADCOM capture</body>
                     </command>
                     <nestedSteps>
-                        <item guid="7ba463c4-286b-4c7b-9aca-b077ccff8d8e" action="if" useFieldsInCommand="false">
+                        <item guid="f27dea8a-59db-442f-8ea4-56b3cd380177" action="if" useFieldsInCommand="false">
                             <command>
                                 <body>info(&apos;status&apos;) == &apos;Fail&apos;:</body>
                             </command>
                             <nestedSteps>
-                                <item guid="6e085d82-b8e1-4332-8bf8-36303dc8126c" action="call" useFieldsInCommand="false">
+                                <item guid="2adb1f23-6ea6-4f02-b554-51d452c2f3b5" action="if" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_if_fail -start_time [start_time] -end_time [end_time]</body>
+                                        <body>int(float(info(&apos;time&apos;))) &lt; int(param(&apos;RADCOM_ACE/sleep_time&apos;)):</body>
                                     </command>
+                                    <nestedSteps>
+                                        <item guid="b02ebbfd-b8bc-41f3-af76-63035676d0bf" action="call" useFieldsInCommand="false">
+                                            <command>
+                                                <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_if_fail -start_time [start_time] -end_time [end_time] -capture_type &apos;ECP_CP_by_IMSI&apos;</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="4439ba9c-7976-4831-8081-460fd2568195" action="else" useFieldsInCommand="false">
+                                    <nestedSteps>
+                                        <item guid="62601523-58eb-4fbe-8f60-00bd96c04568" action="call" useFieldsInCommand="false">
+                                            <command>
+                                                <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_if_fail -start_time [start_time] -end_time [end_time] -capture_type &apos;ECP_CP_by_IMSI&apos; -sleep_sec 0</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
