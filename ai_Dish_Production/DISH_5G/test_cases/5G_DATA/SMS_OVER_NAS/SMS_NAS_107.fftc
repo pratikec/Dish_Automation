@@ -1,37 +1,35 @@
 <?xml version="1.0"?>
 <testCase version="9.1.0.202208171942">
     <general>
-        <documentation>SMS_NAS_099A Mobile Originated SMS delivery in Connected state</documentation>
-        <tags>Automation_Next_Gen_Framework_v2, SMS_NAS_099A</tags>
-        <notes>Test Purpose: The purpose of this test is to verify successful Mobile Originated SMS delivery in Connected state.
+        <documentation>SMS_NAS_107 Verify Network initiated deregistration procedure for SMS over NAS</documentation>
+        <tags>Automation_Next_Gen_Framework_v2, SMS_NAS_107</tags>
+        <notes>Test Purpose: The purpose of this test is to verify that network-initiated deregistration procedure for SMS over NAS.
 Pre-requisites/Test Environment:
-•\t2 UEs with Dish 5G SIM card.
-•\tBoth UEs should have 5G capability for SMS over NAS support.
-•\tThe trace/log collection is started.
-Test Dependencies: 
-•\tBoth UEs are registered to 5G network.
-•\tProvision the subscriber credentials in the UDR. 
+•\t1 UE with DISH SIM. 
+•\tUE should have 5G capabilities. 
+•\tThe trace/log collection is started. 
+Test Dependencies:
+•\tUE must be registered with 5G network. 
 Test parameter and Tools:
-•\tInternal logs and Wireshark.
+•\tInternal log and Wireshark. 
 Test Procedure:
-•\tStart the traces/logs collection.
-•\tUE1 and UE2 are registered to the network.
-•\tEnsure on AMF that UE1 is in CM-CONNECTED state: cmm subscriber show --imsi &lt;imsi&gt; | grep mState.
-•\tUE1 in CM-CONNECTED state, sends an SMS in to UE2.
-•\tEnsure UE2 receives the SMS
-•\tStop the traces/logs collection.
-Remarks: 
-•\t3GPP TS References - 3GPP TS 23.502 Release 17 4.13.3.5
-•\tCall Flow References - E2E Call Flow Document Appendix Section 7.2.
-Expected Result/Post Condition:  
-•\tVerify UE sends the SMS over NAS message to the AMF.
-•\tVerify AMF forwards the SMS and SUPI over Nsmsf_SMService_UplinkSMS message to the serving SMSF.
-•\tVerify SMSF forward SMS ack over Namf_Communication_N1N2MessageTransfer message to AMF.
-•\tVerify AMF forwards the SMS ack message to UE.
-•\tVerify SMSF forwards the submit report over Namf_Communication_N1N2MessageTransfer message to AMF when SMS delivery is allowed.
-•\tVerify UE receives the submit report from AMF.
-•\tVerify UE sends a CP-ack to AMF which is forwarded to SMSF.
-•\tThe traces/logs collection is successfully stopped.
+•\tStart the trace / log collection. 
+•\tUE registered and attached with network. 
+•\tVerify that the UE state on the AMF (e.g. cmm subscriber show --imsi &lt;imsi&gt; | grep mState).
+•\tSet UE in airplane mode. 
+•\tVerify AMF send unsubscribe from SMS subscription data changes notification with the UDM.
+•\tUE will detach and deregister.
+•\tVerify that the UE state on the AMF (e.g. cmm subscriber show --imsi &lt;imsi&gt; | grep mState).
+•\tStop the trace / log collection. 
+Remarks:
+•\t3GPP TS References - 3GPP TS 23.502 version 15.2.0 Release 15 Article 4.13.3.2
+•\tCall Flow References - E2E Call Flow Document Appendix Section 7.6
+Expected Result/Post Condition:
+•\tVerify AMF send unsubscribe from SMS subscription data change notification with the UDM.
+•\tVerify AMF invokes Nsmsf_SMService_Deactivate service operation to trigger the release of UE Context for SMS on SMSF.
+•\tVerify AMF delete or deactivate stored SMSF address in its UE Context.
+•\tVerify SMSF removes UE context for SMS.
+•\tVerify UDM remove the corresponding subscription of data change notification in UDR by Nudm_SDM_Unsubscribe service operation.
 </notes>
         <language>Python</language>
     </general>
@@ -1794,26 +1792,6 @@ Expected Result/Post Condition:
                         <body>-supi $sub</body>
                     </command>
                     <eventHandlers>
-                        <item name="OnRepeatStepMaxCountExceeded">
-                            <item actionId="FailTest">
-                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            </item>
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                    <message>Timeout waiting for UE to reach IDLE state</message>
-                                </actionProperties>
-                            </item>
-                        </item>
-                        <item name="OnQueryExtractorInvalidQuery">
-                            <item actionId="DeclareExecutionIssue">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
-                                    <message>UE has not reached IDLE</message>
-                                </actionProperties>
-                            </item>
-                            <item actionId="RepeatStep">
-                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.RepeatStepPropertyGroup" maxRepeatCount="10" delayBetweenRepeats="3.0"/>
-                            </item>
-                        </item>
                         <item name="OnResponseMappingIssue">
                             <item actionId="DeclareExecutionIssue">
                                 <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="Warning">
