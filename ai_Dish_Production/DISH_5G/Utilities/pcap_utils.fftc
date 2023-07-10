@@ -5593,41 +5593,66 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                                 <body>Phone numbers in +1xxxxxxx format</body>
                             </command>
                             <nestedSteps>
-                                <item guid="80ebf281-4312-4785-90ba-d0660a6d355b" action="call" useFieldsInCommand="false">
+                                <item guid="e6463273-b823-4ee7-b2b5-3d5b2cfbc9ad" action="if" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#get_raw_phone_number(ims_sip_public_user=param(&apos;LS_Nodal_favorite_params/ts0/tc0/ImsSipSubsPublicUserName&apos;))</body>
+                                        <body>phone == &apos;&apos;:</body>
                                     </command>
-                                    <postProcessing>
-                                        <analysisRules>
-                                            <item>
-                                                <extractorInfo extractorType="query">
-                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                        <query>responseLine()</query>
-                                                    </extractorProperties>
-                                                </extractorInfo>
-                                                <processorInfo ruleType="store">
-                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                        <storageLocation>phone_base</storageLocation>
-                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
-                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
-                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                    </ruleProperties>
-                                                </processorInfo>
-                                            </item>
-                                        </analysisRules>
-                                    </postProcessing>
+                                    <nestedSteps>
+                                        <item guid="80ebf281-4312-4785-90ba-d0660a6d355b" action="call" useFieldsInCommand="false">
+                                            <command>
+                                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#get_raw_phone_number(ims_sip_public_user=param(&apos;LS_Nodal_favorite_params/ts0/tc0/ImsSipSubsPublicUserName&apos;))</body>
+                                            </command>
+                                            <postProcessing>
+                                                <analysisRules>
+                                                    <item>
+                                                        <extractorInfo extractorType="query">
+                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                <query>responseLine()</query>
+                                                            </extractorProperties>
+                                                        </extractorInfo>
+                                                        <processorInfo ruleType="store">
+                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                <storageLocation>phone_base</storageLocation>
+                                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                            </ruleProperties>
+                                                        </processorInfo>
+                                                    </item>
+                                                </analysisRules>
+                                            </postProcessing>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="c446c9e6-fbd1-4e71-9eab-6a8b04d56245" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>phone_1 = &quot;+1&quot;+str(phone_base)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="0f45c4f8-df67-41a5-97fc-0361b4abf892" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>phone_2 = &quot;+1&quot;+str(int(phone_base)+1)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="c446c9e6-fbd1-4e71-9eab-6a8b04d56245" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>phone_1 = &quot;+1&quot;+str(phone_base)</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="0f45c4f8-df67-41a5-97fc-0361b4abf892" action="eval" useFieldsInCommand="false">
-                                    <command>
-                                        <body>phone_2 = &quot;+1&quot;+str(int(phone_base)+1)</body>
-                                    </command>
+                                <item guid="3296a4c6-4583-4fb6-9a26-ed18c8a1bd6b" action="else" useFieldsInCommand="false">
+                                    <nestedSteps>
+                                        <item guid="59f6352f-21f5-4d4a-b13e-b45a184eae0f" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>phone1 = str(phone)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="9d3f3baa-96b0-4d18-9e3c-9a3be0a875c8" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>phone2 = str(phone)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                                 <item guid="922312ad-84cc-4957-87a0-cf644e9927c6" action="eval" skip="true" useFieldsInCommand="false">
@@ -6041,6 +6066,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                 <item name="sleep_sec">
                     <defaultValue>-1</defaultValue>
                 </item>
+                <item name="phone"/>
             </arguments>
             <response>{&quot;status&quot;:&quot;NOK&quot;,&quot;pcap_file&quot;:&quot;dum&quot;,&quot;size&quot;:&quot;-1&quot;,&quot;message&quot;:null}</response>
         </item>
