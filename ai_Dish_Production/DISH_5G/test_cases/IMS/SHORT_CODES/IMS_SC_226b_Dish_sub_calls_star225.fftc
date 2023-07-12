@@ -1,31 +1,34 @@
 <?xml version="1.0"?>
-<testCase version="9.1.0.202208171942">
+<testCase version="9.1.1.202209201235">
     <general>
-        <documentation>IMS_SC_049 Dish sub calls 611</documentation>
-        <tags>IMS_SC_049, Automation_Next_Gen_Framework</tags>
-        <notes>Description
-
-The purpose of this test is to verify Dish sub calls 611 i.e. CXO DISH customer svc helpline.
-
-Pre-Condition
-
-
-UE with DISH SIM. The trace/log collection is started.
-Test Procedure
-
-
-Start the trace/log collection.
-Verify the UE in AMF, by using command: cmm subscriber show --imsi | grep mState.
-UE dials 611. Directs to DISH TOLLFREE-18664620078.
-UE call connected to DISH TOLLFREE.
-Stop the trace/ log collection.
-Expected Result
-
-
-• Verify NTAS will Translate 611 into DISH toll-free number-18664620078.
-• Verify S-CSCF routes the INVITE to I-SBC
-• I-SBC routes the INVITE to the Peerless IPs that are designated for N11 traffic.
-• Traces and logs are stopped successfully.</notes>
+        <documentation>IMS_SC_226 Dish sub calls *225</documentation>
+        <tags>IMS_SC_226, Automation_Next_Gen_Framework</tags>
+        <notes>Test Purpose: The purpose of this test is to verify Dish sub calls 225/*225/#225 DISH Tollfree-18665320078. 
+Pre-requisites/Test Environment:
+•\tUE with DISH SIM. 
+•\tThe trace/log collection is started. 
+Test Dependencies:
+•\tUE should be registered to VoNR network.
+•\t225/*225/#225 should be provisioned in NTAS. 
+Test parameter and Tools:
+•\tInternal log and Wireshark. 
+Test Procedure:
+•\tStart the trace/log collection.
+•\tVerify the UE in AMF, by using command: cmm subscriber show --imsi | grep mState. 
+•\tUE dials 225/*225/#225.
+•\tUE call connected to DISH TOLLFREE. 
+•\tStop the trace/ log collection. 
+Remarks: 
+•\t3GPP TS References - 3GPP TS 22.030 version 10.0.0 Release 10.
+•\tCall Flow References - E2E Call Flow Document Appendix Section 5.6. 
+Expected Result/Post Condition: 
+•\tVerify NTAS will Translate 225/*225/#225 into DISH toll-free number-18665320078.
+•\tVerify S-CSCF executes OST NXX-8YY-SKIP-ENUM to skip ENUM query.
+•\tVerify S-CSCF routes the INVITE to I-SBC based on System.BgcfName.
+•\tVerify I-SBC requests STI-AS to create and sign STIR-SHARKEN Identity.
+•\tVerify I-SBC routes the INVITE to the Peerless IPs that are designated for N11 traffic.
+•\tTraces and logs are stopped successfully.
+</notes>
         <language>Python</language>
     </general>
     <procedures>
@@ -465,7 +468,7 @@ Expected Result
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="1d7ba27f-b705-4f18-ade3-738a2f5f963a" action="comment" useFieldsInCommand="false">
+                <item guid="1d7ba27f-b705-4f18-ade3-738a2f5f963a" action="comment" skip="true" useFieldsInCommand="false">
                     <command>
                         <body>Post-test RADCOM validation</body>
                     </command>
