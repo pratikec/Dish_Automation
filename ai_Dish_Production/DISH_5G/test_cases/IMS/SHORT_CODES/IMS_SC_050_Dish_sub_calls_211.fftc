@@ -499,9 +499,34 @@ Expected Result/Post Condition:
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="707ca567-788c-4453-a3a2-5acbaf0c9d78" action="call" useFieldsInCommand="false">
+                        <item guid="5e23b81a-7278-4a99-b8a2-02eee9a90a09" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>project://ai_Dish_Production/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_with_wait(end_time=end_time, start_time=start_time, pcap_file=pcap_file, capture_type=&apos;SUBSCRIBER_ID_CALLING&apos;)</body>
+                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#get_raw_phone_number(ims_sip_public_user=param(&apos;LS_Nodal_favorite_params/ts0/tc0/ImsSipSubsPublicUserName&apos;))</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="query">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                <query>responseLine()</query>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="store">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                <storageLocation>phone_base</storageLocation>
+                                                <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="e30d2a29-d8cf-4741-8495-78c809ca1912" action="call" useFieldsInCommand="false">
+                            <command>
+                                <body>project://ai_Dish_Production/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_with_wait(end_time=end_time, start_time=start_time, pcap_file=pcap_file, capture_type=&apos;ALL_BY_SUBSCRIBER_ID_CALLED&apos;, sleep_sec=300, phone=phone_base)</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
@@ -599,7 +624,7 @@ Expected Result/Post Condition:
                             </postProcessing>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="43246972-64a1-43b5-a9a8-a09d3ce0df38" action="if" useFieldsInCommand="false">
+                        <item guid="43246972-64a1-43b5-a9a8-a09d3ce0df38" action="if" skip="true" useFieldsInCommand="false">
                             <command>
                                 <body>status == &apos;OK&apos;:</body>
                             </command>
