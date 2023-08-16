@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<testCase version="9.1.0.202208171942">
+<testCase version="9.1.1.202209201235">
     <general>
         <sessionClass includeTestCase="true" sessionType="RADCOM_ACE.ffsp"/>
         <language>Python</language>
@@ -576,6 +576,12 @@
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
+                                                        <item guid="dd9f725f-b997-4ee8-9cb9-d63a036fd9d1" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>trace_id</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
                                                         <item guid="79ac32b0-0fc0-4db7-8f50-e4db12a57a8f" action="DELETE" session="[session]">
                                                             <command>
                                                                 <body>[url]/radcom-api-ms/webApi/packet-traces/[trace_id]</body>
@@ -607,6 +613,58 @@
                                                                 <appendTimestamp inherit="false" defaultValue=""/>
                                                             </postProcessing>
                                                             <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="[url]/radcom-api-ms/webApi/packet-traces/[trace_id]" action.inherit="false"/>
+                                                        </item>
+                                                        <item guid="ca705fae-9026-40f5-980e-0a4a18cc05da" action="DELETE" session="[session]">
+                                                            <command>
+                                                                <body>https://internal-a4c12f47c60ba4895b69e4f2da2bbd29-651595545.us-west-2.elb.amazonaws.com/radcom-api-ms/webApi/packet-traces/[trace_id]</body>
+                                                            </command>
+                                                            <postProcessing>
+                                                                <analysisRules>
+                                                                    <item>
+                                                                        <extractorInfo extractorType="contains">
+                                                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
+                                                                                <searchString>error</searchString>
+                                                                            </extractorProperties>
+                                                                        </extractorInfo>
+                                                                        <processorInfo ruleType="assert">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                                                <expression>value == 1</expression>
+                                                                                <actionsWhenTrue>
+                                                                                    <item actionId="Eval">
+                                                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
+                                                                                            <statement>error_msg = &apos;Could not delete the capture from the RADCOM ACE&apos;</statement>
+                                                                                        </actionProperties>
+                                                                                    </item>
+                                                                                </actionsWhenTrue>
+                                                                            </ruleProperties>
+                                                                        </processorInfo>
+                                                                    </item>
+                                                                </analysisRules>
+                                                                <appendRespToFile inherit="false">false</appendRespToFile>
+                                                                <appendCommand inherit="false" defaultValue=""/>
+                                                                <appendTimestamp inherit="false" defaultValue=""/>
+                                                            </postProcessing>
+                                                            <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="https://internal-a4c12f47c60ba4895b69e4f2da2bbd29-651595545.us-west-2.elb.amazonaws.com/radcom-api-ms/webApi/packet-traces/[trace_id]" action.inherit="false"/>
+                                                        </item>
+                                                        <item guid="1e2038da-61e9-43b3-a96f-a9b4f7ca369f" action="open" session="tmp">
+                                                            <command>
+                                                                <body>project://di_Radcom/session_profiles/RADCOM_ACE_cli.ffsp</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                                                <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                <sessionProperties type="com.fnfr.svt.applications.process.ProcessSessionProperties"/>
+                                                                <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                                <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                            </applicationProperties>
+                                                        </item>
+                                                        <item guid="7c4aa460-1834-445d-8547-cab356b5cb56" action="command" session="tmp">
+                                                            <command>
+                                                                <body>curl -X DELETE &apos;https://internal-a4c12f47c60ba4895b69e4f2da2bbd29-651595545.us-west-2.elb.amazonaws.com/radcom-api-ms/webApi/packet-traces/[trace_id]</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="ad505f28-5cc2-48df-9f84-33d9eca4c33d" action="close" session="tmp" useFieldsInCommand="false">
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                         <item guid="5399701c-9d62-483a-88e6-ff544e2b9bfb" action="if" useFieldsInCommand="false">
                                                             <command>
