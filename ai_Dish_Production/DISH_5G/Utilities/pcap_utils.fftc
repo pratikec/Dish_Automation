@@ -4864,88 +4864,133 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                         <body>radcom_capture_with_wait(end_time=end_time, start_time=start_time, pcap_file=pcap_file, capture_type=capture_type, sleep_sec=sleep_sec)</body>
                     </command>
                     <postProcessing>
+                        <analysisRules>
+                            <item>
+                                <extractorInfo extractorType="query">
+                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                        <query>status()</query>
+                                    </extractorProperties>
+                                </extractorInfo>
+                                <processorInfo ruleType="assert">
+                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                        <expression>value == &apos;NOK&apos;</expression>
+                                        <actionsWhenTrue>
+                                            <item actionId="Eval">
+                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
+                                                    <statement>status = &apos;fail&apos;</statement>
+                                                </actionProperties>
+                                            </item>
+                                        </actionsWhenTrue>
+                                        <actionsWhenFalse>
+                                            <item actionId="Eval">
+                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
+                                                    <statement>status = &apos;pass&apos;</statement>
+                                                </actionProperties>
+                                            </item>
+                                        </actionsWhenFalse>
+                                    </ruleProperties>
+                                </processorInfo>
+                            </item>
+                            <item>
+                                <extractorInfo extractorType="query">
+                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                        <query>pcap_file()</query>
+                                    </extractorProperties>
+                                </extractorInfo>
+                                <processorInfo ruleType="store">
+                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                        <storageLocation>pcap</storageLocation>
+                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                    </ruleProperties>
+                                </processorInfo>
+                            </item>
+                        </analysisRules>
                         <storeResponseAt>ret_json</storeResponseAt>
                         <storeResponseText>true</storeResponseText>
                     </postProcessing>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="9e1e83f2-c8fb-431d-9646-abfecb8cc199" action="eval" useFieldsInCommand="false">
+                <item guid="afd0539d-eea5-48e9-b960-5254dd341455" action="if" useFieldsInCommand="false">
                     <command>
-                        <body>ret_json</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="952915fc-702b-4037-9c64-c73c25f0d3e6" action="comment" useFieldsInCommand="false">
-                    <command>
-                        <body>copy file to S3 bucket = taas-infra-devcicd-test-artifacts key = landslide/probecaptures/&lt;reportId</body>
+                        <body>status == &apos;pass&apos;:</body>
                     </command>
                     <nestedSteps>
-                        <item guid="7d36a31c-e134-4357-989a-5d7fd963695a" action="open" session="cli">
+                        <item guid="952915fc-702b-4037-9c64-c73c25f0d3e6" action="comment" useFieldsInCommand="false">
                             <command>
-                                <body>application:com.fnfr.svt.applications.process</body>
+                                <body>copy file to S3 bucket = taas-infra-devcicd-test-artifacts key = landslide/probecaptures/&lt;reportId</body>
                             </command>
-                            <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
-                                <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                <sessionProperties type="com.fnfr.svt.applications.process.ProcessSessionProperties"/>
-                                <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                            </applicationProperties>
-                        </item>
-                        <item guid="1927210e-4efd-4eb5-ae8e-278ace5a2766" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>aws_dir_file = &apos;landslide/probecaptures/&apos;+velocity(&apos;reportId&apos;)+&apos;.pcap&apos;</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="54b2622f-2a0d-4118-b5e7-23c5d2024be6" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>pcap = ret_json[&apos;pcap_file&apos;]</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="704d974b-dfdc-4234-8aaf-763c42c06fff" action="command" session="cli">
-                            <command>
-                                <body>run aws s3api put-object --bucket taas-infra-devcicd-test-artifacts --key [aws_dir_file]  --body [pcap]</body>
-                            </command>
-                            <postProcessing>
-                                <analysisRules>
-                                    <item>
-                                        <extractorInfo extractorType="contains">
-                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
-                                                <searchString>exit code: 0</searchString>
-                                            </extractorProperties>
-                                        </extractorInfo>
-                                        <processorInfo ruleType="assert">
-                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                <expression>value == 1</expression>
-                                                <actionsWhenTrue>
-                                                    <item actionId="PassTestIfNotAlreadyFailed">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                            <message>Uploaded JSON file to S3 bucket taas-infra-devcicd-test-artifacts as [aws_dir_file]</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                </actionsWhenTrue>
-                                                <actionsWhenFalse>
-                                                    <item actionId="FailTest">
-                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                    </item>
-                                                    <item actionId="DeclareExecutionIssue">
-                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                            <message>Failed to upload JSON file to S3</message>
-                                                        </actionProperties>
-                                                    </item>
-                                                </actionsWhenFalse>
-                                            </ruleProperties>
-                                        </processorInfo>
-                                    </item>
-                                </analysisRules>
-                            </postProcessing>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                        <item guid="695c0f85-e566-4ad6-a82d-1e26ee39fa7e" action="close" session="cli" useFieldsInCommand="false">
+                            <nestedSteps>
+                                <item guid="7d36a31c-e134-4357-989a-5d7fd963695a" action="open" session="cli">
+                                    <command>
+                                        <body>application:com.fnfr.svt.applications.process</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                        <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        <sessionProperties type="com.fnfr.svt.applications.process.ProcessSessionProperties"/>
+                                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                    </applicationProperties>
+                                </item>
+                                <item guid="1927210e-4efd-4eb5-ae8e-278ace5a2766" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>aws_dir_file = &apos;landslide/probecaptures/&apos;+velocity(&apos;reportId&apos;)+&apos;.pcap&apos;</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="54b2622f-2a0d-4118-b5e7-23c5d2024be6" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>pcap = ret_json[&apos;pcap_file&apos;]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="704d974b-dfdc-4234-8aaf-763c42c06fff" action="command" session="cli">
+                                    <command>
+                                        <body>run aws s3api put-object --bucket taas-infra-devcicd-test-artifacts --key [aws_dir_file]  --body [pcap]</body>
+                                    </command>
+                                    <postProcessing>
+                                        <analysisRules>
+                                            <item>
+                                                <extractorInfo extractorType="contains">
+                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
+                                                        <searchString>exit code: 0</searchString>
+                                                    </extractorProperties>
+                                                </extractorInfo>
+                                                <processorInfo ruleType="assert">
+                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                        <expression>value == 1</expression>
+                                                        <actionsWhenTrue>
+                                                            <item actionId="PassTestIfNotAlreadyFailed">
+                                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                            </item>
+                                                            <item actionId="DeclareExecutionIssue">
+                                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                                    <message>Uploaded JSON file to S3 bucket taas-infra-devcicd-test-artifacts as [aws_dir_file]</message>
+                                                                </actionProperties>
+                                                            </item>
+                                                        </actionsWhenTrue>
+                                                        <actionsWhenFalse>
+                                                            <item actionId="FailTest">
+                                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                            </item>
+                                                            <item actionId="DeclareExecutionIssue">
+                                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                                    <message>Failed to upload JSON file to S3</message>
+                                                                </actionProperties>
+                                                            </item>
+                                                        </actionsWhenFalse>
+                                                    </ruleProperties>
+                                                </processorInfo>
+                                            </item>
+                                        </analysisRules>
+                                    </postProcessing>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="695c0f85-e566-4ad6-a82d-1e26ee39fa7e" action="close" session="cli" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
@@ -4957,7 +5002,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="3cda7574-c5d3-4808-8aa6-7443520233af" action="if" useFieldsInCommand="false">
+                <item guid="3cda7574-c5d3-4808-8aa6-7443520233af" action="if" skip="true" useFieldsInCommand="false">
                     <command>
                         <body>sleep_sec == &apos;-1&apos;:</body>
                     </command>
@@ -4971,7 +5016,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="de016be1-bada-4e19-86cc-3fc99ea0dd0f" action="else" useFieldsInCommand="false">
+                <item guid="de016be1-bada-4e19-86cc-3fc99ea0dd0f" action="else" skip="true" useFieldsInCommand="false">
                     <nestedSteps>
                         <item guid="7db180b5-5386-4b53-bf70-9fde22264490" action="eval" useFieldsInCommand="false">
                             <command>
@@ -4982,7 +5027,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="0c641e37-0308-4426-b7c9-ba1c52cf6409" action="message" useFieldsInCommand="false">
+                <item guid="0c641e37-0308-4426-b7c9-ba1c52cf6409" action="message" skip="true" useFieldsInCommand="false">
                     <command>
                         <body>Information:Waiting [sleep_time] seconds before attempting to do capture</body>
                     </command>
@@ -4990,19 +5035,19 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                         <message inherit="false">Waiting [sleep_time] seconds before attempting to do capture</message>
                     </applicationProperties>
                 </item>
-                <item guid="1845daa0-bcf1-429b-ac37-76a44db5c77a" action="sleep">
+                <item guid="1845daa0-bcf1-429b-ac37-76a44db5c77a" action="sleep" skip="true">
                     <command>
                         <body>[sleep_time]</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="21114bb0-04f3-4dc8-8624-4c3a12ed5a3f" action="eval" useFieldsInCommand="false">
+                <item guid="21114bb0-04f3-4dc8-8624-4c3a12ed5a3f" action="eval" skip="true" useFieldsInCommand="false">
                     <command>
                         <body>url = &apos;https://&apos;+param(&apos;RADCOM_ACE/hostname&apos;)</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="bc1fd4f6-bcf2-4fca-a307-0167c77c7844" action="open" session="rad" useFieldsInCommand="false">
+                <item guid="bc1fd4f6-bcf2-4fca-a307-0167c77c7844" action="open" session="rad" skip="true" useFieldsInCommand="false">
                     <command>
                         <body>project://di_Radcom/session_profiles/RADCOM_ACE.ffsp</body>
                     </command>
@@ -5024,7 +5069,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                         <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                     </applicationProperties>
                 </item>
-                <item guid="84923db1-596b-4b5e-808e-468ac666fe0d" action="comment" useFieldsInCommand="false">
+                <item guid="84923db1-596b-4b5e-808e-468ac666fe0d" action="comment" skip="true" useFieldsInCommand="false">
                     <command>
                         <body>Get the info about the TWO subscribers ... even if we are only using one.</body>
                     </command>
@@ -5103,7 +5148,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="e2278abd-d9f1-484a-ab08-14f1211a5ef0" action="if" useFieldsInCommand="false">
+                <item guid="e2278abd-d9f1-484a-ab08-14f1211a5ef0" action="if" skip="true" useFieldsInCommand="false">
                     <command>
                         <body>capture_json == &apos;&apos;:</body>
                     </command>
@@ -5268,13 +5313,13 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="93d828a9-fd61-42b1-9a1c-b7149930dbce" action="eval" useFieldsInCommand="false">
+                <item guid="93d828a9-fd61-42b1-9a1c-b7149930dbce" action="eval" skip="true" useFieldsInCommand="false">
                     <command>
                         <body>capture_json</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="631eda76-c570-44c0-847c-3822f65b15ce" action="comment" useFieldsInCommand="false">
+                <item guid="631eda76-c570-44c0-847c-3822f65b15ce" action="comment" skip="true" useFieldsInCommand="false">
                     <command>
                         <body>Run new quickcall download result w/ retries</body>
                     </command>
@@ -5451,7 +5496,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="6b81a6f8-b1b2-4ab7-b27e-7632da32e077" action="comment" useFieldsInCommand="false">
+                <item guid="6b81a6f8-b1b2-4ab7-b27e-7632da32e077" action="comment" skip="true" useFieldsInCommand="false">
                     <command>
                         <body>copy file to S3 bucket = taas-infra-devcicd-test-artifacts key = landslide/probecaptures/&lt;reportId</body>
                     </command>
@@ -5521,7 +5566,7 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="c7e02bbc-2879-4581-a2e3-464e31776173" action="close" session="rad">
+                <item guid="c7e02bbc-2879-4581-a2e3-464e31776173" action="close" session="rad" skip="true">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
             </steps>
