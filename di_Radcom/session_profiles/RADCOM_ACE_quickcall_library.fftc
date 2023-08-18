@@ -285,8 +285,22 @@
             </arguments>
             <response>{&quot;status&quot;:&quot;NOK&quot;,&quot;size&quot;:&quot;-1&quot;}</response>
         </item>
-        <item name="do_capture" isPublic="true" blockResponseType="JSON">
+        <item name="do_capture" isPublic="true">
             <steps>
+                <item guid="9a39e4c0-42dc-4ddb-8139-bdc28484dcfe" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Create return dict</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="03d719c6-33b2-48e9-a23a-9908d27742c1" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>ret_dict = {&apos;status&apos;:&apos;NOK&apos;,&apos;size&apos;:-1,&apos;message&apos;:&apos;&apos;,&apos;pcap_file&apos;:&apos;&apos;}</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
                 <item guid="2ef9ecba-2df4-40c0-9163-ff42352b791c" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Start capture</body>
@@ -415,10 +429,9 @@
                                                 </extractorInfo>
                                                 <processorInfo ruleType="store">
                                                     <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                        <storageLocation>boo</storageLocation>
-                                                        <query>message</query>
-                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">true</responseValue>
-                                                        <variable type="com.fnfr.documents.PropertyBoolean">false</variable>
+                                                        <storageLocation>ret_dict[&apos;message&apos;]</storageLocation>
+                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
                                                         <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
                                                     </ruleProperties>
                                                 </processorInfo>
@@ -461,7 +474,7 @@
                                                                 <actionsWhenTrue>
                                                                     <item actionId="Eval">
                                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
-                                                                            <statement>error_msg = &apos;No packets captured&apos;</statement>
+                                                                            <statement>ret_dict[&apos;message&apos;] = &apos;No packets captured&apos;</statement>
                                                                         </actionProperties>
                                                                     </item>
                                                                 </actionsWhenTrue>
@@ -481,148 +494,51 @@
                                         </item>
                                         <item guid="efab901e-3150-4c3c-9fe1-e63154213f34" action="if" useFieldsInCommand="false">
                                             <command>
-                                                <body>error_msg != &apos;&apos;:</body>
+                                                <body>ret_dict[&apos;message&apos;] == &apos;&apos;:</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="fee31da0-86a6-4b1f-b9bb-cf8aa0108474" action="json" useFieldsInCommand="false">
+                                                <item guid="b769c3e3-60a5-44c0-8e8c-de15808d558b" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>action=&apos;setJsonValue&apos;, editResponseStructure=&apos;true&apos;, pathValue=&apos;{&quot;message&quot;:&quot;No packets captured&quot;}&apos;</body>
+                                                        <body>ret_dict[&apos;status&apos;] = &apos;OK&apos;</body>
                                                     </command>
-                                                    <applicationProperties type="com.fnfr.svt.execution.builtin.json.JsonPropertiesGroup">
-                                                        <action inherit="false">setJsonValue</action>
-                                                        <pathValue inherit="false">{&quot;message&quot;:&quot;No packets captured&quot;}</pathValue>
-                                                        <editResponseStructure inherit="false">true</editResponseStructure>
-                                                    </applicationProperties>
-                                                </item>
-                                                <item guid="50a33add-30a8-43b5-b404-819cbcc17ddb" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>error_msg</body>
-                                                    </command>
-                                                    <postProcessing>
-                                                        <analysisRules>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>responseLine()</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="store">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <query>message</query>
-                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">true</responseValue>
-                                                                        <variable type="com.fnfr.documents.PropertyBoolean">false</variable>
-                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                        </analysisRules>
-                                                    </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                            </nestedSteps>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="8ce52e0a-0846-45ed-93c0-250b7b1acb9c" action="else" useFieldsInCommand="false">
-                                            <nestedSteps>
-                                                <item guid="3fd72b6c-4fab-4b1d-9d05-1553969853d3" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>print(&apos;OK&apos;)</body>
-                                                    </command>
-                                                    <postProcessing>
-                                                        <analysisRules>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>responseLine()</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="store">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <query>status</query>
-                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">true</responseValue>
-                                                                        <variable type="com.fnfr.documents.PropertyBoolean">false</variable>
-                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                        </analysisRules>
-                                                    </postProcessing>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="acaa3006-0ea5-4c86-a4eb-151d7bf4f370" action="eval" useFieldsInCommand="false">
+                                                <item guid="b19ed3d2-b2d2-4c8e-b254-50c45f6e8f53" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>import os</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="ce385ace-99f6-4035-b18a-85575c881ad2" action="eval" useFieldsInCommand="false">
+                                                <item guid="e6d249dc-2733-4826-91c1-ae1c26a569b0" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>os.stat(pcap_file).st_size</body>
+                                                        <body>ret_dict[&apos;size&apos;] = os.stat(pcap_file).st_size</body>
                                                     </command>
-                                                    <postProcessing>
-                                                        <analysisRules>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>responseLine()</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="store">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <query>size</query>
-                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">true</responseValue>
-                                                                        <variable type="com.fnfr.documents.PropertyBoolean">false</variable>
-                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                        </analysisRules>
-                                                    </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="9d05e96c-df39-44bb-9039-ebaddf2b9491" action="eval" useFieldsInCommand="false">
+                                                <item guid="3cd8e092-1671-4b71-8194-2f6a399197fa" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>pcap_file</body>
+                                                        <body>ret_dict[&apos;pcap_file&apos;] = pcap_file</body>
                                                     </command>
-                                                    <postProcessing>
-                                                        <analysisRules>
-                                                            <item>
-                                                                <extractorInfo extractorType="query">
-                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                        <query>responseLine()</query>
-                                                                    </extractorProperties>
-                                                                </extractorInfo>
-                                                                <processorInfo ruleType="store">
-                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <query>pcap_file</query>
-                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">true</responseValue>
-                                                                        <variable type="com.fnfr.documents.PropertyBoolean">false</variable>
-                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                    </ruleProperties>
-                                                                </processorInfo>
-                                                            </item>
-                                                        </analysisRules>
-                                                    </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="5a058e9a-0178-4f6e-91bb-833330ebc9f8" action="comment" useFieldsInCommand="false">
+                                                <item guid="80f596c8-9bef-4496-a0d3-f8ecf2b314d7" action="comment" useFieldsInCommand="false">
                                                     <command>
                                                         <body>Delete capture</body>
                                                     </command>
                                                     <nestedSteps>
-                                                        <item guid="99f6890e-1ac6-4926-a04d-bedbf69181d4" action="eval" useFieldsInCommand="false">
+                                                        <item guid="38a677f5-e84b-4fe1-a807-ca4b85620612" action="eval" useFieldsInCommand="false">
                                                             <command>
                                                                 <body>error_msg = &apos;&apos;</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="dd9f725f-b997-4ee8-9cb9-d63a036fd9d1" action="eval" useFieldsInCommand="false">
+                                                        <item guid="d4f1fbda-b44a-442d-89aa-ec44f0d17656" action="eval" useFieldsInCommand="false">
                                                             <command>
                                                                 <body>trace_id</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
-                                                        <item guid="79ac32b0-0fc0-4db7-8f50-e4db12a57a8f" action="DELETE" session="[session]">
+                                                        <item guid="7bf92778-a0e9-41d3-b365-f17f7b5db4d9" action="DELETE" session="[session]">
                                                             <command>
                                                                 <body>[url]/radcom-api-ms/webApi/packet-traces/[trace_id]</body>
                                                             </command>
@@ -640,7 +556,7 @@
                                                                                 <actionsWhenTrue>
                                                                                     <item actionId="Eval">
                                                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.EvalActionPropertyGroup">
-                                                                                            <statement>error_msg = &apos;Could not delete the capture from the RADCOM ACE&apos;</statement>
+                                                                                            <statement>ret_dict[&apos;message&apos;] = &apos;Could not delete the capture from the RADCOM ACE&apos;</statement>
                                                                                         </actionProperties>
                                                                                     </item>
                                                                                 </actionsWhenTrue>
@@ -654,39 +570,6 @@
                                                             </postProcessing>
                                                             <applicationProperties type="com.fnfr.svt.adapter.automation.tools.common.documents.TransferableDocumentObject" transferableToolId="com.fnfr.itest.applications.webservices.restful" transferableType="com.fnfr.itest.applications.webservices.properties.restful.RESTfulInvokeProperties" action="[url]/radcom-api-ms/webApi/packet-traces/[trace_id]" action.inherit="false"/>
                                                         </item>
-                                                        <item guid="5399701c-9d62-483a-88e6-ff544e2b9bfb" action="if" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>error_msg != &apos;&apos;:</body>
-                                                            </command>
-                                                            <nestedSteps>
-                                                                <item guid="1fe46493-f732-40a5-8886-d537a3d856ed" action="eval" useFieldsInCommand="false">
-                                                                    <command>
-                                                                        <body>error_msg</body>
-                                                                    </command>
-                                                                    <postProcessing>
-                                                                        <analysisRules>
-                                                                            <item>
-                                                                                <extractorInfo extractorType="query">
-                                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                                                                        <query>responseLine()</query>
-                                                                                    </extractorProperties>
-                                                                                </extractorInfo>
-                                                                                <processorInfo ruleType="store">
-                                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                                        <query>message</query>
-                                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">true</responseValue>
-                                                                                        <variable type="com.fnfr.documents.PropertyBoolean">false</variable>
-                                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
-                                                                                    </ruleProperties>
-                                                                                </processorInfo>
-                                                                            </item>
-                                                                        </analysisRules>
-                                                                    </postProcessing>
-                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                </item>
-                                                            </nestedSteps>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
                                                     </nestedSteps>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
@@ -697,6 +580,26 @@
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="70ffc92f-1207-4d5d-b319-c19d08a7ddcd" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Return</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="4b281ac0-24dc-475a-833b-482d1024221f" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>import json</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="bce22b3d-7281-46c6-98c5-7180a9870050" action="return" useFieldsInCommand="false">
+                            <command>
+                                <body>[json.dump(ret_dict)]</body>
+                            </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
