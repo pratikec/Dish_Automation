@@ -333,5 +333,66 @@
                 </item>
             </steps>
         </item>
+        <item name="get_overall_status" isPublic="true">
+            <steps>
+                <item guid="bc44c5d3-9165-4f9d-8d2f-0ee685c6f9a0" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>status = &apos;NOK&apos;</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="247eb416-dc3b-4626-bb03-fa216e54aa88" action="set_write_mode_on" session="[session]" useFieldsInCommand="false">
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                </item>
+                <item guid="90df5968-3595-40b0-a214-8eb680d70637" action="command" session="[session]">
+                    <command>
+                        <body>cmm_monitor -vvv</body>
+                    </command>
+                    <postProcessing>
+                        <analysisRules>
+                            <item>
+                                <extractorInfo extractorType="query">
+                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                        <query>status()</query>
+                                    </extractorProperties>
+                                </extractorInfo>
+                                <processorInfo ruleType="store">
+                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                        <storageLocation>status</storageLocation>
+                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                    </ruleProperties>
+                                </processorInfo>
+                            </item>
+                        </analysisRules>
+                        <storeResponseAt>response</storeResponseAt>
+                        <storeResponseText>true</storeResponseText>
+                    </postProcessing>
+                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
+                </item>
+                <item guid="54dc9a0f-00a6-441d-8c78-8a4c65b2a108" action="if" useFieldsInCommand="false">
+                    <command>
+                        <body>status != &apos;OK&apos;:</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="f6854804-3289-4a80-8d30-82b5797f667f" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>status = &apos;NOK&apos;</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="80b3ac24-7a2e-45de-bb49-5dbef7006971" action="return" useFieldsInCommand="false">
+                    <command>
+                        <body>&apos;{&quot;status&quot;:&quot;&apos;+status+&apos;&quot;}&apos;</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+            <response>{&quot;status&quot;:&quot;NOK&quot;}</response>
+        </item>
     </procedures>
 </testCase>
