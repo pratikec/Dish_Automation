@@ -539,7 +539,7 @@
                         </item>
                         <item guid="5f7d7aa6-04a0-448a-befa-e06f6b68c60b" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>csv_file.write(&apos;Iteration,Time,SMS Tx Rate (msg/sec),Sub Count,5G Reg Attempted,5G Reg Rejected,PDU Accepts,PDU Rejects,SIP Registrations Success,SIP Registrations Failures,SIP Registrations Retries,SMS Messages Sent, SMS Message Sent Ack, SMS Messages Received, SMS Message Received Ack\\n&apos;)</body>
+                                <body>csv_file.write(&apos;Iteration,Time,SMS Tx Rate (msg/sec),Sub Count,5G Reg Attempted,5G Reg Rejected,PDU Accepts,PDU Rejects,SMS Messages Sent, SMS Message Sent Ack, SMS Messages Received, SMS Message Received Ack\\n&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -1371,19 +1371,9 @@
                                                 <body>Get SIP reg counts from CSV </body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="1e6c88d2-4220-4138-bb17-6e9294780ba2" action="call" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>project://ai_Dish_Production/DISH_5G/test_cases_scale/procedures/scale_procedures.fftc#getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;Gm|Main&apos;, item_list=[&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;])</body>
-                                                    </command>
-                                                    <postProcessing>
-                                                        <storeResponseAt>gm_dict</storeResponseAt>
-                                                        <storeResponseText>true</storeResponseText>
-                                                    </postProcessing>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
                                                 <item guid="f0422bde-4ffe-499c-94ec-6882cf6b9367" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>project://ai_Dish_Production/DISH_5G/test_cases_scale/procedures/scale_procedures.fftc#getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;Gm|SMS&apos;, item_list=[&apos;RP-MO-DATA Packets Sent&apos;,&apos;RP-ACK Packets Rcvd&apos;,&apos;RP-MT-DATA Packets Rcvd&apos;,&apos;RP-ACK Packets Sent&apos;])</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/test_cases_scale/procedures/scale_procedures.fftc#getLastValuesCsvDict(input_results_dict=results_dict, group=&apos;SMS&apos;, item_list=[&apos;RP-MO-DATA Packets Sent&apos;,&apos;RP-ACK Packets Rcvd&apos;,&apos;RP-MT-DATA Packets Rcvd&apos;,&apos;RP-ACK Packets Sent&apos;])</body>
                                                     </command>
                                                     <postProcessing>
                                                         <storeResponseAt>sms_dict</storeResponseAt>
@@ -1396,20 +1386,6 @@
                                                         <body>convert floats to int</body>
                                                     </command>
                                                     <nestedSteps>
-                                                        <item guid="91b16803-a074-4f41-a2b3-fe48bb708a06" action="for" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>item in [&apos;SIP Registration Setup Count&apos;,&apos;SIP Registration Failures&apos;,&apos;SIP Registration Retries&apos;]:</body>
-                                                            </command>
-                                                            <nestedSteps>
-                                                                <item guid="cc1befb2-54fe-440e-a0c7-a0a195f83630" action="eval" useFieldsInCommand="false">
-                                                                    <command>
-                                                                        <body>gm_dict[item] = int(float(gm_dict[item]))</body>
-                                                                    </command>
-                                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                                </item>
-                                                            </nestedSteps>
-                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                        </item>
                                                         <item guid="1d8c323e-c822-4cbb-b9d2-6f102670933a" action="for" useFieldsInCommand="false">
                                                             <command>
                                                                 <body>item in [&apos;RP-MO-DATA Packets Sent&apos;,&apos;RP-ACK Packets Rcvd&apos;,&apos;RP-MT-DATA Packets Rcvd&apos;,&apos;RP-ACK Packets Sent&apos;]:</body>
@@ -1528,35 +1504,17 @@
                                                         </item>
                                                         <item guid="8dca2d33-a9a2-431a-8e24-b9ec1649517d" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>total_reg = gm_dict[&apos;SIP Registration Setup Count&apos;]+gm_dict[&apos;SIP Registration Failures&apos;]</body>
+                                                                <body>total_reg = mm_dict[&apos;Registration Completes&apos;]+mm_dict[&apos;Registration Rejects&apos;]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                         <item guid="e03f4883-68cf-4ad6-8eaa-c5a94a604d42" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP Registrations attempted = [total_reg]</body>
+                                                                <body>Information:--MM Registrations attempted = [total_reg]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
                                                                 <severity inherit="false" defaultValue=""/>
-                                                                <message inherit="false">--SIP Registrations attempted = [total_reg]</message>
-                                                            </applicationProperties>
-                                                        </item>
-                                                        <item guid="0c2aa8bf-d855-4db1-9c1c-b797be7695dd" action="message" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>Information:--SIP Registrations Success = [gm_dict[&apos;SIP Registration Setup Count&apos;]]</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <severity inherit="false" defaultValue=""/>
-                                                                <message inherit="false">--SIP Registrations Success = [gm_dict[&apos;SIP Registration Setup Count&apos;]]</message>
-                                                            </applicationProperties>
-                                                        </item>
-                                                        <item guid="761a0696-978e-4e73-8839-00e06dc5e5c0" action="message" useFieldsInCommand="false">
-                                                            <command>
-                                                                <body>Information:--SIP Registration failures = [gm_dict[&apos;SIP Registration Failures&apos;]]</body>
-                                                            </command>
-                                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <severity inherit="false" defaultValue=""/>
-                                                                <message inherit="false">--SIP Registration failures = [gm_dict[&apos;SIP Registration Failures&apos;]]</message>
+                                                                <message inherit="false">--MM Registrations attempted = [total_reg]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="303f4a22-02b9-41ba-935c-21a044817df5" action="eval" useFieldsInCommand="false">
@@ -1575,26 +1533,26 @@
                                                         </item>
                                                         <item guid="d420c84a-591f-45fe-8034-600d4063e5da" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP SMS Sent = [sms_dict[&apos;RP-MO-DATA Packets Sent&apos;]]</body>
+                                                                <body>Information:--SMS Sent = [sms_dict[&apos;RP-MO-DATA Packets Sent&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP SMS Sent = [sms_dict[&apos;RP-MO-DATA Packets Sent&apos;]]</message>
+                                                                <message inherit="false">--SMS Sent = [sms_dict[&apos;RP-MO-DATA Packets Sent&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="8470c7d3-ba85-4d81-bbcc-367776a74318" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP SMS Received = [sms_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]]</body>
+                                                                <body>Information:--SMS Received = [sms_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP SMS Received = [sms_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]]</message>
+                                                                <message inherit="false">--SMS Received = [sms_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]]</message>
                                                             </applicationProperties>
                                                         </item>
                                                         <item guid="7c1c1ada-b26e-43e9-a07b-d3b876b9c468" action="message" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>Information:--SIP SMS Failure = [fail_count]</body>
+                                                                <body>Information:--SMS Failure = [fail_count]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                                                                <message inherit="false">--SIP SMS Failure = [fail_count]</message>
+                                                                <message inherit="false">--SMS Failure = [fail_count]</message>
                                                             </applicationProperties>
                                                         </item>
                                                     </nestedSteps>
@@ -1669,7 +1627,7 @@
                                                     <nestedSteps>
                                                         <item guid="045fa304-79cb-4efc-9e26-e8d5ab9258f1" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>tlist = [str(i+1),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;]),str(mm_dict[&apos;Registration Completes&apos;]),str(mm_dict[&apos;Registration Rejects&apos;]),str(sm_dict[&apos;Pdu Establishment Accepts&apos;]),str(sm_dict[&apos;Pdu Establishment Rejects&apos;]),str(gm_dict[&apos;SIP Registration Setup Count&apos;]),str(gm_dict[&apos;SIP Registration Failures&apos;]), str(gm_dict[&apos;SIP Registration Retries&apos;]),str(sms_dict[&apos;RP-MO-DATA Packets Sent&apos;]),str(sms_dict[&apos;RP-ACK Packets Rcvd&apos;]),str(sms_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]),str(sms_dict[&apos;RP-ACK Packets Sent&apos;])]</body>
+                                                                <body>tlist = [str(i+1),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(global_param_dic[&apos;global_overwrite_params&apos;][&apos;Sessions&apos;]),str(mm_dict[&apos;Registration Completes&apos;]),str(mm_dict[&apos;Registration Rejects&apos;]),str(sm_dict[&apos;Pdu Establishment Accepts&apos;]),str(sm_dict[&apos;Pdu Establishment Rejects&apos;]),str(sms_dict[&apos;RP-MO-DATA Packets Sent&apos;]),str(sms_dict[&apos;RP-ACK Packets Rcvd&apos;]),str(sms_dict[&apos;RP-MT-DATA Packets Rcvd&apos;]),str(sms_dict[&apos;RP-ACK Packets Sent&apos;])]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
