@@ -614,20 +614,20 @@ Expected Result
                                         <body>create verification list dict</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="c0c10712-87d0-4875-a7d6-2c0b7c9cd283" action="eval" useFieldsInCommand="false">
+                                        <item guid="09f4b7e3-6300-4254-a6d5-1feb851f7fae" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>verify_list = []</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="99bd53bf-02b2-4bed-96ff-0ceaa0bad3e6" action="comment" useFieldsInCommand="false">
+                                        <item guid="9261d2ae-5bad-4866-af9e-30a4f4f3ac95" action="comment" useFieldsInCommand="false">
                                             <command>
-                                                <body>create filter bytestring filter for AMF ==&gt; SMSF message</body>
+                                                <body>create filter bytestring filter for SMF ==&gt; PCF HTTP request to establish the PDU session</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="45966785-2f48-49e0-8ddb-44b1e5dfbd6c" action="call" useFieldsInCommand="false">
+                                                <item guid="5d365900-0038-414c-9b42-421cd6dd44f6" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#get_raw_phone_number(ims_sip_public_user=param(&apos;LS_Nodal_favorite_params/ts0/tc0/ImsSipSubsPublicUserName&apos;))</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/pcap_utils.fftc#create_wireshark_filter_string_multiple_ip(ip_list=param(&apos;SMF/N7ipAddress&apos;), match_target=&apos;ip.src&apos;)</body>
                                                     </command>
                                                     <postProcessing>
                                                         <analysisRules>
@@ -639,7 +639,7 @@ Expected Result
                                                                 </extractorInfo>
                                                                 <processorInfo ruleType="store">
                                                                     <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <storageLocation>phone</storageLocation>
+                                                                        <storageLocation>ip_src_str</storageLocation>
                                                                         <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
                                                                         <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
                                                                         <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
@@ -650,173 +650,174 @@ Expected Result
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="06a198cb-412c-4bdf-9ddb-84af500ab4b6" action="eval" useFieldsInCommand="false">
+                                                <item guid="51e578a8-e68c-4c31-be38-e68b1c1fe72d" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>s1 = &apos;method&apos;.encode(&quot;utf-8&quot;).hex()</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/pcap_utils.fftc#create_wireshark_filter_string_multiple_ip(ip_list=param(&apos;PCF/N7ipAddress&apos;), match_target=&apos;ip.dst&apos;)</body>
+                                                    </command>
+                                                    <postProcessing>
+                                                        <analysisRules>
+                                                            <item>
+                                                                <extractorInfo extractorType="query">
+                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                        <query>responseLine()</query>
+                                                                    </extractorProperties>
+                                                                </extractorInfo>
+                                                                <processorInfo ruleType="store">
+                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                        <storageLocation>ip_dst_str</storageLocation>
+                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                    </ruleProperties>
+                                                                </processorInfo>
+                                                            </item>
+                                                        </analysisRules>
+                                                    </postProcessing>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="59ac8471-8e55-4372-a275-35cccb08d99a" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>ss1 = &apos;&quot;supi&quot;:&quot;imsi-&apos;+param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)+&apos;&quot;&apos;</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="1411f6bb-f24b-4cbb-9b67-529cd6cba2fa" action="eval" useFieldsInCommand="false">
+                                                <item guid="aea26477-fabf-44dc-a60c-5f5cc149a549" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>s2 = &apos;DELETE&apos;.encode(&quot;utf-8&quot;).hex()</body>
+                                                        <body>s1 = ss1.encode(&quot;utf-8&quot;).hex()</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="c155a034-5916-4b37-8e8b-092bc235ae44" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>s3 = &apos;user-agent&apos;.encode(&quot;utf-8&quot;).hex()</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="32577c45-ca03-4466-900b-bc12ce2343aa" action="eval" useFieldsInCommand="false">
+                                                <item guid="d26ea772-5809-4c37-9339-3e4ffbcad831" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>bs1 = &quot;:&quot;.join(s1[i:i+2] for i in range(0, len(s1), 2))</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="285b3d0c-0e6a-4051-bf60-76e7ba3e2ebb" action="eval" useFieldsInCommand="false">
+                                                <item guid="24cb6de9-b87d-4a5a-b7d3-fbd1d59738a0" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>ss2 = &apos;&quot;dnn&quot;:&quot;internet&quot;&apos;</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="f3b0a687-5fe0-4f28-8b57-8a3730dd1096" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>s2 = ss2.encode(&quot;utf-8&quot;).hex()</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="5a6d0058-9be0-4f0a-bbb7-65af097e8c00" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>bs2 = &quot;:&quot;.join(s2[i:i+2] for i in range(0, len(s2), 2))</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="74d9efe8-597b-47a2-8718-666247d61292" action="eval" useFieldsInCommand="false">
+                                                <item guid="ce9174a3-0079-4897-b34a-8ce00832540a" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>bs2 = &quot;:&quot;.join(s3[i:i+2] for i in range(0, len(s3), 2))</body>
+                                                        <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.dstport == 80) &amp;&amp; &apos;+ip_src_str+&apos; &amp;&amp; &apos;+ip_dst_str+&apos; &amp;&amp; (tcp.payload contains &apos;+bs1+&apos;) &amp;&amp; (tcp.payload contains &apos;+bs2+&apos;)&apos;,&apos;count&apos;:1,&apos;message&apos;:&apos;SMF sends HTTP request to PCF to establish the PDU session&apos;})</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="0a807c2f-fb9e-45e4-9b4b-d84478a41d68" action="eval" useFieldsInCommand="false">
+                                        <item guid="19241d54-d7fa-4ee9-bd3e-edcee5df2863" action="comment" useFieldsInCommand="false">
                                             <command>
-                                                <body>ss1 = &apos;&quot;supi&quot;:&quot;imsi-&apos;+param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)+&apos;&quot;&apos;</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="847247ed-3f13-4936-95f2-f86fa65dd596" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>s1 = ss.encode(&quot;utf-8&quot;).hex()</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="fb521afb-c4de-4dcb-8839-87aa9ec04f96" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>bs1 = &quot;:&quot;.join(s1[i:i+2] for i in range(0, len(s2), 2))</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="a640033a-3886-433c-a799-cdbbcc24a51e" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>ss2 = &apos;&quot;dnn&quot;:&quot;internet&quot;&apos;</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="e549efb0-808a-4f17-8d21-3e7ff0489e50" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>s2 = ss.encode(&quot;utf-8&quot;).hex()</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="653dfac9-6a0c-4f27-a654-ddf5548aa971" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>bs2 = &quot;:&quot;.join(s2[i:i+2] for i in range(0, len(s2), 2))</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="4108e0d9-0c3e-43fe-b723-22b1b100e567" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.dstport == 8080) &amp;&amp; (tcp.payload contains &apos;+bs1+&apos;) &amp;&amp; (tcp.payload contains &apos;+bs2+&apos;) &amp;&amp; (tcp.payload contains &apos;+bs2+&apos;)&apos;,&apos;count&apos;:1,&apos;message&apos;:&apos;AMF invokes Nsmsf_SMService_Deactivate service operation to trigger the release of UE Context for SMS on SMSF&apos;})</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="555b313a-ffe2-433c-8c05-90f8880a8ab1" action="comment" useFieldsInCommand="false">
-                                            <command>
-                                                <body>create filter bytestring filter for SMSF ==&gt; AMF ack message</body>
+                                                <body>create filter bytestring filter for PCF ==&gt; SMF HTTP response to establish the PDU session</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="1ac7922f-562c-40ab-be8c-99b6dce902f6" action="eval" useFieldsInCommand="false">
+                                                <item guid="a8e8cb96-c73b-4ec6-8707-dcf529e8fa6a" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>ss = &apos;&quot;n1MessageContainer&quot;:{&quot;n1MessageClass&quot;:&quot;SMS&quot;,&quot;n1MessageContent&quot;&apos;</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/pcap_utils.fftc#create_wireshark_filter_string_multiple_ip(ip_list=param(&apos;SMF/N7ipAddress&apos;), match_target=&apos;ip.dst&apos;)</body>
+                                                    </command>
+                                                    <postProcessing>
+                                                        <analysisRules>
+                                                            <item>
+                                                                <extractorInfo extractorType="query">
+                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                        <query>responseLine()</query>
+                                                                    </extractorProperties>
+                                                                </extractorInfo>
+                                                                <processorInfo ruleType="store">
+                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                        <storageLocation>ip_src_str</storageLocation>
+                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                    </ruleProperties>
+                                                                </processorInfo>
+                                                            </item>
+                                                        </analysisRules>
+                                                    </postProcessing>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="f2690c3c-3d3d-431b-9814-f6a87cbb7f75" action="call" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/pcap_utils.fftc#create_wireshark_filter_string_multiple_ip(ip_list=param(&apos;PCF/N7ipAddress&apos;), match_target=&apos;ip.src&apos;)</body>
+                                                    </command>
+                                                    <postProcessing>
+                                                        <analysisRules>
+                                                            <item>
+                                                                <extractorInfo extractorType="query">
+                                                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
+                                                                        <query>responseLine()</query>
+                                                                    </extractorProperties>
+                                                                </extractorInfo>
+                                                                <processorInfo ruleType="store">
+                                                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
+                                                                        <storageLocation>ip_dst_str</storageLocation>
+                                                                        <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
+                                                                        <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
+                                                                        <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
+                                                                    </ruleProperties>
+                                                                </processorInfo>
+                                                            </item>
+                                                        </analysisRules>
+                                                    </postProcessing>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="04e26a94-0610-4d45-883a-d8f238f421cf" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>ss3 = &apos;&quot;sessRules&quot;:{&quot;internet-plt1-onnet-sessRule&quot;&apos;</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="94dd30f6-a09d-4825-853b-3f8cd7140bf5" action="eval" useFieldsInCommand="false">
+                                                <item guid="f2932216-eaa7-4920-b3ca-d42d948c94cd" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>ss</body>
+                                                        <body>ss3</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="5242e894-f0df-4071-9e03-43edd2e3d0fa" action="eval" useFieldsInCommand="false">
+                                                <item guid="a05fe734-caa7-42ff-afaf-6a13216509dd" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>s3 = ss.encode(&quot;utf-8&quot;).hex()</body>
+                                                        <body>s3 = ss3.encode(&quot;utf-8&quot;).hex()</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="cfa99e5f-b7c2-4bf1-8ab8-734cc4b8cb18" action="eval" useFieldsInCommand="false">
+                                                <item guid="485d82f5-dbac-40ed-987f-ddbf451c6dd1" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>ss = &apos;&quot;lastMsgIndication&quot;:false&apos;</body>
+                                                        <body>s3</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="66c5d639-19d8-4250-a320-1131179440e5" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>ss</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="a3140e17-413a-4e3e-8dc7-70f39a79065e" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>s4 = ss.encode(&quot;utf-8&quot;).hex()</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="4321abba-9703-40c2-9006-b5090627d8e6" action="eval" useFieldsInCommand="false">
+                                                <item guid="c0701958-7b49-430d-8f8e-2524785457a1" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>bs3 = &quot;:&quot;.join(s3[i:i+2] for i in range(0, len(s3), 2))</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="3c3f684a-463b-4829-9e3f-22687c4496f3" action="eval" useFieldsInCommand="false">
+                                                <item guid="0afab63c-875a-4656-bc7a-a442ff0db37a" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>bs4 = &quot;:&quot;.join(s4[i:i+2] for i in range(0, len(s4), 2))</body>
+                                                        <body>bs3</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="86b709bf-6f7b-473b-b9da-778bc7febcd1" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.srcport == 80) &amp;&amp; &apos;+ip_src_str+&apos; &amp;&amp; &apos;+ip_dst_str+&apos; &amp;&amp; (tcp.payload contains &apos;+bs3+&apos;)&apos;,&apos;count&apos;:1,&apos;message&apos;:&apos;PCF validates mandatory SUPI, PDU SessionID, DNN.&apos;})</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
                                             </nestedSteps>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="1ad433a3-6962-40f2-b053-103036dcb8b2" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.dstport == 8080) &amp;&amp; (tcp.flags.ack == 1) &amp;&amp; (tcp.payload contains &apos;+bs3+&apos;) &amp;&amp; (tcp.payload contains &apos;+bs4+&apos;)&apos;,&apos;count&apos;:1,&apos;message&apos;:&apos;SMSF forward SMS ack over Namf_Communication_N1N2MessageTransfer message to AMF.F&apos;})</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="8324a367-a10b-4102-952c-8eb46104a8f0" action="comment" useFieldsInCommand="false">
-                                            <command>
-                                                <body>create filter bytestring filter for SMSF ==&gt; AMF ack message</body>
-                                            </command>
-                                            <nestedSteps>
-                                                <item guid="3f2d59c6-d189-4b1d-a921-0d7c50e4e1a2" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>s5 = &apos;,&quot;lastMsgIndication&quot;:true&apos;.encode(&quot;utf-8&quot;).hex()</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                                <item guid="4a09ff36-a74f-4509-b435-35340a1194e7" action="eval" useFieldsInCommand="false">
-                                                    <command>
-                                                        <body>bs5 = &quot;:&quot;.join(s5[i:i+2] for i in range(0, len(s5), 2))</body>
-                                                    </command>
-                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                                </item>
-                                            </nestedSteps>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="5537dee9-4675-4db2-bd8d-5cb3ca412a49" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.dstport == 8080) &amp;&amp; (tcp.flags.ack == 1) &amp;&amp; (tcp.payload contains &apos;+bs3+&apos;) &amp;&amp; (tcp.payload contains &apos;+bs5+&apos;)&apos;,&apos;count&apos;:1,&apos;message&apos;:&apos;Verify SMSF forwards the submit report over Namf_Communication_N1N2MessageTransfer message to AMF when SMS delivery is allowed&apos;})</body>
-                                            </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
                                         <item guid="e1406736-bff0-46b3-9f29-189c1948597f" action="eval" useFieldsInCommand="false">

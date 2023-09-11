@@ -5754,5 +5754,56 @@ Note: &apos;nulll&apos; will return all values found for the defined target Id.
                 <item name="tshark_filter"/>
             </arguments>
         </item>
+        <item name="create_wireshark_filter_string_multiple_ip" isPublic="true">
+            <steps>
+                <item guid="1cb79e58-184d-4807-930c-de46b6121e32" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ret_str = &apos;&apos;</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="1d9a8b93-8acc-4988-8de6-4e6f48d8c7c9" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>and_list = []</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="2295dc02-0f22-45fd-b1c0-63e9aba1194e" action="for" useFieldsInCommand="false">
+                    <command>
+                        <body>ip in ip_list.split(&apos;,&apos;):</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="c0473df8-f092-4eda-b3d6-eadc0b41cfdd" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>and_list.append(match_target+&apos; == &apos;+ip)</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="a7a8e107-05af-4235-ae8e-baf487d83c53" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>ret_str = &apos;(&apos;+&apos; || &apos;.join(and_list)+&apos;)&apos;</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="c4360251-2ab0-4b77-81cd-6289ffbd1956" action="return">
+                    <command>
+                        <body>[ret_str]</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+            </steps>
+            <arguments>
+                <item name="ip_list">
+                    <isMandatory>true</isMandatory>
+                </item>
+                <item name="match_target">
+                    <description>ip.src | ip.dst | ip.addr</description>
+                    <isMandatory>true</isMandatory>
+                </item>
+            </arguments>
+        </item>
     </procedures>
 </testCase>
