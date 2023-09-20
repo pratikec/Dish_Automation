@@ -739,7 +739,7 @@ Expected Result
                                                                 </extractorInfo>
                                                                 <processorInfo ruleType="store">
                                                                     <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <storageLocation>ip_src_str</storageLocation>
+                                                                        <storageLocation>ip_dst_str</storageLocation>
                                                                         <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
                                                                         <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
                                                                         <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
@@ -764,7 +764,7 @@ Expected Result
                                                                 </extractorInfo>
                                                                 <processorInfo ruleType="store">
                                                                     <ruleProperties type="com.fnfr.svt.execution.builtin.processors.StoreProcessorPropertyGroup">
-                                                                        <storageLocation>ip_dst_str</storageLocation>
+                                                                        <storageLocation>ip_src_str</storageLocation>
                                                                         <responseValue type="com.fnfr.documents.PropertyBoolean">false</responseValue>
                                                                         <variable type="com.fnfr.documents.PropertyBoolean">true</variable>
                                                                         <secret type="com.fnfr.documents.PropertyBoolean">false</secret>
@@ -820,6 +820,20 @@ Expected Result
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
+                                        <item guid="4de9e33f-eee1-49a6-ab98-301b80c0aba9" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>create query for PCF sends response code 200 including the data with default PCC Rule and Session Rule to SMF</body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="53dd2edb-8cc9-4679-80ec-06caab9fedc5" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>verify_list.append({&apos;filter&apos;:&apos;(tcp.srcport == 80) &amp;&amp; &apos;+ip_src_str+&apos; &amp;&amp; &apos;+ip_dst_str+&apos; &amp;&amp; http2.header.value==200&apos;,&apos;count&apos;:1,&apos;message&apos;:&apos;PCF sends response code 200 including the data with default PCC Rule and Session Rule to SMF&apos;})</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
                                         <item guid="e1406736-bff0-46b3-9f29-189c1948597f" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>verify_list</body>
@@ -836,6 +850,7 @@ Expected Result
                                     <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
                                         <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         <sessionProperties type="com.fnfr.svt.applications.wireshark.WiresharkSessionProperties">
+                                            <advancedDisplayOptions inherit="false">-d tcp.port==8080,http2 -d tcp.port==80,http2</advancedDisplayOptions>
                                             <sessionbuilderInitializeAction type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </sessionProperties>
                                         <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
