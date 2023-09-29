@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<ParameterTree version="8.6.1.202109290400">
+<ParameterTree version="9.0.4.202208111512">
     <parameters escape="true">
         <parameters xmlns:pt="http://www.fnfr.com/schemas/parameterTree">
             <Topology_parameters>
                 <TAS pt:description="Required.  ${topology/resources/TAS/Hostname}">
-                    <Hostname pt:description="Required.  ${topology/resources/TAS/ipAddress}">${topology/resources/TAS/Hostname}</Hostname>
-                    <ipAddress>${topology/resources/TAS/ipAddress}</ipAddress>
-                    <Username pt:description="Required." pt:mask="true">JW/NKGwyrDVTMqbnJB1KhEnIW5b9JKaVt4LGXySqTv7B0JFNHlUwhQ==</Username>
-                    <Password pt:description="Required." pt:mask="true">JW/NKGwyrDVTMqbnJB1KhEnIW5b9JKaVn4VpU758vMmTFUXJN32myA==</Password>
+                    <Hostname pt:description="${topology/resources/TAS/Hostname}">${topology/resources/TAS/Hostname}</Hostname>
+                    <ipAddress pt:description="${topology/resources/TAS/ipAddress}">${topology/resources/TAS/ipAddress}</ipAddress>
+                    <Username pt:description="Required.">${topology/resources/TAS/username}</Username>
+                    <Password pt:description="Required.">${topology/resources/TAS/password}</Password>
                 </TAS>
                 <Testservers>
                     <EmulatedSUT>
@@ -69,7 +69,10 @@
                 <Expected_Memory_Threshold pt:datatype="INTEGER" pt:description="SUT Memory utilization threshold. SUT Memory utilization is below threshold agreed among all parties prior to development of the test case. Default value = 20%">20</Expected_Memory_Threshold>
                 <Starting_IMEI pt:description="Sub update">${topology/resources/Sub_1/IMEI_Start}</Starting_IMEI>
                 <Starting_SUPI pt:description="Sub update">${topology/resources/Sub_1/SUPI_Start}</Starting_SUPI>
-                <UEs pt:datatype="INTEGER" pt:description="Utilized in E-5GC-2 - Just me toted around here.">1</UEs>
+                <Enable_RemoteNetworkHost pt:datatype="BOOLEAN" pt:description="Enable to use Remote Network Host test session">false</Enable_RemoteNetworkHost>
+                <Multiplication_Factor_RemoteNetworkHost pt:datatype="INTEGER" pt:description="A multiplication factor of the nodal IP addresses">2</Multiplication_Factor_RemoteNetworkHost>
+                <Start_Threshold_Percent pt:datatype="INTEGER" pt:description="Determine the start threshold percentage of target. It must be an integer between 50-80%.">80</Start_Threshold_Percent>
+                <Optimistic_Mode pt:datatype="BOOLEAN" pt:description="Enable Optimistic Mode. When true, the test will test at 100% initially, and if no failure, will complete the test with a PASS verdict. Otherwise, it will revert back to running sanity check, followed by 80% load specification, followed by etc., terminating at 100%">false</Optimistic_Mode>
                 <TS_Percentage pt:description="% of Configuration.">
                     <TS1 pt:datatype="INTEGER" pt:description="%">100</TS1>
                 </TS_Percentage>
@@ -98,16 +101,19 @@
                                 <ip pt:description="172.30.242.206">${topology/resources/TS 1/Port 3/IPV4_1}</ip>
                                 <phy pt:description="eth3">${topology/resources/TS 1/Port 3/PHY name}</phy>
                                 <nextHop pt:description="172.30.242.221">${topology/resources/TS 1/Port 3/IPV4 Gateway}</nextHop>
+                                <numLinksOrNodes pt:description="1">1</numLinksOrNodes>
                             </GnbControlAddr>
                             <GnbUserAddr pt:description="gNB User Node">
                                 <ip pt:description="172.30.242.174">${topology/resources/TS 1/Port 1/IPV4_1}</ip>
                                 <phy pt:description="eth1">${topology/resources/TS 1/Port 1/PHY name}</phy>
                                 <nextHop pt:description="172.30.242.189">${topology/resources/TS 1/Port 1/IPV4 Gateway}</nextHop>
+                                <numLinksOrNodes pt:description="1">1</numLinksOrNodes>
                             </GnbUserAddr>
                             <NetworkHostAddrLocal pt:description="Network Host">
                                 <ip pt:description="172.30.242.238">${topology/resources/TS 1/Port 2/IPV4_1}</ip>
                                 <phy pt:description="eth2">${topology/resources/TS 1/Port 2/PHY name}</phy>
                                 <nextHop pt:description="172.30.242.254">${topology/resources/TS 1/Port 2/IPV4 Gateway}</nextHop>
+                                <numLinksOrNodes pt:description="1">1</numLinksOrNodes>
                             </NetworkHostAddrLocal>
                             <UeNas5gMmRoutingInd pt:description="AWS ADD">0000</UeNas5gMmRoutingInd>
                             <GnbNssai_1 pt:description="AWS ADD">
@@ -126,6 +132,8 @@
                             <GnbAltTac pt:description="Sub update">${topology/resources/Sub_1/Alternate_TAC}</GnbAltTac>
                             <GnbName pt:description="Sub update">${topology/resources/Sub_1/GNB_Name}</GnbName>
                             <ImsSipSubsImsi pt:description="Sub update">${topology/resources/Sub_1/SIP_IMSI}</ImsSipSubsImsi>
+                            <StartGnbRate pt:description="1000.0">1000.0</StartGnbRate>
+                            <NetworkHostNatedTrafficEn pt:datatype="BOOLEAN" pt:description="Dish is NATed">true</NetworkHostNatedTrafficEn>
                         </tc0>
                     </ts0>
                 </TS1>

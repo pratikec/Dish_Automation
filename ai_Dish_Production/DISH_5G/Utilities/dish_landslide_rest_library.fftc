@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<testCase version="9.0.4.202208111512">
+<testCase version="9.1.0.202208171942">
     <general>
         <tags>Automation_Next_Gen_Framework</tags>
         <language>Python</language>
     </general>
     <execution>
-        <parameters version="9.0.4.202208111512">
+        <parameters version="9.1.0.202208171942">
             <parameters escape="true">
                 <parameters xmlns:pt="http://www.fnfr.com/schemas/parameterTree">
                     <Env_global_override>
@@ -3599,7 +3599,7 @@
                         </item>
                         <item guid="fbcf8244-53c9-4f91-bfb2-a2a312988cae" action="comment" useFieldsInCommand="false">
                             <command>
-                                <body>Set cmd_idle to 90% of the total of &apos;ls_delaySec&apos;, message, sleep and message</body>
+                                <body>Set cmd_idle to 50% of the total of &apos;ls_delaySec&apos;, message, sleep and message</body>
                             </command>
                             <nestedSteps>
                                 <item guid="775c32e7-7200-44a8-a8b0-492e66e8af97" action="eval" useFieldsInCommand="false">
@@ -3630,6 +3630,12 @@
                                         <message inherit="false">Have resumed Landslide state query; awaiting state: FINAL or COMPLETE</message>
                                     </applicationProperties>
                                 </item>
+                                <item guid="7ecd5185-ca46-4006-8f7c-3293cb321e55" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>timeout = int(ls_delaySec)*4</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -3645,7 +3651,7 @@
                                     <nestedSteps>
                                         <item guid="bec362c9-e381-43fe-99aa-c965fc8352bf" action="call" useFieldsInCommand="false">
                                             <command>
-                                                <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_wait_for_LS__expected_state -session s1 -running_test_id [running_id] -expected_state COMPLETE;FINAL -unexpected_states &quot;ERROR;COMPLETE_ERROR&quot; -time_out [ls_delaySec]</body>
+                                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_wait_for_LS__expected_state -session s1 -running_test_id [running_id] -expected_state COMPLETE;FINAL -unexpected_states &quot;ERROR;COMPLETE_ERROR&quot; -time_out [timeout]</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
@@ -3709,6 +3715,15 @@
                                                 <body>-abort true -timeout 180 -running_id [running_id]</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="afae6c24-6422-4271-8602-c65db4bbed25" action="message" useFieldsInCommand="false">
+                                            <command>
+                                                <body>Error:Forced abort of Landslide test</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                                <severity inherit="false">Error</severity>
+                                                <message inherit="false">Forced abort of Landslide test</message>
+                                            </applicationProperties>
                                         </item>
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
@@ -3810,7 +3825,7 @@
                                             <nestedSteps>
                                                 <item guid="6d0b651f-24c4-4ed8-a883-7747e042a15e" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#get_pcap_result_urls -results_url_list [results_payload_uri_list]</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/pcap_utils.fftc#get_pcap_result_urls -results_url_list [results_payload_uri_list]</body>
                                                     </command>
                                                     <postProcessing>
                                                         <storeResponseAt>pcap_files</storeResponseAt>
@@ -3933,7 +3948,7 @@
                                                         </item>
                                                         <item guid="1e94a1e5-9a26-4125-bb24-22c3bc1ad8ee" action="call" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#write_aws_landslide_data -pcap_files [pcap_files]</body>
+                                                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#write_aws_landslide_data -pcap_files [pcap_files]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
@@ -4067,7 +4082,7 @@
                                                     <nestedSteps>
                                                         <item guid="eaad8563-3a00-46bd-b4d6-45b06c25cd6c" action="call" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#process_landslide_criteria_data -favorites_measurements [favorites_measurements]</body>
+                                                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#process_landslide_criteria_data -favorites_measurements [favorites_measurements]</body>
                                                             </command>
                                                             <postProcessing>
                                                                 <analysisRules>
@@ -10824,6 +10839,31 @@ Fireball - TBD</description>
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
+                <item guid="38e0c053-5a9f-4bae-850f-07b8bb8106cd" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Throw error if timeout occured</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="be299e43-d0a5-4773-9416-2e190121aaff" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>timeout &lt;= 0:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="31fa9eda-e9ba-4bc0-bea3-9a80c7f74552" action="message" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Error: Timeout occured.</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                        <severity inherit="false">Error</severity>
+                                        <message inherit="false"> Timeout occured.</message>
+                                    </applicationProperties>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
                 <item guid="e8ee7e45-fdcb-4cbc-8709-38160c136537" action="eval" useFieldsInCommand="false">
                     <command>
                         <body>len(action_list)</body>
@@ -10976,7 +11016,7 @@ Fireball - TBD</description>
                 <item guid="a1f4bc52-0ada-4f05-8b10-bdb6f945a203" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
-                <item guid="4dba14a9-0095-4fbe-a7fb-2d4cb24c8578" action="Custom" session="session_id" useFieldsInCommand="false">
+                <item guid="4dba14a9-0095-4fbe-a7fb-2d4cb24c8578" action="Custom" session="[session_id]">
                     <command>
                         <body>-requestMethod GET -dataType json -rawResponse true -url runningTests/[running_id]</body>
                     </command>

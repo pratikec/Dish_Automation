@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<testCase version="9.0.4.202208111512">
+<testCase version="9.1.1.202209201235">
     <general>
         <documentation>5G_DEREG_010 UDM initiated de-registration - without PDU - connected mode</documentation>
         <tags>5G_DEREG_010, Automation_Next_Gen_Framework</tags>
@@ -43,6 +43,20 @@ Expected Result/Post Condition:
                 <item guid="677ba52a-51d3-4ded-a21f-a424a2be24eb" action="comment" useFieldsInCommand="false">
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
+                <item guid="4626dcff-e132-4d91-9a24-bc13fee30143" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>param(&apos;UDM/username&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="d4cc7d0e-804e-49dc-8d8c-8a723a41af6c" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>param(&apos;UDM/password&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
                 <item guid="15ca68ee-54b5-474c-a11d-5f5b5954a053" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Define Landslide Library Key, project_id; INIT instance_id aka tc_id, failure_originators_list and write_cause_code_data</body>
@@ -61,12 +75,6 @@ Expected Result/Post Condition:
                                         <item guid="9456d42b-881f-4f44-9d4d-0cfd10807eff" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>additional_validation = param(&apos;TMD_Name/process_manager/additional_validation&apos;, &apos;False&apos;)</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="e114aecf-11e5-461e-86c5-378b3c50de19" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>nf_interaction = param(&apos;TMD_Name/process_manager/nf_interaction&apos;, &apos;False&apos;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
@@ -140,7 +148,7 @@ Expected Result/Post Condition:
                     <nestedSteps>
                         <item guid="61734b6e-02db-42c5-a056-875d3d2e6c77" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#test_instance_init -instance_id [tc_id] -ls_library_name [libraryName] -project_id [project_id]</body>
+                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#test_instance_init -instance_id [tc_id] -ls_library_name [libraryName] -project_id [project_id]</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
@@ -176,27 +184,13 @@ Expected Result/Post Condition:
                 </item>
                 <item guid="a13802d9-bc7a-434f-affe-0d8e2a6b77bb" action="comment" useFieldsInCommand="false">
                     <command>
-                        <body>#### Check for any pre-test activities and process as required. ?!?!!? Network CHECK/QUERY/MODIFY (Prior to Landslide Execution) ####</body>
+                        <body>Pre test NF activities</body>
                     </command>
                     <nestedSteps>
-                        <item guid="14968248-4843-4238-9ae3-08095d5beeed" action="if" useFieldsInCommand="false">
+                        <item guid="3c34fc81-992a-4b43-ac11-a842dafcd99e" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>param(&apos;TMD_Name/process_manager/nf_interaction_pre&apos;) == True:</body>
+                                <body>saveSubUDM()</body>
                             </command>
-                            <nestedSteps>
-                                <item guid="9f6f01e6-3049-4db5-b323-4e25170a9439" action="comment" useFieldsInCommand="false">
-                                    <command>
-                                        <body>Routine is just a stub; Awaiting requirements and process definition to continue/complete.</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="4ee1bd60-a0af-4b8f-9697-25fe6faa2761" action="call" useFieldsInCommand="false">
-                                    <command>
-                                        <body>saveSubUDM()</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                            </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
@@ -221,9 +215,15 @@ Expected Result/Post Condition:
                         <body>##### Perform Landslide Test Procedure #####</body>
                     </command>
                     <nestedSteps>
+                        <item guid="7ea50c8a-21ea-4925-b22f-22371ab08fe9" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>start_time = int(round(time.time() * 1000))</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="4e463163-7d1a-48ec-898c-f6683daa640f" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_execute_landslide_procedure -run_data_list [run_data_list]</body>
+                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_execute_landslide_procedure -run_data_list [run_data_list]</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
@@ -332,6 +332,12 @@ Expected Result/Post Condition:
                                 <storeResponseAt>exec_ls_testdata</storeResponseAt>
                                 <storeResponseText>true</storeResponseText>
                             </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="ca3805c9-e1f7-4186-99e7-40e5ec26420d" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>end_time = int(round(time.time() * 1000))</body>
+                            </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="1c2226f4-d199-4678-8488-ad91db5e9b8e" action="comment" useFieldsInCommand="false">
@@ -665,7 +671,7 @@ Expected Result/Post Condition:
                                             <nestedSteps>
                                                 <item guid="12ed81fb-99ff-4449-be4a-d677fa5c4ab8" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#utility_pcap_validation -results_url_list [results_payload_uri_list] -running_id [running_id]</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#utility_pcap_validation -results_url_list [results_payload_uri_list] -running_id [running_id]</body>
                                                     </command>
                                                     <postProcessing>
                                                         <analysisRules>
@@ -739,7 +745,7 @@ Expected Result/Post Condition:
                                 </item>
                                 <item guid="cebae17d-b354-4bf9-9394-4f529bb527bc" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#additional_validation_mgr -instance_id [tc_id] -project_id [project_id] -running_id [running_id] -validate_process_type NOT_DEFINED -validation_type_id NOT_DEFINED</body>
+                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#additional_validation_mgr -instance_id [tc_id] -project_id [project_id] -running_id [running_id] -validate_process_type NOT_DEFINED -validation_type_id NOT_DEFINED</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
@@ -781,11 +787,33 @@ Expected Result/Post Condition:
                                 </item>
                                 <item guid="15b54d54-e7be-49c1-98ed-64253f4f20ad" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#write_landslide_extracted_cause_code_data -failure_originator [failure_originators_list] -results_payload_uri_list [results_payload_uri_list]</body>
+                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#write_landslide_extracted_cause_code_data -failure_originator [failure_originators_list] -results_payload_uri_list [results_payload_uri_list]</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                                 <item guid="d4aaa3a8-951f-4283-a0dd-85f65cdef763" action="comment" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="3f3dcd16-a234-40eb-ac0d-5a0a9f73b379" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>IF test failing, do RADCOM capture</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="9c9355b8-6e5e-4e48-b476-54e08c82260c" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>info(&apos;status&apos;) == &apos;Fail&apos;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="941711e7-07d8-42b1-b373-3fd4ff220f09" action="call" useFieldsInCommand="false">
+                                    <command>
+                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_if_fail(end_time=end_time, start_time=start_time, capture_type=&quot;ECP_CP_by_IMSI&quot;)</body>
+                                    </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -909,7 +937,7 @@ Expected Result/Post Condition:
                             <nestedSteps>
                                 <item guid="e17a2dff-d19c-4a91-8d01-9badc5a53ce6" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#build_charts -reportData [result_list]</body>
+                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#build_charts -reportData [result_list]</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
@@ -931,31 +959,25 @@ Expected Result/Post Condition:
                             <nestedSteps>
                                 <item guid="f44c227e-ff53-43f8-89b9-8d60234b5479" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#post_instance_processing -instance_id [tc_id] -project_id [project_id] -running_id [running_id]</body>
+                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#post_instance_processing -instance_id [tc_id] -project_id [project_id] -running_id [running_id]</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="4b3e5496-5771-4e3b-a392-8ca6045b4f35" action="if" useFieldsInCommand="false">
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="fee8fe5b-460c-4bc2-99e6-dc13a7beea4f" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Post-test NF activities</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="270a1087-02bc-49e4-b1ab-8e48eed87677" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>param(&apos;TMD_Name/process_manager/nf_interaction_post&apos;) == True:</body>
+                                <body>restoreSubUDM()</body>
                             </command>
-                            <nestedSteps>
-                                <item guid="77be8789-6926-4287-a098-0bb1b4e8c94e" action="comment" useFieldsInCommand="false">
-                                    <command>
-                                        <body>Routine is just a stub; Awaiting requirements and process definition to continue/complete.</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="270a1087-02bc-49e4-b1ab-8e48eed87677" action="call" useFieldsInCommand="false">
-                                    <command>
-                                        <body>restoreSubUDM()</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                            </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
@@ -968,7 +990,7 @@ Expected Result/Post Condition:
                     <nestedSteps>
                         <item guid="78c0d68f-b101-4b0d-ab54-20b767da2789" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_close_landslide -session s1</body>
+                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_close_landslide -session s1</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -1033,6 +1055,20 @@ Expected Result/Post Condition:
                 <item guid="fcb0d623-bb28-43c2-b5d9-23737bd6d8ee" action="eval" useFieldsInCommand="false">
                     <command>
                         <body>ldap_password = param(&apos;UDM/ldap_password&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="c65be834-09e4-44fd-8220-58c83c1d5902" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>param(&apos;UDM/username&apos;)</body>
+                    </command>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                </item>
+                <item guid="9a659e72-18e0-4fe5-a392-70b4b571e9c9" action="eval" useFieldsInCommand="false">
+                    <command>
+                        <body>param(&apos;UDM/password&apos;)</body>
                     </command>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                     <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
@@ -1265,6 +1301,10 @@ Expected Result/Post Condition:
                                 <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                             </applicationProperties>
+                            <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
+                        </item>
+                        <item guid="6b6c6cbf-69c1-4058-a44b-58de7897f0d3" action="set_write_mode_on" session="AMF" useFieldsInCommand="false">
+                            <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
                             <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
                         </item>
                         <item guid="6000360d-c549-4984-9248-8266f6f41ff4" action="message" useFieldsInCommand="false">

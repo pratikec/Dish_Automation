@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<testCase version="8.6.2.202112190518">
+<testCase version="9.1.1.202209201235">
     <general>
         <documentation>5G_REG_039 Unsuccessful initial registration due to N1 mode not allowed.</documentation>
         <tags>5G_REG_039</tags>
@@ -99,12 +99,6 @@ Expected Result/Post Condition:
                                         <item guid="1db6e29b-5146-4e16-936c-f2a39466ced8" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>next_gen_topology_process = param(tmd_query_path + &quot;/next_gen_topology_process&quot;)</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="81fef107-4c85-4c0b-9736-3e034dca2277" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>nf_interaction = param(tmd_query_path + &quot;/nf_interaction&quot;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
@@ -224,7 +218,7 @@ Expected Result/Post Condition:
                     <nestedSteps>
                         <item guid="3f27ac71-947d-4dc5-9308-5590becaf216" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#pretest_startup_reporting -tc_id [tc_id] -test_severity [test_severity]</body>
+                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#pretest_startup_reporting -tc_id [tc_id] -test_severity [test_severity]</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -654,7 +648,7 @@ Expected Result/Post Condition:
                     <nestedSteps>
                         <item guid="e4ea401e-6c1f-4f99-861c-7a3f9530d617" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_verify_test_servers -session s1 -ts_groups [ts_groups]</body>
+                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_verify_test_servers -session s1 -ts_groups [ts_groups]</body>
                             </command>
                             <postProcessing>
                                 <storeResponseAt>ts_groups</storeResponseAt>
@@ -902,6 +896,12 @@ Expected Result/Post Condition:
                         <body>Perform Landslide Test Procedure</body>
                     </command>
                     <nestedSteps>
+                        <item guid="1b82590b-b5ea-44ed-8652-5c319960b864" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>start_time = int(round(time.time() * 1000))</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="21ee5e54-b599-464e-a21a-310efe4fafe2" action="call" useFieldsInCommand="false">
                             <command>
                                 <body>execute_dish_landslide_procedure -run_data_list [run_data_list] -instance_number [instance_number]  -running_node_id [running_node_id] -node_run_data [node_run_data] -timeout [test_waiting_timeout] -pcap_analysis [pcap_analysis] -additional_validation [additional_validation]</body>
@@ -998,6 +998,12 @@ Expected Result/Post Condition:
                                 <storeResponseAt>rid_list</storeResponseAt>
                                 <storeResponseText>true</storeResponseText>
                             </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="9b8bcd47-7b6c-466c-90b5-82fc7669250d" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>end_time = int(round(time.time() * 1000))</body>
+                            </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
@@ -1121,6 +1127,28 @@ Expected Result/Post Condition:
                     </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
+                <item guid="93eee1fd-2556-4064-85ba-4cc8a171a409" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>IF test failing, do RADCOM capture</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="1aa94278-685a-4fcd-a537-bf01bae8502f" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>info(&apos;status&apos;) == &apos;Fail&apos;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="a64d4f57-da74-424a-a81c-a1aecf8e9f43" action="call" useFieldsInCommand="false">
+                                    <command>
+                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_if_fail(end_time=end_time, start_time=start_time, capture_type=&quot;ECP_CP_by_IMSI&quot;)</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
                 <item guid="e9b57128-9caa-4719-9d7d-638df2968bc0" action="comment" useFieldsInCommand="false">
                     <command>
                         <body>Show charts</body>
@@ -1133,7 +1161,7 @@ Expected Result/Post Condition:
                             <nestedSteps>
                                 <item guid="5fd7e7ae-b16c-4ce2-b6ba-f48086f65c49" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#build_charts -reportData [result_list]</body>
+                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#build_charts -reportData [result_list]</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
@@ -2078,7 +2106,7 @@ Expected Result/Post Condition:
                                             <nestedSteps>
                                                 <item guid="f5397cde-be4f-40ae-bed8-33b7075c81c3" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>project://$project_id/DISH_5G/Utilities/pcap_utils.fftc#get_pcap_result_urls -results_url_list [results_payload_uri_list]</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/pcap_utils.fftc#get_pcap_result_urls -results_url_list [results_payload_uri_list]</body>
                                                     </command>
                                                     <postProcessing>
                                                         <storeResponseAt>pcap_files</storeResponseAt>
@@ -2201,7 +2229,7 @@ Expected Result/Post Condition:
                                                         </item>
                                                         <item guid="060a65fc-bf01-4862-8298-db642ee4fa0c" action="call" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#write_aws_landslide_data -pcap_files [pcap_files]</body>
+                                                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#write_aws_landslide_data -pcap_files [pcap_files]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
@@ -2325,7 +2353,7 @@ Expected Result/Post Condition:
                                                 </item>
                                                 <item guid="8c4b0a97-745e-488c-902a-31c5d589810e" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#process_landslide_criteria_data -favorites_measurements [favorites_measurements]</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#process_landslide_criteria_data -favorites_measurements [favorites_measurements]</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
@@ -2339,7 +2367,7 @@ Expected Result/Post Condition:
                                                         </item>
                                                         <item guid="e3cf5850-a538-4879-bfc7-4a47689cfa30" action="call" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#additional_validation_mgr -running_id [running_id]</body>
+                                                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#additional_validation_mgr -running_id [running_id]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
@@ -2390,7 +2418,7 @@ Expected Result/Post Condition:
                                                 </item>
                                                 <item guid="86a11f2a-a449-4df0-a20e-2a7551de7974" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#additional_validation_mgr -running_id [running_id]</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#additional_validation_mgr -running_id [running_id]</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>

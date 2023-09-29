@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<testCase version="9.0.4.202208111512">
+<testCase version="9.1.1.202209201235">
     <general>
         <documentation>SMS_NAS_102  Mobile Terminated SMS delivery in Connected state.</documentation>
         <tags>Automation_Next_Gen_Framework_v2, SMS_NAS_102</tags>
@@ -68,12 +68,6 @@ Expected Result
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="5c87dcfb-10f7-4b95-9cd9-0468d997748b" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>nf_interaction = param(tmd_query_path + &quot;/nf_interaction&quot;, &apos;False&apos;)</body>
-                                            </command>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
                                         <item guid="f9db0700-c74c-429e-b87f-e744e249c131" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>pcap_analysis = param(tmd_query_path + &quot;/pcap_analysis&quot;, &quot;false&quot;)</body>
@@ -98,7 +92,7 @@ Expected Result
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="af14c9f7-2ce4-4d8d-a9a1-b95c2c1ec04d" action="eval" useFieldsInCommand="false">
+                        <item guid="af14c9f7-2ce4-4d8d-a9a1-b95c2c1ec04d" action="eval" skip="true" useFieldsInCommand="false">
                             <command>
                                 <body>libraryName = &quot;{Dish 5G Velocity Scrub}&quot;</body>
                             </command>
@@ -144,7 +138,7 @@ Expected Result
                     <nestedSteps>
                         <item guid="6bb14bad-81a6-4d32-aea8-f51b299d6de2" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#test_instance_init -instance_id [tc_id] -ls_library_name [libraryName] -project_id [project_id]</body>
+                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#test_instance_init -instance_id [tc_id] -ls_library_name [libraryName] -project_id [project_id]</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
@@ -183,61 +177,78 @@ Expected Result
                         <body>Modify JSON in string format before passing to Landslide - starting phone (raw) + 1 to produce &apos;start_recipient_phone_num&apos;</body>
                     </command>
                     <nestedSteps>
-                        <item guid="04121df5-a778-4b30-8217-20fedf889b45" action="comment" useFieldsInCommand="false">
+                        <item guid="254fb439-06eb-461a-959e-e47116d315d0" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>modify info for tc0</body>
                             </command>
                             <nestedSteps>
-                                <item guid="3dd16c3a-b2fb-40b9-8c64-037150d28976" action="eval" useFieldsInCommand="false">
+                                <item guid="051fd7e7-5e14-4ab0-9b93-bf79cba6d558" action="eval" useFieldsInCommand="false">
                                     <command>
                                         <body>tc0_dict = {}</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="7be2ede0-9635-4ed7-a394-09919f519d7a" action="comment" useFieldsInCommand="false">
+                                <item guid="43466009-792d-438f-bf13-3e48ee54b280" action="comment" useFieldsInCommand="false">
+                                    <command>
+                                        <body>5gSmsRecipAddrNum</body>
+                                    </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="dd97ed98-f617-4999-b06a-e1d5c096bcfa" action="comment" useFieldsInCommand="false">
+                                <item guid="0433c1e5-12fe-49fa-a631-66278ffb1a19" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Construct the GM/SMS driving data</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="24f71191-aef7-49a3-ab20-f8f9668d8088" action="eval" useFieldsInCommand="false">
+                                        <item guid="4d5cee7b-d1a0-41a4-849c-89b81cef20fd" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>start_phone_num_tc0 = param(&apos;LS_Nodal_favorite_params/ts0/tc0/ImsSipSubsPublicUserName&apos;)</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="f63ec3fb-7359-4942-bf2a-4b3fabd92d29" action="call" useFieldsInCommand="false">
+                                        <item guid="ed9d4a70-ef0f-4d51-9c2f-30c16908901f" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#get_raw_phone_number -ims_sip_public_user [start_phone_num_tc0]</body>
-                                            </command>
-                                            <postProcessing>
-                                                <storeResponseAt>raw_phone_number_tc0</storeResponseAt>
-                                                <storeResponseText>true</storeResponseText>
-                                            </postProcessing>
-                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                        </item>
-                                        <item guid="e3322335-89ed-4f4a-a6ab-85551acc536b" action="eval" useFieldsInCommand="false">
-                                            <command>
-                                                <body>raw_phone_number_tc0</body>
+                                                <body>start_phone_num_tc0</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="6b5ff121-2cd5-4088-8ca3-1826dad1e886" action="comment" useFieldsInCommand="false">
+                                        <item guid="a8e48370-eb8d-4b10-a65c-1ec2e0e8c764" action="comment" useFieldsInCommand="false">
                                             <command>
-                                                <body>Tcl Variable Name: 5gSmsRecipAddrNum == tc0 phone start (raw)</body>
+                                                <body>Tcl Variable Name: UeSmsOrigAddrNum == tc0 phone start (raw)</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="2d6d5419-6eba-4748-81ad-eb712b5f9d2a" action="eval" useFieldsInCommand="false">
+                                                <item guid="400404b6-6f1c-41a7-b48c-02debb2b074b" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>start_recipient_phone_num = str(int(raw_phone_number_tc0) + 1)</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#get_raw_phone_number -ims_sip_public_user [start_phone_num_tc0]</body>
+                                                    </command>
+                                                    <postProcessing>
+                                                        <storeResponseAt>raw_phone_number_tc0</storeResponseAt>
+                                                        <storeResponseText>true</storeResponseText>
+                                                    </postProcessing>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="2d31ab58-d23e-4868-b1e3-7f47bcb1b9b0" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>raw_phone_number_tc0</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="4b19c086-a1b3-4618-9a42-b541b858a1da" action="eval" useFieldsInCommand="false">
+                                            </nestedSteps>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="808479b9-f0ca-40b8-9ebe-b0f4ae106830" action="comment" useFieldsInCommand="false">
+                                            <command>
+                                                <body>Tcl Variable Name: UeSmsRecipAddrNum == tc0 phone start +1 (raw)</body>
+                                            </command>
+                                            <nestedSteps>
+                                                <item guid="ce0ce81d-adc7-4397-8a46-27c4784fcade" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>start_recipient_phone_num</body>
+                                                        <body>raw_phone_number_tc1 = str(int(raw_phone_number_tc0) + 1)</body>
+                                                    </command>
+                                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                </item>
+                                                <item guid="c3acf766-eb55-48b5-9c80-9bb2c65a1e8c" action="eval" useFieldsInCommand="false">
+                                                    <command>
+                                                        <body>raw_phone_number_tc1</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
@@ -247,45 +258,45 @@ Expected Result
                                     </nestedSteps>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="88c50406-9090-4eaf-91ba-c539f402452f" action="comment" useFieldsInCommand="false">
+                                <item guid="626822d4-7ffe-4596-9724-15c9d64d0042" action="comment" useFieldsInCommand="false">
                                     <command>
                                         <body>Update the data for tc0</body>
                                     </command>
                                     <nestedSteps>
-                                        <item guid="3326c7dc-cd56-48bc-bbb5-3217b4b770a9" action="comment" useFieldsInCommand="false">
+                                        <item guid="c878e2bf-a12f-4df9-bfe1-879d604468ce" action="comment" useFieldsInCommand="false">
                                             <command>
                                                 <body>Update the GM/SMS numbers</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="63c97a74-44a9-4af6-b168-d2c07774842c" action="eval" useFieldsInCommand="false">
+                                                <item guid="9a204b62-8632-4c88-b84d-fd66031c9ae0" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>tc0_dict[&apos;5gSmsRecipAddrNum&apos;] = start_recipient_phone_num</body>
+                                                        <body>tc0_dict[&apos;5gSmsRecipAddrNum&apos;] = raw_phone_number_tc1</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
                                             </nestedSteps>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="06de2404-e4b3-480f-ba78-80bc57d399ae" action="eval" useFieldsInCommand="false">
+                                        <item guid="abeac9c3-84cb-4555-8c40-107988546a65" action="eval" useFieldsInCommand="false">
                                             <command>
                                                 <body>tc0_dict</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
-                                        <item guid="5dcaf7b0-b595-4428-aaf4-e674f00cb7bd" action="comment" useFieldsInCommand="false">
+                                        <item guid="7897ae71-3f39-43f9-b9fe-23d13e1fa3b2" action="comment" useFieldsInCommand="false">
                                             <command>
                                                 <body>Add dictionary to run data</body>
                                             </command>
                                             <nestedSteps>
-                                                <item guid="c7b5e7c7-9219-4257-bb69-94397c3f21fe" action="eval" useFieldsInCommand="false">
+                                                <item guid="91e85eb6-6513-4d9a-9ab7-5b9e35ddbcff" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>run_data_list</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="4f85002d-02be-41c1-93d6-3b7c2da9430c" action="call" useFieldsInCommand="false">
+                                                <item guid="fa37347f-f338-4f70-ae35-e905eafea75f" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#update_run_data_parameters -run_data_list [run_data_list] -add_dict [tc0_dict]</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#update_run_data_parameters -run_data_list [run_data_list] -add_dict [tc0_dict]</body>
                                                     </command>
                                                     <postProcessing>
                                                         <storeResponseAt>run_data_list</storeResponseAt>
@@ -293,7 +304,7 @@ Expected Result
                                                     </postProcessing>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
-                                                <item guid="27ee4cbe-41da-46e7-8072-1645f9bc94d7" action="eval" useFieldsInCommand="false">
+                                                <item guid="2459c0fb-1760-4867-b78b-2fb770d06f1c" action="eval" useFieldsInCommand="false">
                                                     <command>
                                                         <body>run_data_list</body>
                                                     </command>
@@ -308,18 +319,119 @@ Expected Result
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
-                        <item guid="d167032e-0b0a-4630-8abf-8648d4fef2fb" action="comment" useFieldsInCommand="false">
+                        <item guid="7a5b96fc-6e38-4768-9e62-28a8bfaf16d4" action="comment" useFieldsInCommand="false">
+                            <command>
+                                <body>modify info for tc1</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="06e9383c-0988-4692-8d17-9090a077a54c" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>tc1_dict = {}</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="75c4223b-53e5-4586-a0a6-ad852eb6c32d" action="comment" useFieldsInCommand="false">
+                                    <command>
+                                        <body>GnbId</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="7464ca38-aee7-4b82-a3e5-b8d03aee52a5" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>tc1_dict[&apos;GnbId&apos;] = str(int(param(&apos;LS_Nodal_favorite_params/ts0/tc1/GnbId&apos;)) +16)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="d38b6844-3ea7-45f3-9c63-5d716f301fe2" action="comment" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Increment SUPI/IMEI</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="cc2227b5-ba1d-4659-90be-d3100d07b8a4" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>tc1_dict[&apos;UeNas5gMmSupi&apos;]=str(int(param(&apos;LS_Nodal_favorite_params/ts0/tc1/UeNas5gMmSupi&apos;))+1)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="51828f0c-57fe-49a5-8347-9477da4cff8b" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>tc1_dict[&apos;UeNas5gMmImei&apos;]=str(int(param(&apos;LS_Nodal_favorite_params/ts0/tc1/UeNas5gMmImei&apos;))+1)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="80625d34-11e6-41e8-a0bd-ce7f33882689" action="comment" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Update the GM/SMS driving data</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="b27dafbf-2761-4450-a2dc-60d41a6ed592" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>tc1_dict[&apos;5gSmsRecipAddrNum&apos;] = raw_phone_number_tc1</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="50f8e6f8-0ca9-4c39-ab0f-12d5e5f150fd" action="comment" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="174131a7-8cc1-4f73-8ae2-bb81f854f16f" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>tc0_dict</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="111c74c7-6403-489e-ba9c-6e68a6c6dae2" action="eval" useFieldsInCommand="false">
+                                    <command>
+                                        <body>tc1_dict</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                                <item guid="815ac02e-cb72-4742-a4cc-c2b7bb415a57" action="comment" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Add dictionary to run data</body>
+                                    </command>
+                                    <nestedSteps>
+                                        <item guid="14ab9bf4-2cf3-495c-93b0-cf4cbbdc0885" action="call" useFieldsInCommand="false">
+                                            <command>
+                                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#update_run_data_parameters -run_data_list [run_data_list] -add_dict [tc1_dict] -test_case_index 1</body>
+                                            </command>
+                                            <postProcessing>
+                                                <storeResponseAt>run_data_list</storeResponseAt>
+                                                <storeResponseText>true</storeResponseText>
+                                            </postProcessing>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                        <item guid="ff73d649-180a-4c6b-8a8c-02b09f3a30b0" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>run_data_list</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
+                                    </nestedSteps>
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="3161d206-4284-4814-934b-d211f05eb184" action="comment" useFieldsInCommand="false">
                             <command>
                                 <body>##### Message all updated Sub_1 Non-default values #####</body>
                             </command>
                             <nestedSteps>
-                                <item guid="15eb68d6-2c58-4dd7-a8b8-354d6c7084e8" action="call" useFieldsInCommand="false">
+                                <item guid="c0fd2c20-5ef6-450c-b5b0-ee0d70cf6620" action="call" useFieldsInCommand="false">
                                     <command>
                                         <body>project://ai_LS_5G/utility_library/utils.fftc#insert_devider_string -length 135</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
-                                <item guid="cfed3160-0074-4914-9dbe-36b90ec69e0e" action="message" useFieldsInCommand="false">
+                                <item guid="bf1ec17f-40a3-46c2-a933-2e6296a3ad32" action="message" useFieldsInCommand="false">
                                     <command>
                                         <body>Information:The Following values have been modified from the assigned Sub_1 default values</body>
                                     </command>
@@ -327,13 +439,24 @@ Expected Result
                                         <message inherit="false">The Following values have been modified from the assigned Sub_1 default values</message>
                                     </applicationProperties>
                                 </item>
-                                <item guid="a53fc996-e09b-4be3-ac8b-c1a52bd63e11" action="message" useFieldsInCommand="false">
+                                <item guid="1a191ccf-5d95-4418-8abb-a942323efc8f" action="message" useFieldsInCommand="false">
                                     <command>
                                         <body>Information:LS_Nodal_favorite_params:ts0:tc0 [tc0_dict]</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
                                         <message inherit="false">LS_Nodal_favorite_params:ts0:tc0 [tc0_dict]</message>
                                     </applicationProperties>
+                                </item>
+                                <item guid="0af6f38a-d25f-4285-891a-e200ba732ab8" action="message" useFieldsInCommand="false">
+                                    <command>
+                                        <body>Information:LS_Nodal_favorite_params:ts0:tc1 [tc1_dict]</body>
+                                    </command>
+                                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
+                                        <message inherit="false">LS_Nodal_favorite_params:ts0:tc1 [tc1_dict]</message>
+                                    </applicationProperties>
+                                </item>
+                                <item guid="927b9559-610f-4f80-bd91-4314c08e7e69" action="comment" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
@@ -345,37 +468,6 @@ Expected Result
                     <command>
                         <body>##################################################</body>
                     </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="7115b239-d6f6-4624-9e0f-9d577bff8d11" action="comment" useFieldsInCommand="false">
-                    <command>
-                        <body>#### Check for any pre-test activities and process as required. ?!?!!? Network CHECK/QUERY/MODIFY (Prior to Landslide Execution) ####</body>
-                    </command>
-                    <nestedSteps>
-                        <item guid="030350fa-660d-4482-b3eb-501a2d171675" action="if" useFieldsInCommand="false">
-                            <command>
-                                <body>param(&apos;TMD_Name/process_manager/nf_interaction_pre&apos;, False) == True:</body>
-                            </command>
-                            <nestedSteps>
-                                <item guid="bf128ea5-519a-471b-9808-b36b9e9648f0" action="comment" useFieldsInCommand="false">
-                                    <command>
-                                        <body>Routine is just a stub; Awaiting requirements and process definition to continue/complete.</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="f0fffc7c-2dfd-415d-ac39-46e2e384127b" action="call" useFieldsInCommand="false">
-                                    <command>
-                                        <body>verifyUeDown(when=&quot;Pre-Test&quot;)</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                                <item guid="9cbb089a-4439-4027-8e9e-d0f35f5f4115" action="comment" useFieldsInCommand="false">
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                            </nestedSteps>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
                 <item guid="2af8370a-d9fe-4348-95ce-9d6a4eb405d3" action="comment" useFieldsInCommand="false">
@@ -397,9 +489,15 @@ Expected Result
                         <body>##### Perform Landslide Test Procedure #####</body>
                     </command>
                     <nestedSteps>
+                        <item guid="9eefdb89-745c-4f1f-93bb-a0da818d0a4a" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>start_time = int(round(time.time() * 1000))</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
                         <item guid="1070c473-4a46-4e03-9f5f-88b2ae3af57c" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_execute_landslide_procedure -run_data_list [run_data_list]</body>
+                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_execute_landslide_procedure -run_data_list [run_data_list]</body>
                             </command>
                             <postProcessing>
                                 <analysisRules>
@@ -508,6 +606,12 @@ Expected Result
                                 <storeResponseAt>exec_ls_testdata</storeResponseAt>
                                 <storeResponseText>true</storeResponseText>
                             </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="d678c422-8ac3-4756-9a5c-2fc999fdff3d" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>end_time = int(round(time.time() * 1000))</body>
+                            </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                         <item guid="f1c572bb-e12c-4d86-96ad-5941c536eca7" action="comment" useFieldsInCommand="false">
@@ -841,7 +945,7 @@ Expected Result
                                             <nestedSteps>
                                                 <item guid="e5361355-d258-4f52-a1ab-699107ff973d" action="call" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#utility_pcap_validation -results_url_list [results_payload_uri_list] -running_id [running_id]</body>
+                                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#utility_pcap_validation -results_url_list [results_payload_uri_list] -running_id [running_id]</body>
                                                     </command>
                                                     <postProcessing>
                                                         <analysisRules>
@@ -915,7 +1019,7 @@ Expected Result
                                 </item>
                                 <item guid="b95669bc-c7a9-45b8-be79-aedb38c04b9e" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#additional_validation_mgr -instance_id [tc_id] -project_id [project_id] -running_id [running_id] -validate_process_type NOT_DEFINED -validation_type_id NOT_DEFINED</body>
+                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#additional_validation_mgr -instance_id [tc_id] -project_id [project_id] -running_id [running_id] -validate_process_type NOT_DEFINED -validation_type_id NOT_DEFINED</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
@@ -957,11 +1061,33 @@ Expected Result
                                 </item>
                                 <item guid="9eafc56e-37c2-4181-a333-14509ce706f3" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#write_landslide_extracted_cause_code_data -failure_originator [failure_originators_list] -results_payload_uri_list [results_payload_uri_list]</body>
+                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#write_landslide_extracted_cause_code_data -failure_originator [failure_originators_list] -results_payload_uri_list [results_payload_uri_list]</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                                 <item guid="cec7e1bb-56b4-4f32-bd92-7c0476a54841" action="comment" useFieldsInCommand="false">
+                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                </item>
+                            </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="fda398e5-7f5f-4e04-8279-74a0cc17f732" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>IF test failing, do RADCOM capture</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="7a9cdd36-6482-4644-b8ac-b43138e27017" action="if" useFieldsInCommand="false">
+                            <command>
+                                <body>info(&apos;status&apos;) == &apos;Fail&apos;:</body>
+                            </command>
+                            <nestedSteps>
+                                <item guid="8f70f6cd-cd45-4a74-8c06-94a4ecf886de" action="call" useFieldsInCommand="false">
+                                    <command>
+                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/pcap_utils.fftc#radcom_capture_if_fail(end_time=end_time, start_time=start_time, capture_type=&quot;ECP_CP_by_IMSI&quot;)</body>
+                                    </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
@@ -1085,29 +1211,7 @@ Expected Result
                             <nestedSteps>
                                 <item guid="fcffb565-f580-42d5-86eb-444f2fc31be9" action="call" useFieldsInCommand="false">
                                     <command>
-                                        <body>project://$project_id/DISH_5G/Utilities/dish_tc_utilities.fftc#build_charts -reportData [result_list]</body>
-                                    </command>
-                                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                </item>
-                            </nestedSteps>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="13425a57-6314-412c-9d93-d9ac4a5971fb" action="comment" useFieldsInCommand="false">
-                    <command>
-                        <body>Call post_instance_processor - Always called</body>
-                    </command>
-                    <nestedSteps>
-                        <item guid="a496c407-12b7-452c-8918-35f06e0d37f9" action="if" useFieldsInCommand="false">
-                            <command>
-                                <body>param(&apos;TMD_Name/process_manager/nf_interaction_post&apos;, False) == True:</body>
-                            </command>
-                            <nestedSteps>
-                                <item guid="fc5ce9c1-d373-4502-b74e-3f19630c468b" action="call" useFieldsInCommand="false">
-                                    <command>
-                                        <body>verifyUeDown(when=&quot;Post-Test&quot;)</body>
+                                        <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_tc_utilities.fftc#build_charts -reportData [result_list]</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
@@ -1124,7 +1228,7 @@ Expected Result
                     <nestedSteps>
                         <item guid="9e964ba1-e142-4952-a799-918aa4ec7ed4" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>project://$project_id/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_close_landslide -session s1</body>
+                                <body>project://ai_Dish_Production/DISH_5G/Utilities/dish_landslide_rest_library.fftc#dish_close_landslide -session s1</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -1135,459 +1239,6 @@ Expected Result
                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                 </item>
             </steps>
-        </item>
-        <item name="verifyUeUp" isPublic="true">
-            <steps>
-                <item guid="f5b60c0e-80a2-43ac-990c-52794a9ade66" action="if" useFieldsInCommand="false">
-                    <command>
-                        <body>param(&apos;AMF/hostname&apos;) != &quot;&quot;:</body>
-                    </command>
-                    <nestedSteps>
-                        <item guid="3b379abf-90a3-4d86-bb7f-065be66db957" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>ipAddr = param(&apos;AMF/hostname&apos;)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="843766f2-9992-4fae-93c7-067ca41221bf" action="else" useFieldsInCommand="false">
-                    <nestedSteps>
-                        <item guid="81914979-4219-4086-85bd-9dd8156906e2" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>ipAddr = param(&apos;AMF/ip_address&apos;)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="27bd398a-8a69-4cf1-914b-a69a2dc48897" action="message" useFieldsInCommand="false">
-                    <command>
-                        <body>Information:Getting UE registration status from AMF ([ipAddr]) while in Landslide state [param(&apos;TMD_Name/process_manager/nf_interaction_during/item/trigger_state&apos;)]</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                        <message inherit="false">Getting UE registration status from AMF ([ipAddr]) while in Landslide state [param(&apos;TMD_Name/process_manager/nf_interaction_during/item/trigger_state&apos;)]</message>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="67d465d8-6377-4c7a-96ac-a874b937bfe5" action="open" session="AMF">
-                    <command>
-                        <body>project://di_[param(&apos;AMF/make&apos;)]/session_profiles/AMF.ffsp</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
-                        <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                        <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
-                            <ipAddress inherit="false">[ipAddr]</ipAddress>
-                            <user inherit="false">[param(&apos;AMF/username&apos;)]</user>
-                            <password inherit="false" masked="false">[param(&apos;AMF/password&apos;)]</password>
-                        </sessionProperties>
-                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="12ef4558-9745-42d1-8fb9-0fdc0a9f357a" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>sub = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="58592d89-6349-4783-816c-1deedb41043b" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
-                    <command>
-                        <body>-supi $sub</body>
-                    </command>
-                    <postProcessing>
-                        <analysisRules>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfCmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) == &quot;CONNECTED&quot; or str(value) == &quot;IDLE&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] CM State is CONNECTED or IDLE</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="FailTest">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>AMF says that subscriber [sub] CM State is not CONNECTED (but should be)</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfRmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) == &quot;REGISTERED&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] RM State is REGISTERED</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="FailTest">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>AMF says that subscriber [sub] CM State is not REGISTERED (but should be)</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                        </analysisRules>
-                    </postProcessing>
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="b6203d72-b9ee-43cb-8713-1dce64f59ad4" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>sub = str(int(sub)+1)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="6218ebfd-3668-463d-8f16-4e2c784dc8ce" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
-                    <command>
-                        <body>-supi $sub</body>
-                    </command>
-                    <postProcessing>
-                        <analysisRules>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfCmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) == &quot;CONNECTED&quot;  or str(value) == &quot;IDLE&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] CM State is CONNECTED or IDLE</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="FailTest">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>AMF says that subscriber [sub] CM State is not CONNECTED (but should be)</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfRmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) == &quot;REGISTERED&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] RM State is REGISTERED</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="FailTest">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>AMF says that subscriber [sub] CM State is not REGISTERED (but should be)</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                        </analysisRules>
-                    </postProcessing>
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="561ac695-c269-4059-86ab-5c0e2c484c4a" action="close" session="AMF" useFieldsInCommand="false">
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-            </steps>
-        </item>
-        <item name="verifyUeDown" isPublic="true">
-            <steps>
-                <item guid="c50cb81e-1ddb-4ab6-a307-4f98cbe9827e" action="if" useFieldsInCommand="false">
-                    <command>
-                        <body>param(&apos;AMF/hostname&apos;) != &quot;&quot;:</body>
-                    </command>
-                    <nestedSteps>
-                        <item guid="c8390540-5d24-400c-9b73-c6077c8c7da6" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>ipAddr = param(&apos;AMF/hostname&apos;)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="87bf35fe-ad6c-45db-af16-021f5dd3999a" action="else" useFieldsInCommand="false">
-                    <nestedSteps>
-                        <item guid="d6d0958b-96ab-4eb4-ba5e-7dfdd9ed44d9" action="eval" useFieldsInCommand="false">
-                            <command>
-                                <body>ipAddr = param(&apos;AMF/ip_address&apos;)</body>
-                            </command>
-                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        </item>
-                    </nestedSteps>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                </item>
-                <item guid="ef916e64-f297-427a-ab29-94cdc0e15461" action="message" useFieldsInCommand="false">
-                    <command>
-                        <body>Information:Getting UE registration status from AMF [when] - [ipAddr]</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.execution.builtin.exec.MessagePropertyGroup">
-                        <message inherit="false">Getting UE registration status from AMF [when] - [ipAddr]</message>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="49e35de7-01d5-45cb-a56e-31c24690bb20" action="open" session="AMF">
-                    <command>
-                        <body>project://di_[param(&apos;AMF/make&apos;)]/session_profiles/AMF.ffsp</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
-                        <stepProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                        <sessionProperties type="com.fnfr.svt.applications.ssh.documents.SSHProperties">
-                            <ipAddress inherit="false">[ipAddr]</ipAddress>
-                            <user inherit="false">[param(&apos;AMF/username&apos;)]</user>
-                            <password inherit="false" masked="false">[param(&apos;AMF/password&apos;)]</password>
-                        </sessionProperties>
-                        <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                        <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    </applicationProperties>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="8deeaf2b-5952-4ece-8561-f6f19578777f" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>sub = param(&apos;LS_Nodal_favorite_params/ts0/tc0/UeNas5gMmSupi&apos;)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="0d5636c8-14b2-4278-b0b6-61b5ca744181" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
-                    <command>
-                        <body>-supi $sub</body>
-                    </command>
-                    <postProcessing>
-                        <analysisRules>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfCmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) != &quot;CONNECTED&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] CM State is not CONNECTED</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="FailTest">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>AMF says that subscriber [sub] CM State is CONNECTED (it should be)</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfRmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) != &quot;REGISTERED&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] RM State is not REGISTERED</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="FailTest">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>AMF says that subscriber [sub] CM State is REGISTERED (it shouldn&apos;t be)</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                        </analysisRules>
-                    </postProcessing>
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="01f9c6fe-5e1d-4ffd-bf92-b934096769bf" action="eval" useFieldsInCommand="false">
-                    <command>
-                        <body>sub = str(int(sub)+1)</body>
-                    </command>
-                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="45f72a9e-4732-4e04-9b1c-7a500099440b" action="get_subscriber_info_by_supi" session="AMF" responseMap="project://di_Nokia/response_maps/subscriber_show_plain.ffrm" useResponseMapLibraryApplicability="false" useFieldsInCommand="false">
-                    <command>
-                        <body>-supi $sub</body>
-                    </command>
-                    <postProcessing>
-                        <analysisRules>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfCmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) != &quot;CONNECTED&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] CM State is not CONNECTED</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="FailTest">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>AMF says that subscriber [sub] CM State is CONNECTED (it should be)</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                            <item>
-                                <extractorInfo extractorType="query">
-                                    <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.QueryDataExtractorPropertyGroup">
-                                        <query>amfRmState()</query>
-                                    </extractorProperties>
-                                </extractorInfo>
-                                <processorInfo ruleType="assert">
-                                    <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                        <expression>str(value) != &quot;REGISTERED&quot;</expression>
-                                        <actionsWhenTrue>
-                                            <item actionId="PassTestIfNotAlreadyFailed">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                    <message>AMF confirms that subscriber [sub] RM State is not REGISTERED</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenTrue>
-                                        <actionsWhenFalse>
-                                            <item actionId="FailTest">
-                                                <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
-                                            </item>
-                                            <item actionId="DeclareExecutionIssue">
-                                                <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                    <message>AMF says that subscriber [sub] CM State is REGISTERED (it shouldn&apos;t be)</message>
-                                                </actionProperties>
-                                            </item>
-                                        </actionsWhenFalse>
-                                    </ruleProperties>
-                                </processorInfo>
-                            </item>
-                        </analysisRules>
-                    </postProcessing>
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <useResponseMapLibraryFromSession>false</useResponseMapLibraryFromSession>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-                <item guid="5edf813f-af29-43a9-94fb-fee807d6f532" action="close" session="AMF" useFieldsInCommand="false">
-                    <applicationProperties type="com.fnfr.svt.editors.terminal.documents.StepDefaultProperties"/>
-                    <advancedProperties defaultSessionProfile="project://di_Nokia/session_profiles/AMF.ffsp"/>
-                </item>
-            </steps>
-            <arguments>
-                <item name="when">
-                    <isMandatory>true</isMandatory>
-                </item>
-            </arguments>
         </item>
     </procedures>
 </testCase>
