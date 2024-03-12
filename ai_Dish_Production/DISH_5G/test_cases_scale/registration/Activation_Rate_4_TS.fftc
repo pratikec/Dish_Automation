@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<testCase version="9.1.1.202209201235">
+<testCase version="9.1.2.202308091553">
     <general>
         <language>Python</language>
     </general>
@@ -20,6 +20,18 @@
                         <item guid="aab8def2-f89d-46d7-ae7f-389f06d35eec" action="eval" useFieldsInCommand="false">
                             <command>
                                 <body>import copy</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="80ca8c0e-e2a6-40d0-acce-b2a70022a312" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>import tempfile</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="b5031d7e-90b7-460a-8b55-995296d0523d" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>from datetime import datetime</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -755,7 +767,7 @@
                     <nestedSteps>
                         <item guid="b2c4de67-99e5-45b4-801d-17cf5e54dad0" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>rate_list = param(RateList).split(&apos;,&apos;)</body>
+                                <body>rate_list = param(&apos;RateList&apos;).split(&apos;,&apos;)</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -779,7 +791,7 @@
                         </item>
                         <item guid="55384336-535e-4a40-bad0-31bd61082ef8" action="call" useFieldsInCommand="false">
                             <command>
-                                <body>getParameterGroupDict(param_path=&quot;ls_testServers&quot;)</body>
+                                <body>getParameterGroupDict(param_path=&quot;landslide/ls_testServers&quot;)</body>
                             </command>
                             <postProcessing>
                                 <storeResponseAt>testserver_param_dic</storeResponseAt>
@@ -795,7 +807,7 @@
                         </item>
                         <item guid="7ba39edd-5cb1-4892-9391-257b7c545c40" action="eval" useFieldsInCommand="false">
                             <command>
-                                <body>ii == 0</body>
+                                <body>ii = 0</body>
                             </command>
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
@@ -812,13 +824,13 @@
                                 </item>
                                 <item guid="c08e3245-63b0-4b7f-847f-839aa38cc4f9" action="eval" useFieldsInCommand="false">
                                     <command>
-                                        <body>remain_count = param(MaxSubs)</body>
+                                        <body>remain_count = param(&apos;MaxSubs&apos;)</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                                 <item guid="8bb6ac94-e2d3-4693-b3f7-4d108c5a17b4" action="eval" useFieldsInCommand="false">
                                     <command>
-                                        <body>remain_rate = rate</body>
+                                        <body>remain_rate = int(rate)</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
@@ -836,7 +848,7 @@
                                 </item>
                                 <item guid="df99b4b7-4094-433a-a4be-64505ac06e0e" action="eval" useFieldsInCommand="false">
                                     <command>
-                                        <body>SUPI = int(param(&apos;test_parameters/SUPI_start&apos;))</body>
+                                        <body>SUPI = int(param(&apos;global_overwrite_params/UeNas5gMmSupi&apos;))</body>
                                     </command>
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
@@ -937,6 +949,12 @@
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
+                                        <item guid="37e2e730-5ec7-4680-b7e7-e3b84b095c7f" action="eval" useFieldsInCommand="false">
+                                            <command>
+                                                <body>type(remain_rate)</body>
+                                            </command>
+                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                        </item>
                                         <item guid="38d39a57-ddfe-41aa-b620-e482790e9fec" action="if" useFieldsInCommand="false">
                                             <command>
                                                 <body>remain_rate==0:</body>
@@ -986,12 +1004,12 @@
                                         </item>
                                         <item guid="b99c6ab1-c05b-4f2a-b175-3dcbc46b94cb" action="elif" useFieldsInCommand="false">
                                             <command>
-                                                <body>remain_rate&gt;ts_list_dict[j][&quot;tsMaxRate&quot;]:</body>
+                                                <body>remain_rate&gt;ts_list_dict[j][&apos;tsMaxRate&apos;]:</body>
                                             </command>
                                             <nestedSteps>
                                                 <item guid="f3115855-3710-45ab-993d-ae86abd02b54" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>this_rate = int(ts_list_dict[j][&quot;tsMaxRate&quot;])</body>
+                                                        <body>this_rate = int(ts_list_dict[j][&apos;tsMaxRate&apos;])</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
@@ -1040,7 +1058,7 @@
                                             <nestedSteps>
                                                 <item guid="435d1e0b-406a-4f0c-b2bd-ba414080879d" action="eval" useFieldsInCommand="false">
                                                     <command>
-                                                        <body>this_count = int((this_rate/int(rate))*int(param(MaxSubs)))</body>
+                                                        <body>this_count = int((this_rate/int(rate))*int(param(&apos;MaxSubs&apos;)))</body>
                                                     </command>
                                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                 </item>
@@ -1061,7 +1079,7 @@
                                         </item>
                                         <item guid="b9fc9fb6-06b7-4842-945b-3d23905763ce" action="eval" useFieldsInCommand="false">
                                             <command>
-                                                <body>test_session_dic[&quot;tsGroups&quot;][j][&quot;testCases&quot;][0][&quot;parameters&quot;][&quot;DefaultBearers&quot;]=int(param(PDUCount))</body>
+                                                <body>test_session_dic[&quot;tsGroups&quot;][j][&quot;testCases&quot;][0][&quot;parameters&quot;][&quot;DefaultBearers&quot;]=int(param(&apos;PDUCount&apos;))</body>
                                             </command>
                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                         </item>
@@ -1107,7 +1125,7 @@
                                                     <nestedSteps>
                                                         <item guid="67d6baaf-9665-4aad-8f08-48b3b5ca90e5" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>delay_time = 30+int((this_count*(1+int(test_parameters_dic[&quot;test_parameters&quot;][&quot;iteration&quot;][i][&quot;pdus_per_session&quot;])))/this_rate)</body>
+                                                                <body>delay_time = 30+int((this_count*(1+int(param(&apos;PDUCount&apos;))))/this_rate)</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
@@ -1362,14 +1380,14 @@
                                                                         </extractorInfo>
                                                                         <processorInfo ruleType="assert">
                                                                             <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
-                                                                                <expression>int(value) == int(test_parameters_dic[&apos;test_parameters&apos;][&apos;iteration&apos;][i][&quot;subscriber_count&quot;])</expression>
+                                                                                <expression>int(value) == int(param(&apos;MaxSubs&apos;))</expression>
                                                                                 <actionsWhenTrue>
                                                                                     <item actionId="PassTestIfNotAlreadyFailed">
                                                                                         <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                                                     </item>
                                                                                     <item actionId="DeclareExecutionIssue">
                                                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
-                                                                                            <message>[key] expected value [test_parameters_dic[&apos;test_parameters&apos;][&apos;iteration&apos;][i][&quot;subscriber_count&quot;]]</message>
+                                                                                            <message>[key] expected value [param(&apos;MaxSubs&apos;)]</message>
                                                                                         </actionProperties>
                                                                                     </item>
                                                                                 </actionsWhenTrue>
@@ -1379,7 +1397,7 @@
                                                                                     </item>
                                                                                     <item actionId="DeclareExecutionIssue">
                                                                                         <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
-                                                                                            <message>[key] expected value [test_parameters_dic[&apos;test_parameters&apos;][&apos;iteration&apos;][i][&quot;subscriber_count&quot;]] actual value [value]</message>
+                                                                                            <message>[key] expected value [param(&apos;MaxSubs&apos;)] actual value [value]</message>
                                                                                         </actionProperties>
                                                                                     </item>
                                                                                 </actionsWhenFalse>
@@ -1400,7 +1418,7 @@
                                                     <nestedSteps>
                                                         <item guid="e0602f95-629b-41be-a60b-6e6acccee513" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>res = int(test_parameters_dic[&apos;test_parameters&apos;][&apos;iteration&apos;][i][&quot;subscriber_count&quot;])* int(test_parameters_dic[&apos;test_parameters&apos;][&apos;iteration&apos;][i][&quot;pdus_per_session&quot;])</body>
+                                                                <body>res = int(param(&apos;MaxSubs&apos;))* int(param(&apos;PDUCount&apos;))</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
@@ -1526,13 +1544,13 @@
                                                     <nestedSteps>
                                                         <item guid="c53f35ee-0cfb-47df-8955-0bd970a8d0a7" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>test_parameters_dic[&quot;test_parameters&quot;][&quot;iteration&quot;][i][&quot;activation_rate&quot;]</body>
+                                                                <body>rate</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                         <item guid="7a44f542-3352-4014-97b7-da2860d3c6af" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>100*int(graph_dict[&quot;MM::Registration Completes&quot;])/int(test_parameters_dic[&quot;test_parameters&quot;][&quot;iteration&quot;][i][&quot;subscriber_count&quot;])</body>
+                                                                <body>100*int(graph_dict[&quot;MM::Registration Completes&quot;])/int(param(&apos;MaxSubs&apos;))</body>
                                                             </command>
                                                             <postProcessing>
                                                                 <analysisRules>
@@ -1543,7 +1561,7 @@
                                                                             </extractorProperties>
                                                                         </extractorInfo>
                                                                         <processorInfo ruleType="chart_as_bar">
-                                                                            <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingBarPropertyGroup" chartName="Pct_Success" xAxisLabel="Registration Rate (reg/sec)" yAxisLabel="Success Percentage" category="[test_parameters_dic[&quot;test_parameters&quot;][&quot;iteration&quot;][i][&quot;activation_rate&quot;]]" series="[test_parameters_dic[&quot;test_parameters&quot;][&quot;iteration&quot;][i][&quot;activation_rate&quot;]]" rotate="false">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingBarPropertyGroup" chartName="Pct_Success" xAxisLabel="Registration Rate (reg/sec)" yAxisLabel="Success Percentage" category="[rate]" series="[rate]" rotate="false">
                                                                                 <title>Registration Success</title>
                                                                                 <expression>value</expression>
                                                                             </ruleProperties>
@@ -1555,7 +1573,7 @@
                                                         </item>
                                                         <item guid="aff58aa6-dad8-49f2-9c40-28abd93b328b" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>100*int(graph_dict[&quot;SM::Pdu Establishment Accepts&quot;])/int(test_parameters_dic[&quot;test_parameters&quot;][&quot;iteration&quot;][i][&quot;subscriber_count&quot;])*int(test_parameters_dic[&quot;test_parameters&quot;][&quot;iteration&quot;][i][&quot;pdus_per_session&quot;])</body>
+                                                                <body>100*(int(graph_dict[&quot;SM::Pdu Establishment Accepts&quot;])/(int(param(&apos;MaxSubs&apos;))*int(param(&apos;PDUCount&apos;))))</body>
                                                             </command>
                                                             <postProcessing>
                                                                 <analysisRules>
@@ -1566,7 +1584,7 @@
                                                                             </extractorProperties>
                                                                         </extractorInfo>
                                                                         <processorInfo ruleType="chart_as_bar">
-                                                                            <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingBarPropertyGroup" chartName="Pct_PDU_Success" xAxisLabel="PDU Rate (reg/sec)" yAxisLabel="Success Percentage" category="[test_parameters_dic[&quot;test_parameters&quot;][&quot;iteration&quot;][i][&quot;activation_rate&quot;]]" series="[test_parameters_dic[&quot;test_parameters&quot;][&quot;iteration&quot;][i][&quot;activation_rate&quot;]]" rotate="false">
+                                                                            <ruleProperties type="com.fnfr.svt.execution.charting.processors.ChartUsingBarPropertyGroup" chartName="Pct_PDU_Success" xAxisLabel="PDU Rate (reg/sec)" yAxisLabel="Success Percentage" category="[rate]" series="[rate]" rotate="false">
                                                                                 <title>PDU Registration Success</title>
                                                                                 <expression>value</expression>
                                                                             </ruleProperties>
@@ -1574,6 +1592,18 @@
                                                                     </item>
                                                                 </analysisRules>
                                                             </postProcessing>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="2d126a67-c580-4992-b15d-3243ca56e977" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>graph_dict[&quot;SM::Pdu Establishment Accepts&quot;]</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
+                                                        <item guid="c841f532-dba4-456f-bcf8-e4cbb24b89dc" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>int(param(&apos;MaxSubs&apos;))*int(param(&apos;PDUCount&apos;))</body>
+                                                            </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
                                                     </nestedSteps>
@@ -1592,9 +1622,15 @@
                                                         <body>Write to CSV</body>
                                                     </command>
                                                     <nestedSteps>
+                                                        <item guid="de40a063-d1f4-4da5-94e7-398716bbb89f" action="eval" useFieldsInCommand="false">
+                                                            <command>
+                                                                <body>json.dumps(graph_dict)</body>
+                                                            </command>
+                                                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                        </item>
                                                         <item guid="3849c56a-e462-41df-8265-49165dae51d5" action="eval" useFieldsInCommand="false">
                                                             <command>
-                                                                <body>tlist = [str(ii+1),&apos;RID-&apos;+str(running_test_id),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(param(&apos;MaxCount&apos;)),str(int(param(&apos;MaxCount&apos;))*int(param(PDUCount))),str(graph_dict[&quot;MM::Registration Requests&quot;]),str(graph_dict[&quot;MM::Registration Accepts&quot;]),str(graph_dict[&quot;MM::Registration Completes&quot;]),str(graph_dict[&quot;MM::Registration Rejects&quot;]),str(graph_dict[&quot;SM::Pdu Establishment Request&quot;]),str(graph_dict[&quot;SM::Pdu Establishment Accepts&quot;]),str(graph_dict[&quot;SM::Pdu Establishment Rejects&quot;])]</body>
+                                                                <body>tlist = [str(ii+1),&apos;RID-&apos;+str(running_test_id),datetime.now().strftime(&apos;%Y-%m-%d %H:%M&apos;),str(rate),str(param(&apos;MaxSubs&apos;)),str(int(param(&apos;MaxSubs&apos;))*int(param(&apos;PDUCount&apos;))),str(graph_dict[&quot;MM::Registration Requests&quot;]),str(graph_dict[&quot;MM::Registration Accepts&quot;]),str(graph_dict[&quot;MM::Registration Completes&quot;]),str(graph_dict[&quot;MM::Registration Rejects&quot;]),str(graph_dict[&quot;SM::Pdu Establishment Requests&quot;]),str(graph_dict[&quot;SM::Pdu Establishment Accepts&quot;]),str(graph_dict[&quot;SM::Pdu Establishment Rejects&quot;])]</body>
                                                             </command>
                                                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                                         </item>
@@ -1650,6 +1686,89 @@
                                     <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                                 </item>
                             </nestedSteps>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                    </nestedSteps>
+                    <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                </item>
+                <item guid="c0b4424b-ce22-46d6-b017-b2283b015ef3" action="comment" useFieldsInCommand="false">
+                    <command>
+                        <body>Close csv and push to S3 bucket</body>
+                    </command>
+                    <nestedSteps>
+                        <item guid="d935ceb2-5829-479b-9c0c-099c738deef5" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>csv_file.close()</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="c4f3c6ea-3bad-4d49-846b-c11be1a60f29" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>file_dir_str = tdir.name+&apos;\\\\&apos;+file_name</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="dc51f71a-f070-41ff-8191-06684a10d184" action="eval" useFieldsInCommand="false">
+                            <command>
+                                <body>file_dir_str</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="d74a6dbd-ded6-4727-8ec4-f7e0adab8744" action="open" session="cli">
+                            <command>
+                                <body>application:com.fnfr.svt.applications.process</body>
+                            </command>
+                            <applicationProperties type="com.fnfr.svt.documents.OpenStepPropertyGroup">
+                                <stepProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                <sessionProperties type="com.fnfr.svt.applications.process.ProcessSessionProperties"/>
+                                <sessionClass type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                <sessionVersion type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                            </applicationProperties>
+                        </item>
+                        <item guid="5a69dc60-3d02-4404-b87a-d7f8741695e9" action="command" session="cli">
+                            <command>
+                                <body>run aws s3api put-object --bucket [param(&apos;S3Bucket&apos;)] --key [param(&apos;S3Folder&apos;)+&apos;/&apos;+file_name] --body [file_dir_str]</body>
+                            </command>
+                            <postProcessing>
+                                <analysisRules>
+                                    <item>
+                                        <extractorInfo extractorType="contains">
+                                            <extractorProperties type="com.fnfr.svt.mapping.execution.extractors.ExtractorContainsPropertyGroup">
+                                                <searchString>exit code: 0</searchString>
+                                            </extractorProperties>
+                                        </extractorInfo>
+                                        <processorInfo ruleType="assert">
+                                            <ruleProperties type="com.fnfr.svt.execution.builtin.processors.AssertionPropertyGroup">
+                                                <expression>value == 1</expression>
+                                                <actionsWhenTrue>
+                                                    <item actionId="PassTestIfNotAlreadyFailed">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup" severity="OK">
+                                                            <message>Uploaded CSV file to S3: [file_name]</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenTrue>
+                                                <actionsWhenFalse>
+                                                    <item actionId="FailTest">
+                                                        <actionProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                                                    </item>
+                                                    <item actionId="DeclareExecutionIssue">
+                                                        <actionProperties type="com.fnfr.svt.execution.builtin.actions.ExecutionIssuePropertyGroup">
+                                                            <message>Failed to upload CSV file to S3</message>
+                                                        </actionProperties>
+                                                    </item>
+                                                </actionsWhenFalse>
+                                            </ruleProperties>
+                                        </processorInfo>
+                                    </item>
+                                </analysisRules>
+                                <storeResponseAt>response</storeResponseAt>
+                            </postProcessing>
+                            <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
+                        </item>
+                        <item guid="41d37708-ef8a-47a7-a3ad-535177dfb99a" action="eval" useFieldsInCommand="false">
                             <applicationProperties type="com.fnfr.svt.documents.EmptyPropertyGroup"/>
                         </item>
                     </nestedSteps>
